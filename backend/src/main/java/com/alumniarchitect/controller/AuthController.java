@@ -61,7 +61,7 @@ public class AuthController {
         return ResponseEntity.ok("OTP sent to email. Verify to complete registration.");
     }
 
-    @PostMapping("/verify-otp")
+    @GetMapping("/verify-otp")
     public ResponseEntity<AuthResponse> verifyOtp(@RequestParam String email, @RequestParam String otp) {
         if (!otpStorage.containsKey(email) || !otpStorage.get(email).equals(otp)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AuthResponse(null, false, "Invalid OTP"));
@@ -119,4 +119,11 @@ public class AuthController {
 
         return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
     }
+
+
+
+//    @PutMapping("/forgot-password")
+//    public ResponseEntity<AuthResponse> forgotPassword(AuthRequest authRequest) {
+//
+//    }
 }

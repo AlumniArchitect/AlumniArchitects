@@ -15,7 +15,7 @@ export default function OtpVerification() {
             const URL = `${Constant.BASE_URL}/auth/verify-otp?`+temp;
       
             const res = await fetch(URL, {
-              method: "POST",
+              method: "GET",
               headers: {
                 'Content-Type': 'application/json'
               }
@@ -24,7 +24,7 @@ export default function OtpVerification() {
             const result = await res.json();
       
             if (result.status) {
-      
+              
               localStorage.setItem("jwt", result.jwt);
       
               setTimeout(() => {

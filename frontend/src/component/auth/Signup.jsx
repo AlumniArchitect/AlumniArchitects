@@ -24,6 +24,8 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
 
+    localStorage.setItem("email", signupInfo.email);
+
     try {
       const URL = `${Constant.BASE_URL}/auth/signup`;
 
@@ -38,8 +40,6 @@ const Signup = () => {
       const result = await res.json();
 
       if (result.status) {
-
-        localStorage.setItem("email", signupInfo.email);
 
         setTimeout(() => {
           navigate('/verify-otp');
@@ -87,11 +87,11 @@ const Signup = () => {
         />
       </div>
       <div className="form-group">
-        <select 
+        <select
           value={setSignupInfo.isAlumni}
           name='isAlumni'
           onChange={handleChange}
-          >
+        >
           <option value="student">Student</option>
           <option value="alumni">Alumni</option>
         </select>

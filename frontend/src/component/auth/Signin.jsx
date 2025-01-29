@@ -10,6 +10,8 @@ export default function Signin() {
   useEffect(() => {
     const fetchData = async () => {
       const jwt = localStorage.getItem("jwt");
+      console.log(jwt);
+      
 
       if (jwt) {
         const res = await fetch(URL, {
@@ -18,6 +20,9 @@ export default function Signin() {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${jwt}`,
           },
+          body: {
+            
+          }
         });
 
         const result = await res.json();
