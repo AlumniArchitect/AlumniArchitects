@@ -42,7 +42,7 @@ const Signup = () => {
       if (result.status) {
 
         setTimeout(() => {
-          navigate('/verify-otp');
+          Link('/verify-otp');
         }, 500);
 
       } else {
