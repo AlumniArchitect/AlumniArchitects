@@ -1,5 +1,5 @@
 import React from 'react';
-// import { useNavigate,Link,useState} from 'react-router-dom';
+import {useState} from 'react-router-dom';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');

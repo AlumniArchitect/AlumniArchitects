@@ -39,8 +39,10 @@ const Signup = () => {
 
       if (result.status) {
 
+        localStorage.setItem("email", signupInfo.email);
+
         setTimeout(() => {
-          navigate('/signin');
+          navigate('/verify-otp');
         }, 500);
 
       } else {
@@ -71,6 +73,7 @@ const Signup = () => {
           placeholder="Email"
           value={signupInfo.email}
           onChange={handleChange}
+          required
         />
       </div>
       <div className="form-group">
@@ -80,6 +83,7 @@ const Signup = () => {
           placeholder="Password"
           value={signupInfo.password}
           onChange={handleChange}
+          required
         />
       </div>
       <div className="form-group">
