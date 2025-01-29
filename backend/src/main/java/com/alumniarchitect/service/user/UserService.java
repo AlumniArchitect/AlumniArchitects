@@ -1,8 +1,15 @@
 package com.alumniarchitect.service.user;
 
-import org.springframework.stereotype.Service;
+import com.alumniarchitect.entity.User;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public interface UserService {
+    User saveUser(User user);
 
+    User findByEmail(String email);
+
+    User findByJWT(String jwt) throws Exception;
+
+    User findById(Long id) throws Exception;
 }

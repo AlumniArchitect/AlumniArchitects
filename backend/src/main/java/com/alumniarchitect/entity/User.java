@@ -1,10 +1,8 @@
-package com.alumniarchitect.entity.user;
+package com.alumniarchitect.entity;
 
+import com.alumniarchitect.enums.USER_TYPE;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -22,5 +20,7 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    private boolean isAlumni;
+    private USER_TYPE type = USER_TYPE.ALUMNI;
+
+    private boolean isVerified = false;
 }
