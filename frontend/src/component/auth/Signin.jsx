@@ -1,30 +1,92 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import Constant from "../../utils/Constant"
 
 export default function Signin() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [otp, setOtp] = useState('');
-  const [isOtpVisible, setOtpVisible] = useState(false);
+
+  const URL = `${Constant.BASE_URL}/auth/signin`;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const jwt = localStorage.getItem("jwt");
+
+      if (jwt) {
+        const res = await fetch(URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${jwt}`,
+          },
+        });
+
+        const result = await res.json();
+
+        if (result.status) {
+
+          localStorage.setItem("jwt", result.jwt);
+
+          setTimeout(() => {
+            navigate("/homepage");
+          }, 500);
+
+        } else {
+          alert("Invalid Jwt token.");
+        }
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+  const [signinInfo, setSigninInfo] = useState({
+    "email": "",
+    "password": "",
+  });
+
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (email === 'user@example.com' && password === 'password123') {
-      setOtpVisible(true);
-    } else {
-      alert('Invalid credentials');
-    }
-  };
+  const handleSignin = async (e) => {
+    e.preventDefault();
 
-  const handleOtpSubmit = () => {
-    if (otp === '123456') {
-      alert('Login successful!');
-      navigate('/homepage');
-    } else {
-      alert('Invalid OTP');
+    try {
+
+      const res = await fetch(URL, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(signinInfo)
+      });
+
+      const result = await res.json();
+
+      if (result.status) {
+
+        localStorage.setItem("jwt", result.jwt);
+
+        setTimeout(() => {
+          navigate('/homepage');
+        }, 500);
+
+      } else {
+        alert("Error occurred");
+      }
+
+    } catch (e) {
+      console.error(e);
     }
-  };
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setSigninInfo({
+      ...signinInfo,
+      [name]: value
+    });
+  }
 
   return (
     <div className="form-container">
@@ -32,33 +94,23 @@ export default function Signin() {
       <div className="form-group">
         <input
           type="email"
+          name='email'
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={signinInfo.email}
+          onChange={handleChange}
         />
       </div>
       <div className="form-group">
         <input
           type="password"
+          name='password'
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={signinInfo.password}
+          onChange={handleChange}
         />
       </div>
-      {isOtpVisible && (
-        <div className="form-group">
-          <input
-            type="text"
-            placeholder="Enter OTP"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-          />
-        </div>
-      )}
       <div className="form-group">
-        <button onClick={isOtpVisible ? handleOtpSubmit : handleLogin}>
-          {isOtpVisible ? 'Submit OTP' : 'Login'}
-        </button>
+        <button onClick={handleSignin}>Sign In</button>
       </div>
       <div className="form-links">
         <Link to="/forgot-password">Forgot Password?</Link>
