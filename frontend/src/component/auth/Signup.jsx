@@ -88,7 +88,7 @@ const Signup = () => {
       </div>
       <div className="form-group">
         <select
-          value={setSignupInfo.isAlumni}
+          value={signupInfo.isAlumni}
           name='isAlumni'
           onChange={handleChange}
         >
