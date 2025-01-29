@@ -1,9 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
-import { useNavigate,Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
-
-const Login = () => {
+export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
@@ -22,7 +21,7 @@ const Login = () => {
   const handleOtpSubmit = () => {
     if (otp === '123456') {
       alert('Login successful!');
-      navigate('/dashboard'); // Navigate to a dashboard or home page after successful login
+      navigate('/homepage'); // Navigate to a dashboard or home page after successful login
     } else {
       alert('Invalid OTP');
     }
@@ -70,5 +69,3 @@ const Login = () => {
     </div>
   );
 };
-
-export default Login;

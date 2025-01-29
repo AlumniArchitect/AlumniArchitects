@@ -1,17 +1,16 @@
 import React from 'react';
-import {Router, Route, Routes,Navigate} from 'react-router-dom';
-import Login from './component/Login.jsx';
-import Signup from './component/Signup.jsx';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import Login from './component/auth/Login.jsx';
+import Signup from './component/auth/Signup.jsx';
 
 const App = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Navigate to='/login' />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/" element={<Navigate to='/login' />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="*" element={<Navigate to='/login' />} />
+    </Routes>
   );
 };
 
