@@ -54,6 +54,8 @@ public class AuthController {
         otpStorage.put(user.getEmail(), otp);
         emailService.sendVerificationOtpMail(user.getEmail(), otp);
 
+        userService.saveUser(user);
+
         return ResponseEntity.ok("OTP sent to email. Verify to complete registration.");
     }
 
@@ -82,6 +84,13 @@ public class AuthController {
         if (token != null && JwtProvider.validateToken(token)) {
             return ResponseEntity.ok(new AuthResponse(token, true, "User already authenticated"));
         }
+
+        if(userService.findByEmail(user.getEmail()) == null) {
+            return new ResponseEntity<>(new AuthResponse(token, false, "Signup first."), HttpStatus.NOT_FOUND);
+        }
+
+        user.setVerified(true);
+        userService.saveUser(user);
 
         Authentication auth = authenticate(user.getEmail(), user.getPassword());
         SecurityContextHolder.getContext().setAuthentication(auth);

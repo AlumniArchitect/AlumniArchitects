@@ -21,4 +21,6 @@ public class User {
     private String password;
 
     private USER_TYPE type = USER_TYPE.ALUMNI;
+
+    private boolean isVerified = false;
 }
