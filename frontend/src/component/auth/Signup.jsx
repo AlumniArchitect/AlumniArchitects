@@ -1,23 +1,56 @@
 import React from 'react';
 import { useState } from 'react';
-import { useNavigate,Link} from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import Constant from "../../utils/Constant"
 
 const Signup = () => {
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('student');
+  const [signupInfo, setSignupInfo] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    isAlumni: ""
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setSignupInfo({
+      ...signupInfo,
+      [name]: value
+    });
+  }
+
   const navigate = useNavigate();
 
-  const handleSignup = () => {
-    // Assume form submission validation
-    if (fullName && email && password) {
-      alert('Account created successfully!');
-      navigate('/login'); // Redirect to login page after successful signup
-    } else {
-      alert('Please fill in all fields');
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
+    try {
+      const URL = `${Constant.BASE_URL}/auth/signup`;
+
+      const res = await fetch(URL, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(signupInfo)
+      });
+
+      const result = await res.json();
+
+      if (result.status) {
+
+        setTimeout(() => {
+          navigate('/signin');
+        }, 500);
+
+      } else {
+        alert("Error occurred");
+      }
+
+    } catch (e) {
+      console.error(e);
     }
-  };
+  }
 
   return (
     <div className="form-container">
@@ -25,29 +58,36 @@ const Signup = () => {
       <div className="form-group">
         <input
           type="text"
+          name='fullName'
           placeholder="Full Name"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
+          value={signupInfo.fullName}
+          onChange={handleChange}
         />
       </div>
       <div className="form-group">
         <input
           type="email"
+          name='email'
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={signupInfo.email}
+          onChange={handleChange}
         />
       </div>
       <div className="form-group">
         <input
           type="password"
+          name='password'
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={signupInfo.password}
+          onChange={handleChange}
         />
       </div>
       <div className="form-group">
-        <select value={userType} onChange={(e) => setUserType(e.target.value)}>
+        <select 
+          value={setSignupInfo.isAlumni}
+          name='isAlumni'
+          onChange={handleChange}
+          >
           <option value="student">Student</option>
           <option value="alumni">Alumni</option>
         </select>
@@ -56,7 +96,7 @@ const Signup = () => {
         <button onClick={handleSignup}>Sign Up</button>
       </div>
       <div className="form-links">
-        <Link to="/login">Already have an account? Login</Link>
+        <Link to="/signin">Already have an account? Login</Link>
       </div>
     </div>
   );

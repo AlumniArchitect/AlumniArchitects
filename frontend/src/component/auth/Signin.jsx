@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
-export default function Login() {
+export default function Signin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
@@ -10,7 +10,6 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    // Assume email and password validation
     if (email === 'user@example.com' && password === 'password123') {
       setOtpVisible(true);
     } else {
@@ -21,7 +20,7 @@ export default function Login() {
   const handleOtpSubmit = () => {
     if (otp === '123456') {
       alert('Login successful!');
-      navigate('/homepage'); // Navigate to a dashboard or home page after successful login
+      navigate('/homepage');
     } else {
       alert('Invalid OTP');
     }
