@@ -17,29 +17,29 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EmailService.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
 
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
-    public void sendVerificationEmail(String to, String otp) throws MessagingException {
+    public void sendVerificationOtpMail(String email, String otp) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, "utf-8");
 
         String subject = "Verification OTP";
-        String body = "Your verification code is " + otp + ".";
+        String text = "Your verification code is " + otp + ".";
 
         try {
             mimeMessageHelper.setSubject(subject);
-            mimeMessageHelper.setTo(to);
-            mimeMessageHelper.setText(body, true);
+            mimeMessageHelper.setText(text, true);
+            mimeMessageHelper.setTo(email);
 
             mailSender.send(mimeMessage);
-            LOGGER.info("Sent verification email to " + to);
+            LOGGER.info("OTP sent to: {}", email);
         } catch (Exception e) {
-            LOGGER.error("Failed to send verification email to " + to, e.toString());
-            throw new MessagingException("Error while sending verification email", e);
+            LOGGER.error("Failed to send OTP: {}", e.getMessage(), e);
+            throw new MessagingException("Error while sending OTP email", e);
         }
     }
 }

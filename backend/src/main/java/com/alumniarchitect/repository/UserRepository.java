@@ -1,7 +1,8 @@
-package com.alumniarchitect.repository.user;
+package com.alumniarchitect.repository;
 
-import com.alumniarchitect.entity.user.User;
+import com.alumniarchitect.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {
+    User findByEmail(String email);
 }
