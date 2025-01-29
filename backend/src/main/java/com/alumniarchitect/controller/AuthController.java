@@ -2,6 +2,7 @@ package com.alumniarchitect.controller;
 
 import com.alumniarchitect.entity.User;
 import com.alumniarchitect.repository.UserRepository;
+import com.alumniarchitect.request.AuthRequest;
 import com.alumniarchitect.response.AuthResponse;
 import com.alumniarchitect.service.user.CustomUserDetailService;
 import com.alumniarchitect.service.email.EmailService;
@@ -54,18 +55,25 @@ public class AuthController {
         otpStorage.put(user.getEmail(), otp);
         emailService.sendVerificationOtpMail(user.getEmail(), otp);
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.saveUser(user);
 
         return ResponseEntity.ok("OTP sent to email. Verify to complete registration.");
     }
 
     @PostMapping("/verify-otp")
-    public ResponseEntity<AuthResponse> verifyOtp(@RequestParam String email, @RequestParam String otp, @RequestBody User user) {
+    public ResponseEntity<AuthResponse> verifyOtp(@RequestParam String email, @RequestParam String otp) {
         if (!otpStorage.containsKey(email) || !otpStorage.get(email).equals(otp)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AuthResponse(null, false, "Invalid OTP"));
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User user = userService.findByEmail(email);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AuthResponse(null, false, "User not found"));
+        }
+
+        user.setVerified(true);
         userService.saveUser(user);
         otpStorage.remove(email);
 
@@ -78,21 +86,23 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<AuthResponse> signin(@RequestBody User user, HttpServletRequest request) {
+    public ResponseEntity<AuthResponse> signin(@RequestBody(required = false) AuthRequest authRequest, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
 
         if (token != null && JwtProvider.validateToken(token)) {
             return ResponseEntity.ok(new AuthResponse(token, true, "User already authenticated"));
         }
 
-        if(userService.findByEmail(user.getEmail()) == null) {
-            return new ResponseEntity<>(new AuthResponse(token, false, "Signup first."), HttpStatus.NOT_FOUND);
+        User user = userService.findByEmail(authRequest.getEmail());
+
+        if (user == null || !passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
+            return new ResponseEntity<>(new AuthResponse(null, false, "Invalid email or password"), HttpStatus.UNAUTHORIZED);
         }
 
         user.setVerified(true);
         userService.saveUser(user);
 
-        Authentication auth = authenticate(user.getEmail(), user.getPassword());
+        Authentication auth = authenticate(user.getEmail(), authRequest.getPassword());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         String jwt = JwtProvider.generateToken(auth);
