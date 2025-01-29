@@ -1,0 +1,101 @@
+body{
+  background: linear-gradient(#2A00B7,#42006c);
+}
+
+
+
+
+.login-container {
+    display: flex;
+    
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width:50vw;
+    background-color: #f0f2f5;
+    animation: fadeIn 0.5s ease-in;
+  }
+ 
+  .login-wrapper {
+    animation: slideUp 0.5s ease-in-out;
+  }
+ 
+  .login-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px;
+  }
+ 
+  .login-title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+ 
+  .login-error {
+    color: red;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+ 
+  .login-field {
+    margin-bottom: 15px;
+  }
+ 
+  .login-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+ 
+  .login-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+ 
+  .login-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+ 
+  .login-button:hover {
+    background-color: #0056b3;
+  }
+
+  .Otp{
+    visibility: hidden;
+  }
+  
+ 
+  /* Fade-in animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+ 
+  /* Slide-up animation */
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
