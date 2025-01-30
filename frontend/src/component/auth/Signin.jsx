@@ -99,9 +99,8 @@ export default function Signin() {
         <button onClick={handleSignin}>Sign In</button>
       </div>
       <div className="form-links">
-        <Link 
-          to="/verify-otp" 
-          state={{ isForgotPassword: true }}
+        <Link
+          to="/forgot-password"
         >
           Forgot Password?
         </Link>
