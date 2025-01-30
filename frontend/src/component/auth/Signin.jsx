@@ -1,51 +1,57 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import Constant from "../../utils/Constant";
+import "../../style/auth/SignIn.css";
 
 export default function Signin() {
   const URL = `${Constant.BASE_URL}/auth/signin`;
-
   const navigate = useNavigate();
+  const [signinInfo, setSigninInfo] = useState({
+    email: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       const jwt = localStorage.getItem("jwt");
-      console.log(jwt);
 
       if (jwt) {
-        const res = await fetch(URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${jwt}`,
-          },
-          body: {},
-        });
+        try {
+          const res = await fetch(URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${jwt}`,
+            },
+          });
 
-        const result = await res.json();
+          const result = await res.json();
 
-        if (result.status) {
-
-          navigate("/homepage");
-
-        } else {
-          alert("Invalid Jwt token.");
+          if (result.status) {
+            navigate("/homepage");
+          } else {
+            alert("Invalid JWT token. Please log in again.");
+            localStorage.removeItem("jwt");
+          }
+        } catch (error) {
+          console.error("Error validating JWT:", error);
         }
       }
     };
 
     fetchData();
-  }, []);
-
-
-  const [signinInfo, setSigninInfo] = useState({
-    email: "",
-    password: "",
-  });
+  }, [URL, navigate]);
 
   const handleSignin = async (e) => {
     e.preventDefault();
+
+    if (!signinInfo.email || !signinInfo.password) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const res = await fetch(URL, {
@@ -60,20 +66,20 @@ export default function Signin() {
 
       if (result.status) {
         localStorage.setItem("jwt", result.jwt);
-
-        navigate('/homepage');
-
+        navigate("/homepage");
       } else {
-        alert("Error occurred");
+        alert(result.message || "Error occurred during sign-in.");
       }
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error("Sign-in error:", error);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setSigninInfo({
       ...signinInfo,
       [name]: value,
@@ -81,48 +87,48 @@ export default function Signin() {
   };
 
   return (
-  <div className="form-cotainer--main">
+    <div className="form-container--main">
       <div className="form-container">
-      <h2>Login</h2>
-      <div className="form-group">
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={signinInfo.email}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="form-group">
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={signinInfo.password}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="form-group">
-        <button onClick={handleSignin}>Sign In</button>
-      </div>
-      <div className="form-links">
-        <Link to="/forgot-password">Forgot Password?</Link>
-        <br />
-        <button
-          onClick={() => navigate("/signup")}
-          style={{
-            background: "none",
-            border: "none",
-            color: "blue",
-            cursor: "pointer",
-            textDecoration: "underline",
-          }}
-        >
-          Don't have an account? Sign up
-        </button>
+        <h2>Login</h2>
+        <form onSubmit={handleSignin}>
+          <div className="form-group">
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={signinInfo.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={signinInfo.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <button type="submit" disabled={loading}>
+              {loading ? "Signing In..." : "Sign In"}
+            </button>
+          </div>
+        </form>
+        <div className="form-links">
+          <Link to="/forgot-password">Forgot Password?</Link>
+          <br />
+          <button
+            type="button"
+            onClick={() => navigate("/signup")}
+            className="signup-link"
+          >
+            Don't have an account? Sign up
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-    
   );
-};
+}
