@@ -1,6 +1,6 @@
 FROM maven:3.8.6-openjdk-19-slim AS build
 WORKDIR /backend
-COPY . .
+COPY backend .
 RUN mvn clean package -DskipTests
 
 FROM openjdk:19-slim
