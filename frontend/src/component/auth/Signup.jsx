@@ -7,7 +7,7 @@ const Signup = () => {
     fullName: "",
     email: "",
     password: "",
-    isAlumni: "student"
+    isAlumni: ""
   });
 
   const navigate = useNavigate();
@@ -37,11 +37,14 @@ const Signup = () => {
       });
 
       const result = await res.json();
-
+      console.log(result);
+      
       if (result.status) {
+
         setTimeout(() => {
-          navigate("/verify-otp");
+          Link('/verify-otp');
         }, 500);
+
       } else {
         alert("Error occurred");
       }

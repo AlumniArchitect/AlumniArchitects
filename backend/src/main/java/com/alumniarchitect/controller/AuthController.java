@@ -45,10 +45,11 @@ public class AuthController {
     private final Map<String, String> otpStorage = new HashMap<>();
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody User user) throws Exception {
+    public ResponseEntity<AuthResponse> signup(@RequestBody User user) throws Exception {
 
         if (userService.findByEmail(user.getEmail()) != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is already in use");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AuthResponse(null, false, "Email is already in use"));
         }
 
         String otp = OTPUtils.generateOTP();
@@ -58,8 +59,9 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.saveUser(user);
 
-        return ResponseEntity.ok("OTP sent to email. Verify to complete registration.");
+        return ResponseEntity.ok(new AuthResponse(null, true, "OTP sent to email. Verify to complete registration."));
     }
+
 
     @GetMapping("/verify-otp")
     public ResponseEntity<AuthResponse> verifyOtp(@RequestParam String email, @RequestParam String otp) {

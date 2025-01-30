@@ -2,7 +2,10 @@ package com.alumniarchitect.entity;
 
 import com.alumniarchitect.enums.USER_TYPE;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
 
 @Entity
