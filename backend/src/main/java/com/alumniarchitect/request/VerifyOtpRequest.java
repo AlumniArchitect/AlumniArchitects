@@ -3,8 +3,8 @@ package com.alumniarchitect.request;
 import lombok.Data;
 
 @Data
-public class AuthRequest {
-
+public class VerifyOtpRequest {
     private String email;
-    private String password;
+    private String otp;
+    private String newPassword;
 }

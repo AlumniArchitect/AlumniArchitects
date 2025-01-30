@@ -3,12 +3,14 @@ package com.alumniarchitect.controller;
 import com.alumniarchitect.entity.User;
 import com.alumniarchitect.repository.UserRepository;
 import com.alumniarchitect.request.AuthRequest;
+import com.alumniarchitect.request.VerifyOtpRequest;
 import com.alumniarchitect.response.AuthResponse;
 import com.alumniarchitect.service.user.CustomUserDetailService;
 import com.alumniarchitect.service.email.EmailService;
 import com.alumniarchitect.service.user.UserService;
 import com.alumniarchitect.utils.Jwt.JwtProvider;
 import com.alumniarchitect.utils.OTP.OTPUtils;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,16 +39,12 @@ public class AuthController {
     private CustomUserDetailService customUserDetailService;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private EmailService emailService;
 
     private final Map<String, String> otpStorage = new HashMap<>();
 
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> signup(@RequestBody User user) throws Exception {
-
         if (userService.findByEmail(user.getEmail()) != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new AuthResponse(null, false, "Email is already in use"));
@@ -54,6 +52,7 @@ public class AuthController {
 
         String otp = OTPUtils.generateOTP();
         otpStorage.put(user.getEmail(), otp);
+
         emailService.sendVerificationOtpMail(user.getEmail(), otp);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -62,24 +61,36 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(null, true, "OTP sent to email. Verify to complete registration."));
     }
 
-
-    @GetMapping("/verify-otp")
-    public ResponseEntity<AuthResponse> verifyOtp(@RequestParam String email, @RequestParam String otp) {
-        if (!otpStorage.containsKey(email) || !otpStorage.get(email).equals(otp)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AuthResponse(null, false, "Invalid OTP"));
+    @PostMapping("/verify-otp")
+    public ResponseEntity<AuthResponse> verifyOtp(@RequestBody VerifyOtpRequest verifyOtpRequest) {
+        if (!otpStorage.containsKey(verifyOtpRequest.getEmail()) ||
+                !otpStorage.get(verifyOtpRequest.getEmail()).equals(verifyOtpRequest.getOtp())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AuthResponse(null, false, "Invalid OTP"));
         }
 
-        User user = userService.findByEmail(email);
+        User user = userService.findByEmail(verifyOtpRequest.getEmail());
 
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AuthResponse(null, false, "User not found"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AuthResponse(null, false, "User not found"));
+        }
+
+        if (verifyOtpRequest.getNewPassword() != null) {
+            user.setPassword(passwordEncoder.encode(verifyOtpRequest.getNewPassword()));
+            userService.saveUser(user);
+
+            otpStorage.remove(verifyOtpRequest.getEmail());
+
+            return ResponseEntity.ok(new AuthResponse(null, true, "Password updated successfully"));
         }
 
         user.setVerified(true);
         userService.saveUser(user);
-        otpStorage.remove(email);
+        otpStorage.remove(verifyOtpRequest.getEmail());
 
         Authentication auth = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
+
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         String jwt = JwtProvider.generateToken(auth);
@@ -105,6 +116,7 @@ public class AuthController {
         userService.saveUser(user);
 
         Authentication auth = authenticate(user.getEmail(), authRequest.getPassword());
+
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         String jwt = JwtProvider.generateToken(auth);
@@ -122,10 +134,19 @@ public class AuthController {
         return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
     }
 
+    @PutMapping("/forgot-password")
+    public ResponseEntity<AuthResponse> forgotPassword(@RequestParam String email) throws MessagingException {
 
+        User savedUser = userService.findByEmail(email);
 
-//    @PutMapping("/forgot-password")
-//    public ResponseEntity<AuthResponse> forgotPassword(AuthRequest authRequest) {
-//
-//    }
+        if(savedUser == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AuthResponse(null, false, "User not found"));
+        }
+
+        String otp = OTPUtils.generateOTP();
+        emailService.sendVerificationOtpMail(email, otp);
+        otpStorage.put(email, otp);
+
+        return ResponseEntity.ok(new AuthResponse(null, true, "OTP sent to email. Verify to reset password."));
+    }
 }
