@@ -15,9 +15,13 @@ export default function OtpVerification() {
       const URL = `${Constant.BASE_URL}/auth/verify-otp?` + temp;
 
       const res = await fetch(URL, {
-        method: "GET",
+        method: "POST",
         headers: {
           'Content-Type': 'application/json'
+        },
+        body: {
+          "email": localStorage.getItem("email"),
+          "otp": otp
         }
       });
 
