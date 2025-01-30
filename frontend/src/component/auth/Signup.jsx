@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Constant from "../../utils/Constant"
 
+
 const Signup = () => {
   const [signupInfo, setSignupInfo] = useState({
     "fullName": "",
@@ -43,7 +44,7 @@ const Signup = () => {
       if (result.status) {
         navigate("/verify-otp");
       } else {
-        alert("Error occurred");
+         alert("Error occurred: " + result.message);
       }
 
     } catch (e) {
