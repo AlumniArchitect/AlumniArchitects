@@ -5,10 +5,10 @@ import Constant from "../../utils/Constant"
 
 const Signup = () => {
   const [signupInfo, setSignupInfo] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    isAlumni: ""
+    "fullName": "",
+    "email": "",
+    "password": "",
+    "type": "STUDENT"
   });
 
   const handleChange = (e) => {
@@ -38,13 +38,10 @@ const Signup = () => {
       });
 
       const result = await res.json();
-
+      console.log(result);
+      
       if (result.status) {
-
-        setTimeout(() => {
-          Link('/verify-otp');
-        }, 500);
-
+        navigate("/verify-otp");
       } else {
         alert("Error occurred");
       }

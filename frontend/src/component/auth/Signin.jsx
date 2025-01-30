@@ -11,7 +11,7 @@ export default function Signin() {
     const fetchData = async () => {
       const jwt = localStorage.getItem("jwt");
       console.log(jwt);
-      
+
 
       if (jwt) {
         const res = await fetch(URL, {
@@ -19,9 +19,6 @@ export default function Signin() {
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${jwt}`,
-          },
-          body: {
-            
           }
         });
 
@@ -29,11 +26,7 @@ export default function Signin() {
 
         if (result.status) {
 
-          localStorage.setItem("jwt", result.jwt);
-
-          setTimeout(() => {
-            navigate("/homepage");
-          }, 500);
+          navigate("/homepage");
 
         } else {
           alert("Invalid Jwt token.");
@@ -71,9 +64,7 @@ export default function Signin() {
 
         localStorage.setItem("jwt", result.jwt);
 
-        setTimeout(() => {
-          navigate('/homepage');
-        }, 500);
+        navigate('/homepage');
 
       } else {
         alert("Error occurred");
