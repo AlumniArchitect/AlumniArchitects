@@ -1,7 +1,6 @@
 package com.alumniarchitect.controller;
 
 import com.alumniarchitect.entity.User;
-import com.alumniarchitect.repository.UserRepository;
 import com.alumniarchitect.request.AuthRequest;
 import com.alumniarchitect.request.VerifyOtpRequest;
 import com.alumniarchitect.response.AuthResponse;
