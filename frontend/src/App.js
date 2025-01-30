@@ -4,6 +4,7 @@ import Signin from './component/auth/Signin.jsx';
 import Signup from './component/auth/Signup.jsx';
 import HomePage from './component/HomePage.jsx';
 import OtpVerification from './component/auth/OtpVerification.jsx';
+import ForgotPassword from './component/auth/ForgotPassword.jsx';
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
       <Route path="/verify-otp" element={<OtpVerification />} />
       <Route path="/signin" element={<Signin />} />
       <Route path="/homepage" element={<HomePage />} />
+      <Route path='/forgot-password' element={<ForgotPassword />} />
       <Route path="*" element={<Navigate to='/signin' />} />
     </Routes>
   );
