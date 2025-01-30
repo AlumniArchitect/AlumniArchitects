@@ -1,15 +1,16 @@
-import React from 'react';
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import Constant from "../../utils/Constant"
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import Constant from "../../utils/Constant";
 
 const Signup = () => {
   const [signupInfo, setSignupInfo] = useState({
     fullName: "",
     email: "",
     password: "",
-    isAlumni: ""
+    isAlumni: "student"
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,9 +18,7 @@ const Signup = () => {
       ...signupInfo,
       [name]: value
     });
-  }
-
-  const navigate = useNavigate();
+  };
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -32,7 +31,7 @@ const Signup = () => {
       const res = await fetch(URL, {
         method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(signupInfo)
       });
@@ -40,19 +39,16 @@ const Signup = () => {
       const result = await res.json();
 
       if (result.status) {
-
         setTimeout(() => {
-          Link('/verify-otp');
+          navigate("/verify-otp");
         }, 500);
-
       } else {
         alert("Error occurred");
       }
-
     } catch (e) {
-      console.error(e);
+      console.error("Signup Error:", e);
     }
-  }
+  };
 
   return (
     <div className="form-container">
@@ -60,16 +56,17 @@ const Signup = () => {
       <div className="form-group">
         <input
           type="text"
-          name='fullName'
+          name="fullName"
           placeholder="Full Name"
           value={signupInfo.fullName}
           onChange={handleChange}
+          required
         />
       </div>
       <div className="form-group">
         <input
           type="email"
-          name='email'
+          name="email"
           placeholder="Email"
           value={signupInfo.email}
           onChange={handleChange}
@@ -79,7 +76,7 @@ const Signup = () => {
       <div className="form-group">
         <input
           type="password"
-          name='password'
+          name="password"
           placeholder="Password"
           value={signupInfo.password}
           onChange={handleChange}
@@ -87,11 +84,7 @@ const Signup = () => {
         />
       </div>
       <div className="form-group">
-        <select
-          value={signupInfo.isAlumni}
-          name='isAlumni'
-          onChange={handleChange}
-        >
+        <select name="isAlumni" value={signupInfo.isAlumni} onChange={handleChange}>
           <option value="student">Student</option>
           <option value="alumni">Alumni</option>
         </select>
