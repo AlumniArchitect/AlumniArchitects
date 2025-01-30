@@ -46,4 +46,9 @@ public class UserServiceImpl implements UserService {
 
         throw new Exception("User not found.");
     }
+
+    @Override
+    public void deleteAccount(User user) {
+        userRepository.delete(user);
+    }
 }

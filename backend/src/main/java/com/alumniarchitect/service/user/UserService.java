@@ -12,4 +12,6 @@ public interface UserService {
     User findByJWT(String jwt) throws Exception;
 
     User findById(Long id) throws Exception;
+
+    void deleteAccount(User savedUser);
 }

@@ -1,10 +1,12 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import Constant from "../../utils/Constant";
 
 export default function Signin() {
   const URL = `${Constant.BASE_URL}/auth/signin`;
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,11 +26,9 @@ export default function Signin() {
         const result = await res.json();
 
         if (result.status) {
-          localStorage.setItem("jwt", result.jwt);
 
-          setTimeout(() => {
-            navigate("/homepage");
-          }, 500);
+          navigate("/homepage");
+
         } else {
           alert("Invalid Jwt token.");
         }
@@ -38,12 +38,11 @@ export default function Signin() {
     fetchData();
   }, []);
 
+
   const [signinInfo, setSigninInfo] = useState({
     email: "",
     password: "",
   });
-
-  const navigate = useNavigate();
 
   const handleSignin = async (e) => {
     e.preventDefault();
@@ -62,9 +61,8 @@ export default function Signin() {
       if (result.status) {
         localStorage.setItem("jwt", result.jwt);
 
-        setTimeout(() => {
-          navigate("/homepage");
-        }, 500);
+        navigate('/homepage');
+
       } else {
         alert("Error occurred");
       }
@@ -107,19 +105,7 @@ export default function Signin() {
         <button onClick={handleSignin}>Sign In</button>
       </div>
       <div className="form-links">
-        {/* Instead of using <Link>, using useNavigate for redirection */}
-        <button
-          onClick={() => navigate("/forgot-password")}
-          style={{
-            background: "none",
-            border: "none",
-            color: "blue",
-            cursor: "pointer",
-            textDecoration: "underline",
-          }}
-        >
-          Forgot Password?
-        </button>
+        <Link to="/forgot-password">Forgot Password?</Link>
         <br />
         <button
           onClick={() => navigate("/signup")}
@@ -137,4 +123,4 @@ export default function Signin() {
     </div>
     
   );
-}
+};
