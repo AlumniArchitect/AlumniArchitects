@@ -149,4 +149,17 @@ public class AuthController {
 
         return ResponseEntity.ok(new AuthResponse(null, true, "OTP sent to email. Verify to reset password."));
     }
+
+    @DeleteMapping("/deleteAccount")
+    public ResponseEntity<AuthResponse> deleteAccount(@RequestParam String email) {
+        User savedUser = userService.findByEmail(email);
+
+        if(savedUser == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AuthResponse(null, false, "User not found"));
+        }
+
+        userService.deleteAccount(savedUser);
+
+        return ResponseEntity.ok(new AuthResponse(null, true, "Account deleted successfully"));
+    }
 }
