@@ -53,7 +53,8 @@ const Signup = () => {
   }
 
   return (
-    <div className="form-container">
+    <div className="form-container--main">
+        <div className="form-container">
       <h2>Sign Up</h2>
       <div className="form-group">
         <input
@@ -101,7 +102,10 @@ const Signup = () => {
         <Link to="/signin">Already have an account? Login</Link>
       </div>
     </div>
-  );
+ 
+    </div>
+     );
+  
 };
 
 export default Signup;

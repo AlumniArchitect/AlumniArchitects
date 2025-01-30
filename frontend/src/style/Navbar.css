@@ -1,0 +1,105 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    position: relative;
+  }
+  
+  .profile-section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .p-img img{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+  margin-right: 10px;
+  border: 2px solid white;
+  
+  }
+  
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #444;
+    padding: 5px 10px;
+    border-radius: 20px;
+    width: 40%;
+  }
+  
+  .search-icon {
+    margin-right: 10px;
+  }
+  
+  .search-bar input {
+    border: none;
+    background: none;
+    color: white;
+    outline: none;
+  }
+  
+  
+  .nav-icons {
+    display: flex;
+    align-items: center;
+  }
+  
+  .icon {
+    margin-left: 20px;
+    cursor: pointer;
+  }
+  
+  
+  
+  .dropdown-menu {
+    position: fixed;
+    top: 0;
+    left: 0; 
+    width: 250px; 
+    height: 100vh; 
+    background-color: #222;
+    color: white;
+    padding: 20px;
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+  }
+  
+
+  .dropdown-menu ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .dropdown-menu li {
+    padding: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .dropdown-menu li:hover {
+    background-color: #444;
+  }
+  
+ 
+  .logout {
+    color: red;
+  }
+  
+ 
+  @media (max-width: 768px) {
+    .dropdown-menu {
+      width: 200px;
+    }
+  
+    .p-name {
+      display: none; 
+    }
+  }
