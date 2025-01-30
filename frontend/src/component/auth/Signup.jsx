@@ -42,7 +42,7 @@ const Signup = () => {
       console.log(result);
       
       if (result.status) {
-        navigate("/verify-otp");
+        navigate("/verify-otp", { state: { isForgotPassword: false } });
       } else {
          alert("Error occurred: " + result.message);
       }

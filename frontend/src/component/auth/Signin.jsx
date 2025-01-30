@@ -1,17 +1,17 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import Constant from "../../utils/Constant"
+import Constant from "../../utils/Constant";
 
 export default function Signin() {
-
   const URL = `${Constant.BASE_URL}/auth/signin`;
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       const jwt = localStorage.getItem("jwt");
       console.log(jwt);
-
 
       if (jwt) {
         const res = await fetch(URL, {
@@ -25,9 +25,7 @@ export default function Signin() {
         const result = await res.json();
 
         if (result.status) {
-
           navigate("/homepage");
-
         } else {
           alert("Invalid Jwt token.");
         }
@@ -35,21 +33,17 @@ export default function Signin() {
     };
 
     fetchData();
-  }, []);
-
+  }, [URL, navigate]);
 
   const [signinInfo, setSigninInfo] = useState({
     "email": "",
     "password": "",
   });
 
-  const navigate = useNavigate();
-
   const handleSignin = async (e) => {
     e.preventDefault();
 
     try {
-
       const res = await fetch(URL, {
         method: "POST",
         headers: {
@@ -61,15 +55,11 @@ export default function Signin() {
       const result = await res.json();
 
       if (result.status) {
-
         localStorage.setItem("jwt", result.jwt);
-
         navigate('/homepage');
-
       } else {
         alert("Error occurred");
       }
-
     } catch (e) {
       console.error(e);
     }
@@ -109,10 +99,15 @@ export default function Signin() {
         <button onClick={handleSignin}>Sign In</button>
       </div>
       <div className="form-links">
-        <Link to="/forgot-password">Forgot Password?</Link>
+        <Link 
+          to="/verify-otp" 
+          state={{ isForgotPassword: true }}
+        >
+          Forgot Password?
+        </Link>
         <br />
         <Link to="/signup">Don't have an account? Sign up</Link>
       </div>
     </div>
   );
-};
+}
