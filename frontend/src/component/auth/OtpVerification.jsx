@@ -53,33 +53,35 @@ export default function OtpVerification() {
     <div className="form-container--main">
       <div className="form-container">
         <h2>OTP Verification</h2>
-        <div className="form-group">
-          <input
-            type="text"
-            name="otp"
-            placeholder="Enter OTP"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            required
-          />
-        </div>
-        {isForgotPassword && (
+        <form>
           <div className="form-group">
             <input
-              type="password"
-              name="newPassword"
-              placeholder="New Password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              type="text"
+              name="otp"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
               required
             />
           </div>
-        )}
-        <div className="form-group">
-          <button onClick={handleOnClick} disabled={loading}>
-            {loading ? "Verifying..." : "Verify OTP"}
-          </button>
-        </div>
+          {isForgotPassword && (
+            <div className="form-group">
+              <input
+                type="password"
+                name="newPassword"
+                placeholder="New Password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+              />
+            </div>
+          )}
+          <div className="form-group">
+            <button onClick={handleOnClick} disabled={loading}>
+              {loading ? "Verifying..." : "Verify OTP"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
