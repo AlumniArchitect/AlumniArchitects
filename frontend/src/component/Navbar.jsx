@@ -7,6 +7,7 @@ import {
   FaSignOutAlt,
   FaTrash,
 } from "react-icons/fa";
+import "../style/Navbar.css";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);

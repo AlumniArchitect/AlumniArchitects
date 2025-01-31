@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Constant from "../../utils/Constant";
+import "../../style/auth/OtpVerification.css";
 
 export default function OtpVerification() {
   const navigate = useNavigate();
@@ -10,8 +11,16 @@ export default function OtpVerification() {
   const email = localStorage.getItem("email");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleOnClick = async () => {
+    if (!otp || (isForgotPassword && !newPassword)) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    setLoading(true);
+
     try {
       const URL = `${Constant.BASE_URL}/auth/verify-otp`;
 
@@ -30,37 +39,50 @@ export default function OtpVerification() {
         localStorage.setItem("jwt", result.jwt);
         setTimeout(() => navigate("/signin"), 500);
       } else {
-        alert("Error occurred");
+        alert(result.message || "Error occurred");
       }
     } catch (e) {
-      alert("An error occurred. Check the console.");
       console.error(e);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div id="verify-otp" className="form-group">
-      <input
-        type="text"
-        name="Otp"
-        id="Otp"
-        placeholder="Enter Otp"
-        value={otp}
-        onChange={(e) => setOtp(e.target.value)}
-      />
-
-      {isForgotPassword && (
-        <input
-          type="password"
-          name="password"
-          placeholder="New Password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          required
-        />
-      )}
-
-      <button onClick={handleOnClick}>Verify Otp</button>
+    <div className="form-container--main">
+      <div className="form-container">
+        <h2>OTP Verification</h2>
+        <form>
+          <div className="form-group">
+            <input
+              type="text"
+              name="otp"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              required
+            />
+          </div>
+          {isForgotPassword && (
+            <div className="form-group">
+              <input
+                type="password"
+                name="newPassword"
+                placeholder="New Password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+              />
+            </div>
+          )}
+          <div className="form-group">
+            <button onClick={handleOnClick} disabled={loading}>
+              {loading ? "Verifying..." : "Verify OTP"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
