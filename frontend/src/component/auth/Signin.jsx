@@ -81,7 +81,7 @@ export default function Signin() {
   };
 
   return (
-  <div className="form-cotainer--main">
+  <div className="form-container--main">
       <div className="form-container">
       <h2>Login</h2>
       <div className="form-group">
