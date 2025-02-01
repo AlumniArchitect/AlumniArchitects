@@ -1,4 +1,4 @@
-package com.alumniarchitect.utils.Jwt;
+package com.alumniarchitect.utils.jwt;
 
 public class JwtConstant {
 
