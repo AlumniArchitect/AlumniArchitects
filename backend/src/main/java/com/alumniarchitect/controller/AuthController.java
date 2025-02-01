@@ -53,6 +53,11 @@ public class AuthController {
                     .body(new AuthResponse(null, false, "Email is already in use"));
         }
 
+        if(!EmailService.isValidCollegeEmail(user.getEmail())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AuthResponse(null, false, "Provided email is invalid"));
+        }
+
         String otp = OTPUtils.generateOTP();
         otpStorage.put(user.getEmail(), otp);
 

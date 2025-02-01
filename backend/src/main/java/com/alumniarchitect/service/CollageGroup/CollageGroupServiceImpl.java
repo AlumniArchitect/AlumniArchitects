@@ -17,7 +17,7 @@ public class CollageGroupServiceImpl implements CollageGroupService {
     @Override
     public void groupEmail(String email) {
         try {
-            String collegeName = EmailService.validateAndExtractCollegeName(email);
+            String collegeName = EmailService.extractCollegeName(email);
             CollegeGroup group = collegeGroupRepository.findByCollegeName(collegeName);
 
             if (group == null) {

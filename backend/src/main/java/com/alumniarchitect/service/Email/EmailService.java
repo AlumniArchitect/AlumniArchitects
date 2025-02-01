@@ -46,18 +46,22 @@ public class EmailService {
         }
     }
 
-    public static String validateAndExtractCollegeName(String email) {
+    public static boolean isValidCollegeEmail(String email) {
         String regex = "^[a-zA-Z0-9._%+-]+@(?!gmail\\.com|yahoo\\.com|outlook\\.com)([a-zA-Z0-9.-]+)\\.[a-zA-Z]{2,6}$";
 
         Pattern pattern = Pattern.compile(regex);
+
         Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
 
-        if (matcher.matches()) {
-            String domain = matcher.group(1);
-
-            return domain.split("\\.")[0];
-        } else {
-            return "Invalid email or unsupported domain: " + email;
+    public static String extractCollegeName(String email) {
+        if (!isValidCollegeEmail(email)) {
+            throw new IllegalArgumentException("Invalid email or unsupported domain: " + email);
         }
+
+        String domain = email.split("@")[1];
+
+        return domain.split("\\.")[0];
     }
 }
