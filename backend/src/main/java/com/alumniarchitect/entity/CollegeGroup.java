@@ -13,7 +13,7 @@ import java.util.List;
 @Document(collection = "collegegroup")
 public class CollegeGroup {
     @Id
-    private Long id;
+    private String id;
 
     private String collegeName;
 
