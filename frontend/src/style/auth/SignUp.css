@@ -1,3 +1,15 @@
+.form-container--main {
+  font-family: "Arial", sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+}
+
+
 .form-container {
   background-color: #fff;
   width: 50vw;
@@ -23,6 +35,8 @@
 .form-group {
   width: 100%;
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
 }
 
 .form-group input,
@@ -52,8 +66,10 @@
 }
 
 .form-group button {
-  width: 100%;
-  padding: 12px;
+  width: 60% !important;  /* Set width to 50% */
+  display: block;  /* Ensure it behaves as a block element */
+  margin: 0 auto;  /* Center the button */
+  padding: 5px;
   background-color: #007bff;
   color: #fff;
   border: none;
@@ -62,11 +78,14 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  text-align: center;
 }
 
 .form-group button:hover {
   background-color: #0056b3;
 }
+
+
 
 .form-group button:disabled {
   background-color: #ccc;

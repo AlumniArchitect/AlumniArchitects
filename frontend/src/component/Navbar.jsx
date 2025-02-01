@@ -6,6 +6,7 @@ import {
   FaCog,
   FaSignOutAlt,
   FaTrash,
+  FaCommentDots
 } from "react-icons/fa";
 import "../style/Navbar.css";
 
@@ -97,6 +98,9 @@ const Navbar = () => {
           </div>
         )}
       </div>
+      <button className="chat-button">
+        <FaCommentDots className="chat-icon" />
+      </button>
     </nav>
   );
 };

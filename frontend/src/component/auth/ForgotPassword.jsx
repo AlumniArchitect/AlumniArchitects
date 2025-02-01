@@ -7,6 +7,12 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [error, setError] = useState("");
+
+  const showError = (message) => {
+    setError(message);
+    setTimeout(() => setError(""), 5000);
+  };
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("email");
@@ -17,7 +23,7 @@ const ForgotPassword = () => {
 
   const handleResetPassword = async () => {
     if (!email) {
-      alert("Please enter your email.");
+      showError("Please enter your email.");
       return;
     }
 
@@ -41,7 +47,7 @@ const ForgotPassword = () => {
       }
     } catch (e) {
       console.error(e);
-      alert("An error occurred. Please try again.");
+      showError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -49,6 +55,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="form-container--main">
+    {error && <div className="error-message">{error}</div>}  
       <div className="form-container">
         <h2>Forgot Password</h2>
         <div className="form-group">

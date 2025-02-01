@@ -11,6 +11,12 @@ export default function Signin() {
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const showError = (message) => {
+    setError(message);
+    setTimeout(() => setError(""), 5000);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,11 +37,11 @@ export default function Signin() {
           if (result.status) {
             navigate("/homepage");
           } else {
-            alert("Invalid JWT token. Please log in again.");
+            showError("Invalid JWT token. Please log in again.");
             localStorage.removeItem("jwt");
           }
         } catch (error) {
-          console.error("Error validating JWT:", error);
+          showError("Error validating JWT:", error);
         }
       }
     };
@@ -47,7 +53,7 @@ export default function Signin() {
     e.preventDefault();
 
     if (!signinInfo.email || !signinInfo.password) {
-      alert("Please fill in all fields.");
+      showError("Please fill in all fields.");
       return;
     }
 
@@ -68,11 +74,11 @@ export default function Signin() {
         localStorage.setItem("jwt", result.jwt);
         navigate("/homepage");
       } else {
-        alert(result.message || "Error occurred during sign-in.");
+        showError(result.message || "Error occurred during sign-in.");
       }
     } catch (error) {
       console.error("Sign-in error:", error);
-      alert("An error occurred. Please try again.");
+      showError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -88,6 +94,7 @@ export default function Signin() {
 
   return (
     <div className="form-container--main">
+      {error && <div className="error-message">{error}</div>}
       <div className="form-container">
         <h2>Login</h2>
         <form onSubmit={handleSignin}>
