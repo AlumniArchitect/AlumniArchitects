@@ -1,6 +1,6 @@
 package com.alumniarchitect.config;
 
-import com.alumniarchitect.utils.Jwt.JwtTokenValidator;
+import com.alumniarchitect.utils.jwt.JwtTokenValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

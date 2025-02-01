@@ -4,11 +4,12 @@ import com.alumniarchitect.entity.User;
 import com.alumniarchitect.request.AuthRequest;
 import com.alumniarchitect.request.VerifyOtpRequest;
 import com.alumniarchitect.response.AuthResponse;
-import com.alumniarchitect.service.user.CustomUserDetailService;
-import com.alumniarchitect.service.email.EmailService;
-import com.alumniarchitect.service.user.UserService;
-import com.alumniarchitect.utils.Jwt.JwtProvider;
-import com.alumniarchitect.utils.OTP.OTPUtils;
+import com.alumniarchitect.service.CollageGroup.CollageGroupService;
+import com.alumniarchitect.service.User.CustomUserDetailService;
+import com.alumniarchitect.service.Email.EmailService;
+import com.alumniarchitect.service.User.UserService;
+import com.alumniarchitect.utils.jwt.JwtProvider;
+import com.alumniarchitect.utils.otp.OTPUtils;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class AuthController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private CollageGroupService collageGroupService;
+
     private final Map<String, String> otpStorage = new HashMap<>();
 
     @PostMapping("/signup")
@@ -62,37 +66,55 @@ public class AuthController {
 
     @PostMapping("/verify-otp")
     public ResponseEntity<AuthResponse> verifyOtp(@RequestBody VerifyOtpRequest verifyOtpRequest) {
-        if (!otpStorage.containsKey(verifyOtpRequest.getEmail()) ||
-                !otpStorage.get(verifyOtpRequest.getEmail()).equals(verifyOtpRequest.getOtp())) {
+        if (!validateOtp(verifyOtpRequest.getEmail(), verifyOtpRequest.getOtp())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new AuthResponse(null, false, "Invalid OTP"));
         }
 
         User user = userService.findByEmail(verifyOtpRequest.getEmail());
-
         if (user == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new AuthResponse(null, false, "User not found"));
         }
 
         if (verifyOtpRequest.getNewPassword() != null) {
-            user.setPassword(passwordEncoder.encode(verifyOtpRequest.getNewPassword()));
-            userService.saveUser(user);
-
-            otpStorage.remove(verifyOtpRequest.getEmail());
-
-            return ResponseEntity.ok(new AuthResponse(null, true, "Password updated successfully"));
+            return handlePasswordUpdate(user, verifyOtpRequest.getNewPassword());
+        } else {
+            return handleUserVerification(user, verifyOtpRequest.getEmail());
         }
+    }
 
+    private boolean validateOtp(String email, String otp) {
+        boolean res = otpStorage.containsKey(email) && otpStorage.get(email).equals(otp);
+
+        otpStorage.remove(email);
+
+        return res;
+    }
+
+    private ResponseEntity<AuthResponse> handlePasswordUpdate(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userService.saveUser(user);
+        otpStorage.remove(user.getEmail());
+
+        return ResponseEntity.ok(new AuthResponse(null, true, "Password updated successfully"));
+    }
+
+    private ResponseEntity<AuthResponse> handleUserVerification(User user, String email) {
         user.setVerified(true);
         userService.saveUser(user);
-        otpStorage.remove(verifyOtpRequest.getEmail());
+        otpStorage.remove(email);
 
         Authentication auth = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
-
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         String jwt = JwtProvider.generateToken(auth);
+
+        try {
+            collageGroupService.groupEmail(email);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new AuthResponse(null, false, e.getMessage()));
+        }
 
         return ResponseEntity.ok(new AuthResponse(jwt, true, "Registration successful"));
     }

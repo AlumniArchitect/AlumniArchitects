@@ -1,4 +1,4 @@
-package com.alumniarchitect.service.email;
+package com.alumniarchitect.service.Email;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Slf4j
@@ -40,6 +43,21 @@ public class EmailService {
         } catch (Exception e) {
             LOGGER.error("Failed to send OTP: {}", e.getMessage(), e);
             throw new MessagingException("Error while sending OTP email", e);
+        }
+    }
+
+    public static String validateAndExtractCollegeName(String email) {
+        String regex = "^[a-zA-Z0-9._%+-]+@(?!gmail\\.com|yahoo\\.com|outlook\\.com)([a-zA-Z0-9.-]+)\\.[a-zA-Z]{2,6}$";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(email);
+
+        if (matcher.matches()) {
+            String domain = matcher.group(1);
+
+            return domain.split("\\.")[0];
+        } else {
+            return "Invalid email or unsupported domain: " + email;
         }
     }
 }

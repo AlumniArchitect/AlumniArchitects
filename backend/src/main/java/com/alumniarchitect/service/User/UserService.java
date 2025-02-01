@@ -1,4 +1,4 @@
-package com.alumniarchitect.service.user;
+package com.alumniarchitect.service.User;
 
 import com.alumniarchitect.entity.User;
 import org.springframework.stereotype.Component;

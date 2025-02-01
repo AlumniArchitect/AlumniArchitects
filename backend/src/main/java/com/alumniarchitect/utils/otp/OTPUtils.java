@@ -1,4 +1,4 @@
-package com.alumniarchitect.utils.OTP;
+package com.alumniarchitect.utils.otp;
 
 import java.util.Random;
 
