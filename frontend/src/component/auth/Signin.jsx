@@ -74,10 +74,10 @@ export default function Signin() {
 
         localStorage.setItem("email", signinInfo.email);
         localStorage.setItem("jwt", result.jwt);
-        
+
         navigate("/homepage");
       } else {
-        showError(result.message || "Error occurred during sign-in.");
+        showError("Error : " + result.message);
       }
     } catch (error) {
       console.error("Sign-in error:", error);
