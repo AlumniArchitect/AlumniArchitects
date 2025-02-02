@@ -71,7 +71,10 @@ export default function Signin() {
       const result = await res.json();
 
       if (result.status) {
+
+        localStorage.setItem("email", signinInfo.email);
         localStorage.setItem("jwt", result.jwt);
+        
         navigate("/homepage");
       } else {
         showError(result.message || "Error occurred during sign-in.");
