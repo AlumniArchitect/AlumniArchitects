@@ -3,6 +3,8 @@ package com.alumniarchitect.service.User;
 import com.alumniarchitect.entity.User;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public interface UserService {
     User saveUser(User user);
@@ -14,4 +16,6 @@ public interface UserService {
     User findById(Long id) throws Exception;
 
     void deleteAccount(User savedUser);
+
+    List<User> findAll();
 }

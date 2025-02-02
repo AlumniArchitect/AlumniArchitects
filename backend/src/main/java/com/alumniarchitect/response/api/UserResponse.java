@@ -1,5 +1,6 @@
-package com.alumniarchitect.response;
+package com.alumniarchitect.response.api;
 
+import com.alumniarchitect.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,9 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponse {
+public class UserResponse {
 
-    private String jwt;
     private boolean status;
     private String message;
+    private User user;
 }

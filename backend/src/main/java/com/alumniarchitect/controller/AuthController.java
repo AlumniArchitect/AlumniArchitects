@@ -3,7 +3,7 @@ package com.alumniarchitect.controller;
 import com.alumniarchitect.entity.User;
 import com.alumniarchitect.request.AuthRequest;
 import com.alumniarchitect.request.VerifyOtpRequest;
-import com.alumniarchitect.response.AuthResponse;
+import com.alumniarchitect.response.auth.AuthResponse;
 import com.alumniarchitect.service.CollageGroup.CollageGroupService;
 import com.alumniarchitect.service.User.CustomUserDetailService;
 import com.alumniarchitect.service.Email.EmailService;
