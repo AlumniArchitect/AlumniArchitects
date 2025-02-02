@@ -1,4 +1,4 @@
-package com.alumniarchitect.request;
+package com.alumniarchitect.request.auth;
 
 import lombok.Data;
 

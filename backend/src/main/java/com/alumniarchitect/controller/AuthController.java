@@ -1,10 +1,10 @@
 package com.alumniarchitect.controller;
 
 import com.alumniarchitect.entity.User;
-import com.alumniarchitect.request.AuthRequest;
-import com.alumniarchitect.request.VerifyOtpRequest;
+import com.alumniarchitect.request.auth.AuthRequest;
+import com.alumniarchitect.request.verificaton.VerifyOtpRequest;
 import com.alumniarchitect.response.auth.AuthResponse;
-import com.alumniarchitect.service.CollageGroup.CollageGroupService;
+import com.alumniarchitect.service.CollageGroup.CollegeGroupService;
 import com.alumniarchitect.service.User.CustomUserDetailService;
 import com.alumniarchitect.service.Email.EmailService;
 import com.alumniarchitect.service.User.UserService;
@@ -42,7 +42,7 @@ public class AuthController {
     private EmailService emailService;
 
     @Autowired
-    private CollageGroupService collageGroupService;
+    private CollegeGroupService collegeGroupService;
 
     private final Map<String, String> otpStorage = new HashMap<>();
 
@@ -116,7 +116,7 @@ public class AuthController {
         String jwt = JwtProvider.generateToken(auth);
 
         try {
-            collageGroupService.groupEmail(email);
+            collegeGroupService.groupEmail(email);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new AuthResponse(null, false, e.getMessage()));
         }

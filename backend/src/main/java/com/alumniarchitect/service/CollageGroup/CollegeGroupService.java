@@ -4,9 +4,11 @@ import com.alumniarchitect.entity.CollegeGroup;
 
 import java.util.List;
 
-public interface CollageGroupService {
+public interface CollegeGroupService {
 
     void groupEmail(String email);
 
-    List<CollegeGroup> getAllGroups();
+    List<CollegeGroup> getAllCollegeGroups();
+
+    CollegeGroup getCollegeGroupsByName(String collageName);
 }

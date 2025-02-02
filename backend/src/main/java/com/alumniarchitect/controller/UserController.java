@@ -23,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<UserResponse> getUserProfile(@RequestParam String email) throws Exception {
+    public ResponseEntity<UserResponse> getUserProfile(@RequestParam String email) {
         User user = userService.findByEmail(email);
 
         if(user == null) {
@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUserProfile() throws Exception {
+    public ResponseEntity<List<User>> getAllUser() {
         List<User> allUser = userService.findAll();
 
         if(allUser == null) {

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class CollageGroupServiceImpl implements CollageGroupService {
+public class CollegeGroupServiceImpl implements CollegeGroupService {
 
     @Autowired
     private CollegeGroupRepository collegeGroupRepository;
@@ -35,7 +35,12 @@ public class CollageGroupServiceImpl implements CollageGroupService {
     }
 
     @Override
-    public List<CollegeGroup> getAllGroups() {
+    public List<CollegeGroup> getAllCollegeGroups() {
         return collegeGroupRepository.findAll();
+    }
+
+    @Override
+    public CollegeGroup getCollegeGroupsByName(String collageName) {
+        return collegeGroupRepository.findByCollegeName(collageName);
     }
 }
