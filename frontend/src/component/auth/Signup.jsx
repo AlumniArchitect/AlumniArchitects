@@ -48,6 +48,8 @@ const Signup = () => {
       });
 
       const result = await res.json();
+      console.log(result);
+      
 
       if (result.status) {
         localStorage.setItem("email", signupInfo.email);
