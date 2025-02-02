@@ -80,10 +80,10 @@ export default function Signin() {
         showError("Error : " + result.message);
       }
     } catch (error) {
-      showError("Error : ", error);
+      showError(`Error: ${error.message || "Some error occured."}`);
     } finally {
       setLoading(false);
-    }
+    }    
   };
 
   const handleChange = (e) => {
