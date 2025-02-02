@@ -80,8 +80,7 @@ export default function Signin() {
         showError("Error : " + result.message);
       }
     } catch (error) {
-      console.error("Sign-in error:", error);
-      showError("An error occurred. Please try again.");
+      showError("Error : ", error);
     } finally {
       setLoading(false);
     }
