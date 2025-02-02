@@ -50,8 +50,8 @@ public class EmailService {
         String regex = "^[a-zA-Z0-9._%+-]+@(?!gmail\\.com|yahoo\\.com|outlook\\.com)([a-zA-Z0-9.-]+)\\.[a-zA-Z]{2,6}$";
 
         Pattern pattern = Pattern.compile(regex);
-
         Matcher matcher = pattern.matcher(email);
+
         return matcher.matches();
     }
 
