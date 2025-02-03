@@ -83,7 +83,7 @@ export default function Signin() {
       showError(`Error: ${error.message || "Some error occured."}`);
     } finally {
       setLoading(false);
-    }    
+    }
   };
 
   const handleChange = (e) => {

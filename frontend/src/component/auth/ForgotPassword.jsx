@@ -34,7 +34,9 @@ const ForgotPassword = () => {
 
       const res = await fetch(URL, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json" 
+        },
       });
 
       const result = await res.json();
