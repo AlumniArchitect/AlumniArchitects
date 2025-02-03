@@ -26,6 +26,8 @@ export default function Chatbot() {
     setInput("");
     
     setIsTyping(true);
+
+    // add backend api
     setTimeout(() => {
       const botReply = { text: botResponses(input), sender: "bot" };
       setMessages((prev) => [...prev, botReply]);
