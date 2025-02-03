@@ -2,15 +2,22 @@ package com.alumniarchitect.service.UserProfile;
 
 import com.alumniarchitect.entity.UserProfile;
 import com.alumniarchitect.repository.UserProfileRepository;
+import com.cloudinary.Cloudinary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
 
     @Autowired
     private UserProfileRepository userProfileRepository;
+
+    @Autowired
+    private Cloudinary cloudinary;
 
     @Override
     public UserProfile findByEmail(String email) {
@@ -52,5 +59,15 @@ public class UserProfileServiceImpl implements UserProfileService {
         }
 
         return userProfileRepository.save(existingProfile);
+    }
+
+    @Override
+    public Map uploadImage(MultipartFile file) {
+
+        try {
+            return this.cloudinary.uploader().upload(file.getBytes(), Map.of());
+        } catch (Exception e) {
+            throw new RuntimeException("Image uploading failed. Error : " + e.getMessage());
+        }
     }
 }

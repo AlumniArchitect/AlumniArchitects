@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/userProfile")
 public class UserProfileController {
@@ -42,13 +44,29 @@ public class UserProfileController {
         return new ResponseEntity<>(new UserProfileResponse(true, "Profile Found.", userProfile), HttpStatus.OK);
     }
 
-//    @PostMapping("/uploadProfileImage/{email}")
-//    public ResponseEntity<UserProfileResponse> uploadProfileImage(@PathVariable String email, @RequestBody MultipartFile file) {
-//
-//    }
-//
-//    @GetMapping("/getProfileImage/{email}")
-//    public ResponseEntity<UserProfileResponse> uploadProfileImage(@PathVariable String email) {
-//
-//    }
+    @PostMapping("/uploadProfileImage/{email}")
+    public ResponseEntity<String> uploadProfileImage(@PathVariable String email, @RequestParam("image") MultipartFile file) {
+        UserProfile userProfile = userProfileService.findByEmail(email);
+
+        if (userProfile == null) {
+            userProfile = new UserProfile();
+            userProfile.setEmail(email);
+        }
+
+        Map data = this.userProfileService.uploadImage(file);
+        userProfile.setProfileImageUrl(data.get("secure_url").toString());
+        userProfileService.createOrUpdateUserProfile(userProfile);
+
+        return new ResponseEntity<>(data.toString(), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/getProfileImage/{email}")
+    public ResponseEntity<String> uploadProfileImage(@PathVariable String email) {
+        if(userProfileService.findByEmail(email) == null) {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+
+        UserProfile userProfile = userProfileService.findByEmail(email);
+        return new ResponseEntity<>(userProfile.getProfileImageUrl(), HttpStatus.OK);
+    }
 }
