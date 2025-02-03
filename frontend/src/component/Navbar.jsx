@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaSearch,
   FaEnvelope,
@@ -11,13 +11,15 @@ import {
 import { useNavigate } from "react-router-dom";
 import "../style/Navbar.css";
 import Constant from "../utils/Constant.js";
+import defaultProfileImage from "./assets/userLogo.png";
 
-const Navbar = () => {
+export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [userProfile, setUserProfile] = useState({ name: "", profileImageUrl: "" });
+  const [userProfile, setUserProfile] = useState({
+    name: "",
+    profileImageUrl: defaultProfileImage
+  });
   const [error, setError] = useState("");
-  const menuRef = useRef(null);
-  const timeoutId = useRef(null);
   const navigate = useNavigate();
   const email = localStorage.getItem("email");
   const jwt = localStorage.getItem("jwt");
@@ -29,14 +31,6 @@ const Navbar = () => {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
-    resetAutoCloseTimer();
-  };
-
-  const resetAutoCloseTimer = () => {
-    clearTimeout(timeoutId.current);
-    timeoutId.current = setTimeout(() => {
-      setMenuOpen(false);
-    }, 10000);
   };
 
   useEffect(() => {
@@ -74,7 +68,7 @@ const Navbar = () => {
         if (!res.ok) throw new Error("Failed to fetch user profile image");
 
         const data = await res.json();
-        if (data.status) {          
+        if (data.status && data.userProfile.profileImageUrl) {
           setUserProfile((prev) => ({ ...prev, profileImageUrl: data.userProfile.profileImageUrl }));
         } else {
           showError("User image not found");
@@ -88,31 +82,39 @@ const Navbar = () => {
       fetchUserName();
       fetchUserProfileImage();
     }
-    
   }, [email, jwt]);
 
   useEffect(() => {
-    if (menuOpen) {
-      resetAutoCloseTimer();
-    }
-    return () => clearTimeout(timeoutId.current);
-  }, [menuOpen]);
+    const handleClickOutside = (event) => {
+      const isMenu = event.target.closest(".dropdown-menu");
+      const isProfileImage = event.target.closest(".profile-section");
+      const isButton = event.target.closest("button, li");
 
-  const handleLogout = (event) => {
-    event.stopPropagation();
+      if (!isMenu && !isProfileImage) {
+        setMenuOpen(false);
+      } else if (isMenu && !isButton) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = () => {
     localStorage.removeItem("jwt");
-    setTimeout(() => {
-      navigate("/signin");
-    }, 100);
+    navigate("/signin");
   };
 
   return (
     <nav>
       {error && <div className="error-message">{error}</div>}
       <div className="navbar">
-        <div className="profile-section" onClick={toggleMenu} ref={menuRef}>
+        <div className="profile-section" onClick={toggleMenu}>
           <div className="p-img">
-            <img src={userProfile.profileImageUrl} alt="Profile" />
+            <img src={userProfile.profileImageUrl || defaultProfileImage} alt="Profile" />
           </div>
           <div className="p-name">{userProfile.name || "USERNAME"}</div>
         </div>
@@ -128,6 +130,12 @@ const Navbar = () => {
 
         {menuOpen && (
           <div className="dropdown-menu">
+            <div className="dropdown-profile">
+              <div className="p-img">
+                <img src={userProfile.profileImageUrl || defaultProfileImage} alt="Profile" />
+              </div>
+              <div className="p-name">{userProfile.name || "USERNAME"}</div>
+            </div>
             <ul>
               <li>
                 <FaUserCircle /> &nbsp; Profile
@@ -158,5 +166,3 @@ const Navbar = () => {
     </nav>
   );
 };
-
-export default Navbar;

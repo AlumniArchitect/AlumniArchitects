@@ -2,8 +2,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #0056b3; /* Blue background */
+  padding: 5px 20px;
+  background-color: #0056b3;
   color: white;
   position: relative;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -17,11 +17,11 @@
 }
 
 .p-img img {
-  height: 50px;
-  width: 50px;
+  height: 55px;
+  width: 55px;
   border-radius: 50%;
   margin-right: 10px;
-  border: 2px solid white;
+  border: 2px solid transparent;
 }
 
 .search-bar {
