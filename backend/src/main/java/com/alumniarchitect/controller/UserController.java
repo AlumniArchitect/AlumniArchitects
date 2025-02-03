@@ -22,8 +22,8 @@ public class UserController {
         return "Server Running";
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<UserResponse> getUserProfile(@RequestParam String email) {
+    @GetMapping("/user/{email}")
+    public ResponseEntity<UserResponse> getUserProfile(@PathVariable String email) {
         User user = userService.findByEmail(email);
 
         if(user == null) {
