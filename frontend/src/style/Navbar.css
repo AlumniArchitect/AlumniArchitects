@@ -24,10 +24,14 @@
   border: 2px solid transparent;
 }
 
+.p-name{
+  font-size: 20px;
+}
+
 .search-bar {
   display: flex;
   align-items: center;
-  background-color: #ffffff; /* Darker blue */
+  background-color: #ffffff; 
   padding: 5px 10px;
   border-radius: 20px;
   width: 40%;
@@ -59,7 +63,7 @@
 }
 
 .icon:hover {
-  color: #d9e6ff; /* Light blue */
+  color: #d9e6ff;
 }
 
 /* Dropdown Menu */
@@ -69,8 +73,8 @@
   left: 0;
   width: 250px;
   height: 100vh;
-  background-color: #ffffff; /* White background */
-  color: #333; /* Dark gray text */
+  background-color: #ffffff;
+  color: #333;
   padding: 20px;
   box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease-in-out;
@@ -88,15 +92,13 @@
   display: flex;
   align-items: center;
   font-weight: 500;
-  color: #333; /* Dark gray text */
+  color: #333;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  /* transition: background-color , color 0.3s ease; */
 }
 
-/* Hover Effect */
 .dropdown-menu li:hover {
-  background-color: #0056b3; /* Blue background */
-  color: #ffffff; /* White text */
+  background-color: #0056b3;
+  color: #ffffff;
 }
 
 /* Logout Button */
