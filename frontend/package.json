@@ -6,6 +6,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "cra-template": "1.2.0",
     "font-awesome-icons": "^1.6.0",
+    "lucide-react": "^0.474.0",
     "node": "^18.20.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

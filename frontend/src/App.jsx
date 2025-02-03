@@ -15,7 +15,6 @@ const App = () => {
       <Route path="/signin" element={<Signin />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/homepage" element={<HomePage />} />
-      <Route path='/forgot-password' element={<ForgotPassword />} />
       <Route path="*" element={<Navigate to='/signin' />} />
     </Routes>
   );

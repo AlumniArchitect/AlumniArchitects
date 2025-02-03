@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   FaSearch,
   FaEnvelope,
@@ -12,17 +12,20 @@ import { useNavigate } from "react-router-dom";
 import "../style/Navbar.css";
 import Constant from "../utils/Constant.js";
 import defaultProfileImage from "./assets/userLogo.png";
+import Chatbot from "./ChatBot.jsx";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userProfile, setUserProfile] = useState({
     name: "",
-    profileImageUrl: defaultProfileImage
+    profileImageUrl: defaultProfileImage,
   });
+  const [visible, setVisible] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const email = localStorage.getItem("email");
   const jwt = localStorage.getItem("jwt");
+  const menuRef = useRef(null);
 
   const showError = (message) => {
     setError(message);
@@ -31,6 +34,15 @@ export default function Navbar() {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const handleChatBot = () => {
+    setVisible(!visible);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("jwt");
+    navigate("/signin");
   };
 
   useEffect(() => {
@@ -69,7 +81,10 @@ export default function Navbar() {
 
         const data = await res.json();
         if (data.status && data.userProfile.profileImageUrl) {
-          setUserProfile((prev) => ({ ...prev, profileImageUrl: data.userProfile.profileImageUrl }));
+          setUserProfile((prev) => ({
+            ...prev,
+            profileImageUrl: data.userProfile.profileImageUrl,
+          }));
         } else {
           showError("User image not found");
         }
@@ -82,31 +97,19 @@ export default function Navbar() {
       fetchUserName();
       fetchUserProfileImage();
     }
-  }, [email, jwt]);
 
-  useEffect(() => {
     const handleClickOutside = (event) => {
-      const isMenu = event.target.closest(".dropdown-menu");
-      const isProfileImage = event.target.closest(".profile-section");
-      const isButton = event.target.closest("button, li");
-
-      if (!isMenu && !isProfileImage) {
-        setMenuOpen(false);
-      } else if (isMenu && !isButton) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
         setMenuOpen(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("jwt");
-    navigate("/signin");
-  };
+  }, [email, jwt]);
 
   return (
     <nav>
@@ -114,7 +117,10 @@ export default function Navbar() {
       <div className="navbar">
         <div className="profile-section" onClick={toggleMenu}>
           <div className="p-img">
-            <img src={userProfile.profileImageUrl || defaultProfileImage} alt="Profile" />
+            <img
+              src={userProfile.profileImageUrl || defaultProfileImage}
+              alt="Profile"
+            />
           </div>
           <div className="p-name">{userProfile.name || "USERNAME"}</div>
         </div>
@@ -129,10 +135,13 @@ export default function Navbar() {
         </div>
 
         {menuOpen && (
-          <div className="dropdown-menu">
+          <div ref={menuRef} className="dropdown-menu">
             <div className="dropdown-profile">
               <div className="p-img">
-                <img src={userProfile.profileImageUrl || defaultProfileImage} alt="Profile" />
+                <img
+                  src={userProfile.profileImageUrl || defaultProfileImage}
+                  alt="Profile"
+                />
               </div>
               <div className="p-name">{userProfile.name || "USERNAME"}</div>
             </div>
@@ -160,9 +169,12 @@ export default function Navbar() {
           </div>
         )}
       </div>
-      <button className="chat-button">
+
+      <button className="chat-button" onClick={handleChatBot}>
         <FaCommentDots className="chat-icon" />
       </button>
+
+      {visible && <Chatbot />}
     </nav>
   );
-};
+}
