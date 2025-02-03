@@ -88,6 +88,7 @@ const Navbar = () => {
       fetchUserName();
       fetchUserProfileImage();
     }
+    
   }, [email, jwt]);
 
   useEffect(() => {
