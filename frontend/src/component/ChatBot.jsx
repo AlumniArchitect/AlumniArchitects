@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Send } from "lucide-react";
 import "../style/ChatBot.css";
 
-const Chatbot = () => {
+export default function Chatbot() {
   const [messages, setMessages] = useState([
     { text: "Hello! How can I assist you today?", sender: "bot" },
   ]);
@@ -46,5 +46,3 @@ const Chatbot = () => {
     </div>
   );
 };
-
-export default Chatbot;
