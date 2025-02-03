@@ -61,7 +61,7 @@ public class UserProfileController {
     }
 
     @GetMapping("/getProfileImage/{email}")
-    public ResponseEntity<String> uploadProfileImage(@PathVariable String email) {
+    public ResponseEntity<String> getProfileImage(@PathVariable String email) {
         if(userProfileService.findByEmail(email) == null) {
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
