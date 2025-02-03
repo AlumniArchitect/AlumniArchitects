@@ -6,40 +6,27 @@ import {
   FaCog,
   FaSignOutAlt,
   FaTrash,
+  FaCommentDots
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import "../style/Navbar.css";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   let timeoutId = useRef(null);
-
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
     resetAutoCloseTimer();
   };
 
- 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenuOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-
   const resetAutoCloseTimer = () => {
     clearTimeout(timeoutId.current);
     timeoutId.current = setTimeout(() => {
       setMenuOpen(false);
-    }, 10000); 
+    }, 10000);
   };
 
   useEffect(() => {
@@ -48,6 +35,16 @@ const Navbar = () => {
     }
     return () => clearTimeout(timeoutId.current);
   }, [menuOpen]);
+
+  const handleLogout = (event) => {
+    event.stopPropagation();
+
+    localStorage.removeItem("jwt");
+    
+    setTimeout(() => {
+      navigate("/signin");
+    }, 100);
+  };
 
   return (
     <nav>
@@ -68,7 +65,6 @@ const Navbar = () => {
           <FaEnvelope className="icon" />
         </div>
 
-        
         {menuOpen && (
           <div className="dropdown-menu">
             <ul>
@@ -85,7 +81,7 @@ const Navbar = () => {
               <li>
                 <FaCog /> &nbsp; Settings
               </li>
-              <li className="logout">
+              <li onClick={handleLogout} className="logout">
                 <FaSignOutAlt />
                 &nbsp; Logout
               </li>
@@ -97,6 +93,9 @@ const Navbar = () => {
           </div>
         )}
       </div>
+      <button className="chat-button">
+        <FaCommentDots className="chat-icon" />
+      </button>
     </nav>
   );
 };

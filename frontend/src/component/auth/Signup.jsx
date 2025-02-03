@@ -12,6 +12,12 @@ const Signup = () => {
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [error, setError] = useState("");
+
+  const showError = (message) => {
+    setError(message);
+    setTimeout(() => setError(""), 5000);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,7 +31,7 @@ const Signup = () => {
     e.preventDefault();
 
     if (!signupInfo.fullName || !signupInfo.email || !signupInfo.password) {
-      alert("Please fill in all fields.");
+      showError("Please fill in all fields.");
       return;
     }
 
@@ -42,74 +48,79 @@ const Signup = () => {
       });
 
       const result = await res.json();
+      console.log(result);
+      
 
       if (result.status) {
         localStorage.setItem("email", signupInfo.email);
         navigate("/verify-otp", { state: { isForgotPassword: false } });
       } else {
-        alert("Error occurred: " + result.message);
+        showError("Error occurred: " + result.message);
       }
     } catch (e) {
       console.error(e);
-      alert("An error occurred. Please try again.");
+      showError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="form-container">
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSignup}>
-        <div className="form-group">
-          <input
-            type="text"
-            name="fullName"
-            placeholder="Full Name"
-            value={signupInfo.fullName}
-            onChange={handleChange}
-            required
-          />
+    <div className="form-container--main">
+      {error && <div className="error-message">{error}</div>}
+      <div className="form-container">
+        <h2>Sign Up</h2>
+        <form onSubmit={handleSignup}>
+          <div className="form-group">
+            <input
+              type="text"
+              name="fullName"
+              placeholder="Full Name"
+              value={signupInfo.fullName}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={signupInfo.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={signupInfo.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <select
+              name="type"
+              value={signupInfo.type}
+              onChange={handleChange}
+              required
+            >
+              <option value="STUDENT">Student</option>
+              <option value="ALUMNI">Alumni</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <button type="submit" disabled={loading} >
+              {loading ? "Signing Up..." : "Sign Up"}
+            </button>
+          </div>
+        </form>
+        <div className="form-links">
+          <Link to="/signin">Already have an account? Login</Link>
         </div>
-        <div className="form-group">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={signupInfo.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={signupInfo.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <select
-            name="type"
-            value={signupInfo.type}
-            onChange={handleChange}
-            required
-          >
-            <option value="STUDENT">Student</option>
-            <option value="ALUMNI">Alumni</option>
-          </select>
-        </div>
-        <div className="form-group">
-          <button type="submit" disabled={loading}>
-            {loading ? "Signing Up..." : "Sign Up"}
-          </button>
-        </div>
-      </form>
-      <div className="form-links">
-        <Link to="/signin">Already have an account? Login</Link>
       </div>
     </div>
   );
