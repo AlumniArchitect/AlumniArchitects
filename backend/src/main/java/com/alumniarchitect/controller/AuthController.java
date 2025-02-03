@@ -102,7 +102,12 @@ public class AuthController {
         userService.saveUser(user);
         otpStorage.remove(user.getEmail());
 
-        return ResponseEntity.ok(new AuthResponse(null, true, "Password updated successfully"));
+        Authentication auth = new UsernamePasswordAuthenticationToken(user.getEmail(), newPassword);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        String jwt = JwtProvider.generateToken(auth);
+
+        return ResponseEntity.ok(new AuthResponse(jwt, true, "Password updated successfully"));
     }
 
     private ResponseEntity<AuthResponse> handleUserVerification(User user, String email) {
@@ -135,14 +140,16 @@ public class AuthController {
         User user = userService.findByEmail(authRequest.getEmail());
 
         if (user == null || !passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
-            return new ResponseEntity<>(new AuthResponse(null, false, "Invalid email or password"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new AuthResponse(null, false, "Invalid email or password"),
+                    HttpStatus.UNAUTHORIZED);
         }
 
-        user.setVerified(true);
-        userService.saveUser(user);
+        if(!user.isVerified()) {
+            return new ResponseEntity<>(new AuthResponse(null, false, "Please verify first."),
+                    HttpStatus.UNAUTHORIZED);
+        }
 
         Authentication auth = authenticate(user.getEmail(), authRequest.getPassword());
-
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         String jwt = JwtProvider.generateToken(auth);
