@@ -22,8 +22,8 @@ const ProfilePage = () => {
   });
   const [user, setUser] = useState({
     email: localStorage.getItem("email") || null,
-    mobileNumber: "N/A",
-    location: "N/A",
+    mobileNumber: "+91",
+    location: "",
     education: [],
     skills: [],
     resumeUrl: localStorage.getItem("resumeUrl") || null,
@@ -165,7 +165,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="profile-container">
+    <div className={`profile-container ${isEditing ? "editing-mode" : ""}`}>
       {/* error */}
       {error && <div className="error-message">{error}</div>}
 
@@ -193,6 +193,7 @@ const ProfilePage = () => {
             <input
               className="input-field"
               value={userProfile.name || ""}
+              placeholder="Enter name"
               onChange={(e) => setUserProfile({ ...userProfile, name: e.target.value })}
             />
           ) : (
@@ -206,6 +207,7 @@ const ProfilePage = () => {
           {isEditing ? (
             <input
               className="input-field"
+              placeholder="Enter Mobile Number"
               value={user.mobileNumber || ""}
               onChange={(e) => setUser({ ...user, mobileNumber: e.target.value })}
             />
@@ -217,6 +219,7 @@ const ProfilePage = () => {
           {isEditing ? (
             <input
               className="input-field"
+              placeholder="Enter Resume URL"
               value={user.resumeUrl || ""}
               onChange={(e) => setUser({ ...user, resumeUrl: e.target.value })}
             />
