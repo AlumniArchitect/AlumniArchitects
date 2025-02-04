@@ -7,11 +7,12 @@ import {
   FaSignOutAlt,
   FaTrash,
   FaCommentDots,
+  FaExclamationCircle
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "../style/Navbar.css";
 import Constant from "../utils/Constant.js";
-import defaultProfileImage from "./assets/userLogo.png";
+import defaultProfileImage from "./Assets/userLogo.png";
 import Chatbot from "./ChatBot.jsx";
 
 export default function Navbar() {
@@ -113,7 +114,7 @@ export default function Navbar() {
 
   return (
     <nav>
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className="error-message"><FaExclamationCircle className="icon" /> {error}</div>}
       <div className="navbar">
         <div className="profile-section" onClick={toggleMenu}>
           <div className="p-img">
