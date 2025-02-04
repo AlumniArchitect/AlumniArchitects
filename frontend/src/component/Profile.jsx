@@ -251,7 +251,7 @@ const ProfilePage = () => {
               ))}
               <button className="add-btn" onClick={handleAddEducation}>Add Education</button>
             </div>
-          ) : user.education.length > 0 ? (
+          ) : (user.education != null && user.education.length > 0) ? (
             <div className="education-grid">
               {user.education.map((edu, index) => (
                 <EducationCard key={index} education={edu} />
@@ -267,7 +267,7 @@ const ProfilePage = () => {
           <h3 className="section-title">Skills</h3>
           {isEditing ? (
             <input className="input-field" value={user.skills.join(", ")} onChange={(e) => setUser({ ...user, skills: e.target.value.split(",").map((s) => s.trim()) })} />
-          ) : (user.skills.length > 0 && user.skills[0] !== "") ? (
+          ) : (user.skills != null && user.skills.length > 0 && user.skills[0] !== "") ? (
             <div className="skills-container">
               {user.skills.map((skill, index) => (
                 <span key={index} className="skill-badge">{skill}</span>
@@ -289,7 +289,7 @@ const ProfilePage = () => {
             />
           ) : (
             <ul className="social-links">
-              {user.socialLinks.length > 0 ? (
+              {(user.socialLinks != null && user.socialLinks.length > 0) ? (
                 user.socialLinks.map((link, index) => (
                   <li key={index}>
                     <a href={link} target="_blank" rel="noopener noreferrer">
