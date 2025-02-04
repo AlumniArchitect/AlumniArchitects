@@ -90,11 +90,13 @@
 }
 
 .profile-email {
-  color: gray;
+  font-weight: 400;
+  color: rgb(40, 40, 40);
 }
 
 .profile-info {
-  color: gray;
+  font-weight: 400;
+  color: rgb(40, 40, 40);
 }
 
 .file-input {
@@ -159,4 +161,57 @@
 
 .social-links li a {
   color: #3b82f6;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 1rem;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.4);
+  outline: none;
+}
+
+.input-field:hover {
+  border-color: #63c067;
+}
+
+.input-field:disabled {
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+}
+.add-btn,
+.remove-btn {
+  padding: 3px 7px;
+  border: none;
+  border-radius: 5px;
+  border: 1px solid rgb(77, 75, 75);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-btn {
+  background-color: #4CAF50;
+  color: #fff;
+}
+
+.add-btn:hover {
+  background-color: #66bb6a;
+}
+
+.remove-btn {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.remove-btn:hover {
+  background-color: #e57373;
 }
