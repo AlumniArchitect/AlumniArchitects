@@ -34,7 +34,7 @@ export default function Signin() {
 
           const result = await res.json();
 
-          if (result.status) {
+          if (result.status && result.jwt) {
             navigate("/homepage");
           } else {
             showError("Invalid JWT token. Please log in again.");
