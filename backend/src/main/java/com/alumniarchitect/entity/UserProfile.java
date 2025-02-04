@@ -25,4 +25,5 @@ public class UserProfile {
     private String location;
     private String mobileNumber;
     private List<Education> education;
+    private boolean isComplete = false;
 }

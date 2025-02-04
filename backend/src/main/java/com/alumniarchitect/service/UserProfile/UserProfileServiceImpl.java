@@ -64,12 +64,24 @@ public class UserProfileServiceImpl implements UserProfileService {
             existingProfile.setEducation(userProfile.getEducation());
         }
 
+        existingProfile.setComplete(isProfileComplete(existingProfile));
         return userProfileRepository.save(existingProfile);
+    }
+
+    private boolean isProfileComplete(UserProfile userProfile) {
+        return StringUtils.hasText(userProfile.getEmail()) &&
+                StringUtils.hasText(userProfile.getProfileImageUrl()) &&
+                StringUtils.hasText(userProfile.getResumeUrl()) &&
+                StringUtils.hasText(userProfile.getBio()) &&
+                userProfile.getSocialLinks() != null && !userProfile.getSocialLinks().isEmpty() &&
+                userProfile.getSkills() != null && !userProfile.getSkills().isEmpty() &&
+                StringUtils.hasText(userProfile.getLocation()) &&
+                StringUtils.hasText(userProfile.getMobileNumber()) &&
+                userProfile.getEducation() != null && !userProfile.getEducation().isEmpty();
     }
 
     @Override
     public Map uploadImage(MultipartFile file) {
-
         try {
             return this.cloudinary.uploader().upload(file.getBytes(), Map.of());
         } catch (Exception e) {
