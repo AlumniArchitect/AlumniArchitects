@@ -26,8 +26,8 @@ const ProfilePage = () => {
     location: "N/A",
     education: [],
     skills: [],
-    resume: localStorage.getItem("resumeUrl") || "No resume link found",
-    photo: localStorage.getItem("profileImageUrl") || defaultProfileImage,
+    resumeUrl: localStorage.getItem("resumeUrl") || "No resume link found",
+    profileImageUrl: localStorage.getItem("profileImageUrl") || defaultProfileImage,
     socialLinks: []
   });
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
@@ -67,8 +67,6 @@ const ProfilePage = () => {
         const data = await res.json();
 
         if (data.status) {
-          console.log(data);
-
           setUser((prevUser) => ({ ...prevUser, ...data.userProfile }));
         } else {
           showError(data.message);
@@ -111,13 +109,32 @@ const ProfilePage = () => {
     setTimeout(() => setError(""), 5000);
   };
 
-  const handleFileUpload = (event, type) => {
+  const handleFileUpload = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      setUser((prevUser) => ({
-        ...prevUser,
-        [type]: type === "photo" ? URL.createObjectURL(file) : file.name,
-      }));
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await fetch(`${Constant.BASE_URL}/uploadProfileImage/${user.email}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Failed to upload image");
+
+      const data = await response.json();
+      const imageUrl = data.secure_url;
+
+      setUser({ ...user, profileImageUrl: imageUrl });
+      localStorage.setItem("profileImageUrl", imageUrl);
+
+    } catch (error) {
+      showError("Error uploading image: " + error.message);
     }
   };
 
@@ -153,13 +170,13 @@ const ProfilePage = () => {
 
           {/* profile photo */}
           <div className="profile-photo" onClick={() => setShowPhotoOptions(true)}
-            style={{ backgroundImage: user.photo ? `url('${user.photo}')` : "none" }}>
-            {!user.photo && <span className="photo-placeholder">+</span>}
+            style={{ backgroundImage: user.profileImageUrl ? `url('${user.profileImageUrl}')` : "none" }}>
+            {!user.profileImageUrl && <span className="photo-placeholder">+</span>}
           </div>
           {showPhotoOptions && (
             <label className="photo-btn">
               Change Photo
-              <input type="file" className="hidden-input" onChange={(e) => handleFileUpload(e, "photo")} />
+              <input type="file" className="hidden-input" onChange={handleFileUpload} />
             </label>
           )}
 
@@ -178,6 +195,13 @@ const ProfilePage = () => {
             <input className="input-field" value={user.mobileNumber} onChange={(e) => setUser({ ...user, mobileNumber: e.target.value })} />
           ) : (
             <p className="profile-info">{user.mobileNumber}</p>
+          )}
+
+          {/* resume */}
+          {isEditing ? (
+            <input className="input-field" value={user.resumeUrl} onChange={(e) => setUser({ ...user, resumeUrl: e.target.value })} />
+          ) : (
+            <p className="profile-info"><a href={user.resumeUrl} target="_blank" rel="noopener noreferrer">{user.resumeUrl}</a></p>
           )}
 
           {/* save and edit button */}
@@ -227,13 +251,15 @@ const ProfilePage = () => {
               ))}
               <button className="add-btn" onClick={handleAddEducation}>Add Education</button>
             </div>
-          ) : (
+          ) : user.education.length > 0 ? (
             <div className="education-grid">
               {user.education.map((edu, index) => (
                 <EducationCard key={index} education={edu} />
               ))}
             </div>
-          )}
+          ) :
+            <p>No Education added.</p>
+          }
         </div>
 
         {/* skills */}
@@ -241,13 +267,14 @@ const ProfilePage = () => {
           <h3 className="section-title">Skills</h3>
           {isEditing ? (
             <input className="input-field" value={user.skills.join(", ")} onChange={(e) => setUser({ ...user, skills: e.target.value.split(",").map((s) => s.trim()) })} />
-          ) : (
+          ) : (user.skills.length > 0 && user.skills[0] !== "") ? (
             <div className="skills-container">
               {user.skills.map((skill, index) => (
                 <span key={index} className="skill-badge">{skill}</span>
               ))}
             </div>
-          )}
+          ) :
+            <p>No Skills Found.</p>}
         </div>
 
         {/* links */}
