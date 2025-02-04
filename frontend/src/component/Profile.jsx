@@ -1,110 +1,215 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "../style/Profile.css";
-import defaultProfileImage from "./assets/userLogo.png";
-import Constant from "../utils/Constant";
 
 const ProfilePage = () => {
-  const [user, setUser] = useState({
-    email: localStorage.getItem("email") || "",
-    profileImageUrl: defaultProfileImage,
-    bio: "",
-    location: "",
-    resumeUrl: "",
-    socialLinks: [],
-    skills: [],
-  });
-  const jwt = localStorage.getItem("jwt");
-  const [error, setError] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState("John Doe");
+  const [mobile, setMobile] = useState("+123 456 7890");
+  const [location, setLocation] = useState("New York, USA");
+  const [education, setEducation] = useState("B.Sc. in Computer Science - XYZ University");
+  const [skills, setSkills] = useState(["JavaScript", "React", "CSS", "HTML"]);
+  const [resume, setResume] = useState(null);
+  const [photo, setPhoto] = useState(null);
+  const [socialLinks, setSocialLinks] = useState({ linkedin: "", github: "", twitter: "" });
+  const [showPhotoOptions, setShowPhotoOptions] = useState(false);
 
-  const showError = (message) => {
-    setError(message);
-    setTimeout(() => setError(""), 5000);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUser((prevUser) => ({ ...prevUser, [name]: value }));
-  };
-
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (!user.email || !jwt) {
-        showError("Invalid JWT or email");
-        return;
-      }
-
-      try {
-        const res = await fetch(`${Constant.BASE_URL}/api/userProfile/${user.email}`, {
-          method: "GET",
-          headers: { Authorization: `Bearer ${jwt}` },
-        });
-
-        if (!res.ok) throw new Error("Failed to fetch user profile");
-
-        const data = await res.json();
-        if (data.status) {
-          setUser((prevUser) => ({ ...prevUser, ...data.userProfile }));
-        } else {
-          showError(data.message);
-        }
-      } catch (err) {
-        showError("Error: " + err.message);
-      }
-    };
-
-    fetchUserProfile();
-  }, [user.email, jwt]);
-
-  const handleSave = async () => {
-    try {
-      const res = await fetch(`${Constant.BASE_URL}/api/userProfile`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${jwt}`,
-        },
-        body: JSON.stringify(user),
-      });
-
-      const data = await res.json();
-      if (data.status) {
-        alert("Profile updated successfully!");
-      } else {
-        setError(data.message)
-        showError(error);
-        setError(null);
-      }
-    } catch (err) {
-      setError(err.message);
-      showError(err);
-      setError(null);
+  // Handle resume upload
+  const handleResumeUpload = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type === "application/pdf") {
+      setResume(file);
+    } else {
+      alert("Please upload a valid PDF file.");
     }
   };
 
+  // Handle photo upload
+  const handlePhotoUpload = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setPhoto(URL.createObjectURL(file));
+      setShowPhotoOptions(false);
+    } else {
+      alert("Please upload a valid image file.");
+    }
+  };
+
+  // Save changes when exiting edit mode
+  const handleSave = () => {
+    setIsEditing(false);
+    alert("Profile saved successfully!");
+  };
+
   return (
-    <div>
-      {error && <div className="error-message">{error}</div>}
-      <div className="profile-container" id="profile">
-        <div className="profile-card">
-          <div className="profile-photo-section">
-            <img src={user.profileImageUrl} alt="Profile" className="profile-photo" />
+    <div className="profile-container">
+      {/* Left Section */}
+      <div className="profile-sidebar">
+        <div className="profile-content">
+          {/* Profile Photo */}
+          <div
+            className="profile-photo"
+            onClick={() => setShowPhotoOptions(true)}
+            style={{
+              backgroundImage: photo ? `url('${photo}')` : "none",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          >
+            {!photo && <span className="photo-placeholder">+</span>}
           </div>
-          <textarea name="bio" value={user.bio} onChange={handleChange} className="profile-textarea" />
-          <div className="profile-details">
-            <label>Email:</label>
-            <input type="email" name="email" value={user.email} readOnly className="profile-input" />
-            <label>Location:</label>
-            <input type="text" name="location" value={user.location} onChange={handleChange} className="profile-input" />
-            <label>Resume URL:</label>
-            <input type="text" name="resumeUrl" value={user.resumeUrl} onChange={handleChange} className="profile-input" />
-            <label>Social Links (comma-separated):</label>
-            <input type="text" name="socialLinks" value={user.socialLinks} onChange={(e) => setUser({ ...user, socialLinks: e.target.value.split(",") })} className="profile-input" />
-            <label>Skills (comma-separated):</label>
-            <input type="text" name="skills" value={user.skills} onChange={(e) => setUser({ ...user, skills: e.target.value.split(",") })} className="profile-input" />
-          </div>
-          <button onClick={handleSave} className="save-button">
-            Save Changes
+          {showPhotoOptions && (
+            <div className="photo-options">
+              {!isEditing ? (
+                <button className="photo-btn" onClick={() => setShowPhotoOptions(false)}>
+                  View Photo
+                </button>
+              ) : (
+                <label className="photo-btn">
+                  Change Photo
+                  <input type="file" className="hidden-input" onChange={handlePhotoUpload} />
+                </label>
+              )}
+            </div>
+          )}
+
+          {/* Name */}
+          {isEditing ? (
+            <input
+              className="input-field"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          ) : (
+            <h2 className="profile-name">{name}</h2>
+          )}
+
+          {/* Email */}
+          <p className="profile-email">johndoe@example.com</p>
+
+          {/* Mobile */}
+          {isEditing ? (
+            <input
+              className="input-field"
+              value={mobile}
+              onChange={(e) => setMobile(e.target.value)}
+            />
+          ) : (
+            <p className="profile-info">{mobile}</p>
+          )}
+
+          {/* Location */}
+          {isEditing ? (
+            <input
+              className="input-field"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
+          ) : (
+            <p className="profile-info">{location}</p>
+          )}
+
+          {/* Resume Upload */}
+          {isEditing ? (
+            <label className="file-input-label">
+              Upload Resume
+              <input type="file" className="hidden-input" onChange={handleResumeUpload} />
+            </label>
+          ) : (
+            resume && <p className="resume-info">Uploaded Resume: {resume.name}</p>
+          )}
+
+          {/* Edit Button */}
+          <button className="edit-btn" onClick={isEditing ? handleSave : () => setIsEditing(true)}>
+            {isEditing ? "Save" : "Edit"}
           </button>
+        </div>
+      </div>
+
+      {/* Right Section */}
+      <div className="profile-main">
+        {/* Education */}
+        <div className="profile-section">
+          <h3 className="section-title">Education</h3>
+          {isEditing ? (
+            <input
+              className="input-field"
+              value={education}
+              onChange={(e) => setEducation(e.target.value)}
+            />
+          ) : (
+            <p className="profile-info">{education}</p>
+          )}
+        </div>
+
+        {/* Skills */}
+        <div className="profile-section">
+          <h3 className="section-title">Skills</h3>
+          {isEditing ? (
+            <input
+              className="input-field"
+              value={skills.join(", ")}
+              onChange={(e) => setSkills(e.target.value.split(",").map((skill) => skill.trim()))}
+            />
+          ) : (
+            <div className="skills-container">
+              {skills.map((skill, index) => (
+                <span key={index} className="skill-badge">
+                  {skill}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Social Links */}
+        <div className="profile-section">
+          <h3 className="section-title">Social Links</h3>
+          {isEditing ? (
+            <div>
+              <input
+                className="input-field"
+                placeholder="LinkedIn URL"
+                value={socialLinks.linkedin}
+                onChange={(e) => setSocialLinks({ ...socialLinks, linkedin: e.target.value })}
+              />
+              <input
+                className="input-field"
+                placeholder="GitHub URL"
+                value={socialLinks.github}
+                onChange={(e) => setSocialLinks({ ...socialLinks, github: e.target.value })}
+              />
+              <input
+                className="input-field"
+                placeholder="Twitter URL"
+                value={socialLinks.twitter}
+                onChange={(e) => setSocialLinks({ ...socialLinks, twitter: e.target.value })}
+              />
+            </div>
+          ) : (
+            <ul className="social-links">
+              {socialLinks.linkedin && (
+                <li>
+                  <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer">
+                    LinkedIn
+                  </a>
+                </li>
+              )}
+              {socialLinks.github && (
+                <li>
+                  <a href={socialLinks.github} target="_blank" rel="noopener noreferrer">
+                    GitHub
+                  </a>
+                </li>
+              )}
+              {socialLinks.twitter && (
+                <li>
+                  <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer">
+                    Twitter
+                  </a>
+                </li>
+              )}
+            </ul>
+          )}
         </div>
       </div>
     </div>
