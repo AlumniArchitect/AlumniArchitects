@@ -3,14 +3,28 @@ import Constant from "../utils/Constant.js";
 import defaultProfileImage from "./assets/userLogo.png";
 import "../style/Profile.css";
 
+const EducationCard = ({ education }) => {
+  return (
+    <div className="education-card">
+      <h4 className="education-type">{education.type}</h4>
+      <p className="education-name">{education.name}</p>
+      <p className="education-year">Year: {education.year}</p>
+      <p className="education-cgpa">CGPA: {education.cgpa}</p>
+    </div>
+  );
+};
+
 const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [user, setUser] = useState({
+  const [userProfile, setUserProfile] = useState({
     name: "",
+    profileImageUrl: defaultProfileImage,
+  });
+  const [user, setUser] = useState({
     email: localStorage.getItem("email") || null,
-    mobile: "",
-    location: "",
-    education: { type: "", name: "", year: "", cgpa: 0 },
+    mobileNumber: "N/A",
+    location: "N/A",
+    education: [],
     skills: [],
     resume: localStorage.getItem("resumeUrl") || "No resume link found",
     photo: localStorage.getItem("profileImageUrl") || defaultProfileImage,
@@ -18,20 +32,43 @@ const ProfilePage = () => {
   });
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [error, setError] = useState("");
-  const jwt = localStorage.getItem("jwt");
+  const jwt = localStorage.getItem("jwt"); const handleEducationChange = (index, field, value) => {
+    const updatedEducation = [...user.education];
+    updatedEducation[index] = { ...updatedEducation[index], [field]: value };
+    setUser({ ...user, education: updatedEducation });
+  };
+
+  const handleAddEducation = () => {
+    setUser({
+      ...user,
+      education: [...user.education, { type: "", name: "", year: "", cgpa: "" }],
+    });
+  };
+
+  const handleRemoveEducation = (index) => {
+    const updatedEducation = user.education.filter((_, i) => i !== index);
+    setUser({ ...user, education: updatedEducation });
+  };
 
   useEffect(() => {
+    const email = localStorage.getItem("email");
+
     const fetchUserProfile = async () => {
       try {
         const res = await fetch(`${Constant.BASE_URL}/api/userProfile/${user.email}`, {
           method: "GET",
-          headers: { 
+          headers: {
             Authorization: `Bearer ${jwt}`
           },
         });
+
         if (!res.ok) throw new Error("Failed to fetch user profile");
+
         const data = await res.json();
+
         if (data.status) {
+          console.log(data);
+
           setUser((prevUser) => ({ ...prevUser, ...data.userProfile }));
         } else {
           showError(data.message);
@@ -40,7 +77,33 @@ const ProfilePage = () => {
         showError("Error: " + err.message);
       }
     };
-    if (jwt) fetchUserProfile();
+
+    const fetchUserName = async () => {
+      try {
+        const res = await fetch(`${Constant.BASE_URL}/api/user/${email}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch user profile");
+
+        const data = await res.json();
+        if (data.status) {
+          setUserProfile((prev) => ({ ...prev, name: data.user.fullName }));
+        } else {
+          showError("User name not found");
+        }
+      } catch (error) {
+        showError("Error fetching user name: " + error.message);
+      }
+    };
+
+    if (email && jwt) {
+      fetchUserName();
+      fetchUserProfile();
+    }
   }, [user.email, jwt]);
 
   const showError = (message) => {
@@ -82,9 +145,13 @@ const ProfilePage = () => {
 
   return (
     <div className="profile-container">
+      {/* error */}
       {error && <div className="error-message">{error}</div>}
+
       <div className="profile-sidebar">
         <div className="profile-content">
+
+          {/* profile photo */}
           <div className="profile-photo" onClick={() => setShowPhotoOptions(true)}
             style={{ backgroundImage: user.photo ? `url('${user.photo}')` : "none" }}>
             {!user.photo && <span className="photo-placeholder">+</span>}
@@ -95,58 +162,81 @@ const ProfilePage = () => {
               <input type="file" className="hidden-input" onChange={(e) => handleFileUpload(e, "photo")} />
             </label>
           )}
+
+          {/* user name */}
           {isEditing ? (
-            <input className="input-field" value={user.name} onChange={(e) => setUser({ ...user, name: e.target.value })} />
+            <input className="input-field" value={userProfile.name} onChange={(e) => setUserProfile({ ...userProfile, name: e.target.value })} />
           ) : (
-            <h2 className="profile-name">{user.name}</h2>
+            <h2 className="profile-name">{userProfile.name}</h2>
           )}
-          <p className="profile-email">johndoe@example.com</p>
+
+          {/* email */}
+          <p className="profile-email">{user.email}</p>
+
+          {/* mobile */}
           {isEditing ? (
-            <input className="input-field" value={user.mobile} onChange={(e) => setUser({ ...user, mobile: e.target.value })} />
+            <input className="input-field" value={user.mobileNumber} onChange={(e) => setUser({ ...user, mobileNumber: e.target.value })} />
           ) : (
-            <p className="profile-info">{user.mobile}</p>
+            <p className="profile-info">{user.mobileNumber}</p>
           )}
+
+          {/* save and edit button */}
           <button className="edit-btn" onClick={isEditing ? handleSave : () => setIsEditing(true)}>
             {isEditing ? "Save" : "Edit"}
           </button>
+
         </div>
+
+        {/* Education, Skill, Link */}
       </div>
       <div className="profile-main">
         <div className="profile-section">
+
+          {/* education */}
           <h3 className="section-title">Education</h3>
           {isEditing ? (
             <div>
-              <input
-                className="input-field"
-                placeholder="Type"
-                value={user.education.type}
-                onChange={(e) => setUser({ ...user, education: { ...user.education, type: e.target.value } })}
-              />
-              <input
-                className="input-field"
-                placeholder="Name"
-                value={user.education.name}
-                onChange={(e) => setUser({ ...user, education: { ...user.education, name: e.target.value } })}
-              />
-              <input
-                className="input-field"
-                placeholder="Year"
-                value={user.education.year}
-                onChange={(e) => setUser({ ...user, education: { ...user.education, year: e.target.value } })}
-              />
-              <input
-                className="input-field"
-                placeholder="CGPA"
-                value={user.education.cgpa}
-                onChange={(e) => setUser({ ...user, education: { ...user.education, cgpa: parseFloat(e.target.value) } })}
-              />
+              {user.education.map((edu, index) => (
+                <div key={index} className="education-edit">
+                  <input
+                    className="input-field"
+                    placeholder="Type"
+                    value={edu.type}
+                    onChange={(e) => handleEducationChange(index, "type", e.target.value)}
+                  />
+                  <input
+                    className="input-field"
+                    placeholder="Name"
+                    value={edu.name}
+                    onChange={(e) => handleEducationChange(index, "name", e.target.value)}
+                  />
+                  <input
+                    className="input-field"
+                    placeholder="Year"
+                    value={edu.year}
+                    onChange={(e) => handleEducationChange(index, "year", e.target.value)}
+                  />
+                  <input
+                    className="input-field"
+                    placeholder="CGPA"
+                    value={edu.cgpa}
+                    onChange={(e) => handleEducationChange(index, "cgpa", e.target.value)}
+                  />
+                  <button className="remove-btn" onClick={() => handleRemoveEducation(index)}>Remove</button>
+                </div>
+              ))}
+              <button className="add-btn" onClick={handleAddEducation}>Add Education</button>
             </div>
           ) : (
-            <p className="profile-info">
-              {user.education.type} - {user.education.name} ({user.education.year}) - CGPA: {user.education.cgpa}
-            </p>
+            <div className="education-grid">
+              {user.education.map((edu, index) => (
+                <EducationCard key={index} education={edu} />
+              ))}
+            </div>
           )}
         </div>
+
+        {/* skills */}
         <div className="profile-section">
           <h3 className="section-title">Skills</h3>
           {isEditing ? (
@@ -159,60 +249,29 @@ const ProfilePage = () => {
             </div>
           )}
         </div>
+
+        {/* links */}
         <div className="profile-section">
           <h3 className="section-title">Social Links</h3>
           {isEditing ? (
-            <div>
-              <input
-                className="input-field"
-                placeholder="LinkedIn URL"
-                value={user.socialLinks.linkedin}
-                onChange={(e) => setUser(prev => ({
-                  ...prev,
-                  socialLinks: { ...prev.socialLinks, linkedin: e.target.value }
-                }))}
-              />
-              <input
-                className="input-field"
-                placeholder="GitHub URL"
-                value={user.socialLinks.github}
-                onChange={(e) => setUser(prev => ({
-                  ...prev,
-                  socialLinks: { ...prev.socialLinks, github: e.target.value }
-                }))}
-              />
-              <input
-                className="input-field"
-                placeholder="Twitter URL"
-                value={user.socialLinks.twitter}
-                onChange={(e) => setUser(prev => ({
-                  ...prev,
-                  socialLinks: { ...prev.socialLinks, twitter: e.target.value }
-                }))}
-              />
-            </div>
+            <input
+              className="input-field"
+              placeholder="Enter social links (comma separated)"
+              value={user.socialLinks.join(", ")}
+              onChange={(e) => setUser({ ...user, socialLinks: e.target.value.split(",").map(s => s.trim()) })}
+            />
           ) : (
             <ul className="social-links">
-              {user.socialLinks.linkedin && (
-                <li>
-                  <a href={user.socialLinks.linkedin} target="_blank" rel="noopener noreferrer">
-                    LinkedIn
-                  </a>
-                </li>
-              )}
-              {user.socialLinks.github && (
-                <li>
-                  <a href={user.socialLinks.github} target="_blank" rel="noopener noreferrer">
-                    GitHub
-                  </a>
-                </li>
-              )}
-              {user.socialLinks.twitter && (
-                <li>
-                  <a href={user.socialLinks.twitter} target="_blank" rel="noopener noreferrer">
-                    Twitter
-                  </a>
-                </li>
+              {user.socialLinks.length > 0 ? (
+                user.socialLinks.map((link, index) => (
+                  <li key={index}>
+                    <a href={link} target="_blank" rel="noopener noreferrer">
+                      {link}
+                    </a>
+                  </li>
+                ))
+              ) : (
+                <p>No social links added</p>
               )}
             </ul>
           )}
