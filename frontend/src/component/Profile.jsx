@@ -108,7 +108,7 @@ const ProfilePage = () => {
             <p className="profile-info">{location}</p>
           )}
 
-          {/* Resume Upload */}
+      
           {isEditing ? (
             <label className="file-input-label">
               Upload Resume
