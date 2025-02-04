@@ -6,6 +6,8 @@ import HomePage from './component/HomePage.jsx';
 import OtpVerification from './component/auth/OtpVerification.jsx';
 import ForgotPassword from './component/auth/ForgotPassword.jsx';
 import ProfilePage from './component/Profile.jsx';
+import Setting from './utils/Setting.jsx';
+
 
 const App = () => {
   return (
@@ -18,6 +20,8 @@ const App = () => {
       <Route path="/homepage" element={<HomePage />} />
       <Route path="*" element={<Navigate to='/signin' />} />
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/setting" element={<Setting />} />
+      
     </Routes>
   );
 };
