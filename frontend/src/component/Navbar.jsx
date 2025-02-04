@@ -5,7 +5,6 @@ import {
   FaUserCircle,
   FaCog,
   FaSignOutAlt,
-  FaTrash,
   FaCommentDots,
   FaExclamationCircle
 } from "react-icons/fa";
@@ -51,6 +50,10 @@ export default function Navbar() {
 
   const handleProfileClick = () => {
     navigate("/profile"); 
+  };
+
+  const handleSettingClick = () => {
+    navigate("/setting"); 
   };
 
   useEffect(() => {
@@ -166,14 +169,11 @@ export default function Navbar() {
               <li>Option 5</li>
               <li>Option 6</li>
               <hr />
-              <li>
+              <li onClick={handleSettingClick}>
                 <FaCog /> &nbsp; Settings
               </li>
               <li onClick={handleLogout} className="logout">
                 <FaSignOutAlt /> &nbsp; Logout
-              </li>
-              <li>
-                <FaTrash /> &nbsp; Delete Account
               </li>
             </ul>
           </div>
