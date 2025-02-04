@@ -90,6 +90,8 @@ export default function Navbar() {
             ...prev,
             profileImageUrl: data.userProfile.profileImageUrl,
           }));
+          
+          localStorage.setItem("profileImageUrl", data.userProfile.profileImageUrl);
         } else {
           showError("User image not found");
         }
