@@ -38,7 +38,18 @@ const ProfilePage = () => {
           {isEditing ? <input value={user.location} onChange={(e) => setUser({ ...user, location: e.target.value })} /> : <p>{user.location}</p>}
 
           {isEditing ? (
-            <label>
+            <input
+              className="input-field"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
+          ) : (
+            <p className="profile-info">{location}</p>
+          )}
+
+      
+          {isEditing ? (
+            <label className="file-input-label">
               Upload Resume
               <input type="file" onChange={(e) => handleFileUpload(e, "resume")} />
             </label>
