@@ -1,22 +1,20 @@
 import React, { useState, useEffect } from "react";
 import Constant from "../utils/Constant.js";
+import defaultProfileImage from "./assets/userLogo.png";
 import "../style/Profile.css";
 
 const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [user, setUser] = useState({
     name: "",
+    email: localStorage.getItem("email") || null,
     mobile: "",
     location: "",
-    education: "",
+    education: { type: "", name: "", year: "", cgpa: 0 },
     skills: [],
-    resume: "",
-    photo: "",
-    socialLinks: {
-      linkedin: "",
-      github: "",
-      twitter: "",
-    },
+    resume: localStorage.getItem("resumeUrl") || "No resume link found",
+    photo: localStorage.getItem("profileImageUrl") || defaultProfileImage,
+    socialLinks: []
   });
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [error, setError] = useState("");
@@ -27,7 +25,9 @@ const ProfilePage = () => {
       try {
         const res = await fetch(`${Constant.BASE_URL}/api/userProfile/${user.email}`, {
           method: "GET",
-          headers: { Authorization: `Bearer ${jwt}` },
+          headers: { 
+            Authorization: `Bearer ${jwt}`
+          },
         });
         if (!res.ok) throw new Error("Failed to fetch user profile");
         const data = await res.json();
@@ -115,9 +115,36 @@ const ProfilePage = () => {
         <div className="profile-section">
           <h3 className="section-title">Education</h3>
           {isEditing ? (
-            <input className="input-field" value={user.education} onChange={(e) => setUser({ ...user, education: e.target.value })} />
+            <div>
+              <input
+                className="input-field"
+                placeholder="Type"
+                value={user.education.type}
+                onChange={(e) => setUser({ ...user, education: { ...user.education, type: e.target.value } })}
+              />
+              <input
+                className="input-field"
+                placeholder="Name"
+                value={user.education.name}
+                onChange={(e) => setUser({ ...user, education: { ...user.education, name: e.target.value } })}
+              />
+              <input
+                className="input-field"
+                placeholder="Year"
+                value={user.education.year}
+                onChange={(e) => setUser({ ...user, education: { ...user.education, year: e.target.value } })}
+              />
+              <input
+                className="input-field"
+                placeholder="CGPA"
+                value={user.education.cgpa}
+                onChange={(e) => setUser({ ...user, education: { ...user.education, cgpa: parseFloat(e.target.value) } })}
+              />
+            </div>
           ) : (
-            <p className="profile-info">{user.education}</p>
+            <p className="profile-info">
+              {user.education.type} - {user.education.name} ({user.education.year}) - CGPA: {user.education.cgpa}
+            </p>
           )}
         </div>
         <div className="profile-section">
