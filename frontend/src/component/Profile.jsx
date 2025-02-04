@@ -236,6 +236,7 @@ const ProfilePage = () => {
       </div>
       <div className="profile-main">
         <div className="profile-section">
+          
           {/* education */}
           <h3 className="section-title">Education</h3>
           {isEditing ? (
