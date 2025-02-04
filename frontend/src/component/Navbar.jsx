@@ -122,7 +122,7 @@ export default function Navbar() {
     <nav>
       {error && <div className="error-message"><FaExclamationCircle className="icon" /> {error}</div>}
       <div className="navbar">
-        <div className="profile-section" onClick={toggleMenu}>
+        <div className="navbar-section" onClick={toggleMenu}>
           <div className="p-img">
             <img
               src={userProfile.profileImageUrl || defaultProfileImage}
