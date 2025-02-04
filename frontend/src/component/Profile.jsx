@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import Navbar from "../component/Navbar";
-import 
+import Navbar from "./Navbar";
+import "../style/Profile.css";
+import defaultProfileImage from "./Assets/userLogo.png";
 
 const ProfilePage = () => {
   const [user, setUser] = useState({
     name: "Alumni Architect",
     email: "alumniarchitect@example.com",
-    profileImageUrl: "https://alumniarchitect.com/150",
+    profileImageUrl: defaultProfileImage ,
     bio: "Web Developer | Tech Enthusiast",
     location: "New York, USA",
     resumeUrl: "",

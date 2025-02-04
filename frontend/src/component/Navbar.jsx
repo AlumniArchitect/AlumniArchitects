@@ -46,6 +46,10 @@ export default function Navbar() {
     navigate("/signin");
   };
 
+  const handleProfileClick = () => {
+    navigate("/profile"); 
+  };
+
   useEffect(() => {
     const fetchUserName = async () => {
       try {
@@ -147,7 +151,7 @@ export default function Navbar() {
               <div className="p-name">{userProfile.name || "USERNAME"}</div>
             </div>
             <ul>
-              <li>
+              <li onClick={handleProfileClick}>
                 <FaUserCircle /> &nbsp; Profile
               </li>
               <li>Option 1</li>
