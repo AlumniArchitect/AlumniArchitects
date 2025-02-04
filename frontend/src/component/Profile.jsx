@@ -28,11 +28,13 @@ const ProfilePage = () => {
     skills: [],
     resumeUrl: localStorage.getItem("resumeUrl") || "No resume link found",
     profileImageUrl: localStorage.getItem("profileImageUrl") || defaultProfileImage,
-    socialLinks: []
+    socialLinks: [],
   });
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [error, setError] = useState("");
-  const jwt = localStorage.getItem("jwt"); const handleEducationChange = (index, field, value) => {
+  const jwt = localStorage.getItem("jwt");
+
+  const handleEducationChange = (index, field, value) => {
     const updatedEducation = [...user.education];
     updatedEducation[index] = { ...updatedEducation[index], [field]: value };
     setUser({ ...user, education: updatedEducation });
@@ -58,7 +60,7 @@ const ProfilePage = () => {
         const res = await fetch(`${Constant.BASE_URL}/api/userProfile/${user.email}`, {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${jwt}`
+            Authorization: `Bearer ${jwt}`,
           },
         });
 
@@ -132,7 +134,6 @@ const ProfilePage = () => {
 
       setUser({ ...user, profileImageUrl: imageUrl });
       localStorage.setItem("profileImageUrl", imageUrl);
-
     } catch (error) {
       showError("Error uploading image: " + error.message);
     }
@@ -167,10 +168,14 @@ const ProfilePage = () => {
 
       <div className="profile-sidebar">
         <div className="profile-content">
-
           {/* profile photo */}
-          <div className="profile-photo" onClick={() => setShowPhotoOptions(true)}
-            style={{ backgroundImage: user.profileImageUrl ? `url('${user.profileImageUrl}')` : "none" }}>
+          <div
+            className="profile-photo"
+            onClick={() => setShowPhotoOptions(true)}
+            style={{
+              backgroundImage: user.profileImageUrl ? `url('${user.profileImageUrl}')` : "none",
+            }}
+          >
             {!user.profileImageUrl && <span className="photo-placeholder">+</span>}
           </div>
           {showPhotoOptions && (
@@ -182,99 +187,124 @@ const ProfilePage = () => {
 
           {/* user name */}
           {isEditing ? (
-            <input className="input-field" value={userProfile.name} onChange={(e) => setUserProfile({ ...userProfile, name: e.target.value })} />
+            <input
+              className="input-field"
+              value={userProfile.name || ""}
+              onChange={(e) => setUserProfile({ ...userProfile, name: e.target.value })}
+            />
           ) : (
-            <h2 className="profile-name">{userProfile.name}</h2>
+            <h2 className="profile-name">{userProfile.name || "No name found"}</h2>
           )}
 
           {/* email */}
-          <p className="profile-email">{user.email}</p>
+          <p className="profile-email">{user.email || "No email found"}</p>
 
           {/* mobile */}
           {isEditing ? (
-            <input className="input-field" value={user.mobileNumber} onChange={(e) => setUser({ ...user, mobileNumber: e.target.value })} />
+            <input
+              className="input-field"
+              value={user.mobileNumber || ""}
+              onChange={(e) => setUser({ ...user, mobileNumber: e.target.value })}
+            />
           ) : (
             <p className="profile-info">{user.mobileNumber}</p>
           )}
 
           {/* resume */}
           {isEditing ? (
-            <input className="input-field" value={user.resumeUrl} onChange={(e) => setUser({ ...user, resumeUrl: e.target.value })} />
+            <input
+              className="input-field"
+              value={user.resumeUrl || ""}
+              onChange={(e) => setUser({ ...user, resumeUrl: e.target.value })}
+            />
           ) : (
-            <p className="profile-info"><a href={user.resumeUrl} target="_blank" rel="noopener noreferrer">{user.resumeUrl}</a></p>
+            <p className="profile-info">
+              <a href={user.resumeUrl || "#"} target="_blank" rel="noopener noreferrer">
+                {user.resumeUrl || "No resume link found"}
+              </a>
+            </p>
           )}
 
           {/* save and edit button */}
           <button className="edit-btn" onClick={isEditing ? handleSave : () => setIsEditing(true)}>
             {isEditing ? "Save" : "Edit"}
           </button>
-
         </div>
 
         {/* Education, Skill, Link */}
       </div>
       <div className="profile-main">
         <div className="profile-section">
-
           {/* education */}
           <h3 className="section-title">Education</h3>
           {isEditing ? (
             <div>
-              {user.education.map((edu, index) => (
+              {user.education?.map((edu, index) => (
                 <div key={index} className="education-edit">
                   <input
                     className="input-field"
                     placeholder="Type"
-                    value={edu.type}
+                    value={edu.type || ""}
                     onChange={(e) => handleEducationChange(index, "type", e.target.value)}
                   />
                   <input
                     className="input-field"
                     placeholder="Name"
-                    value={edu.name}
+                    value={edu.name || ""}
                     onChange={(e) => handleEducationChange(index, "name", e.target.value)}
                   />
                   <input
                     className="input-field"
                     placeholder="Year"
-                    value={edu.year}
+                    value={edu.year || ""}
                     onChange={(e) => handleEducationChange(index, "year", e.target.value)}
                   />
                   <input
                     className="input-field"
                     placeholder="CGPA"
-                    value={edu.cgpa}
+                    value={edu.cgpa || ""}
                     onChange={(e) => handleEducationChange(index, "cgpa", e.target.value)}
                   />
-                  <button className="remove-btn" onClick={() => handleRemoveEducation(index)}>Remove</button>
+                  <button className="remove-btn" onClick={() => handleRemoveEducation(index)}>
+                    Remove
+                  </button>
                 </div>
               ))}
-              <button className="add-btn" onClick={handleAddEducation}>Add Education</button>
+              <button className="add-btn" onClick={handleAddEducation}>
+                Add Education
+              </button>
             </div>
-          ) : (user.education != null && user.education.length > 0) ? (
+          ) : user.education?.length > 0 ? (
             <div className="education-grid">
               {user.education.map((edu, index) => (
                 <EducationCard key={index} education={edu} />
               ))}
             </div>
-          ) :
+          ) : (
             <p>No Education added.</p>
-          }
+          )}
         </div>
 
         {/* skills */}
         <div className="profile-section">
           <h3 className="section-title">Skills</h3>
           {isEditing ? (
-            <input className="input-field" value={user.skills.join(", ")} onChange={(e) => setUser({ ...user, skills: e.target.value.split(",").map((s) => s.trim()) })} />
-          ) : (user.skills != null && user.skills.length > 0 && user.skills[0] !== "") ? (
+            <input
+              className="input-field"
+              value={user.skills?.join(", ") || ""}
+              onChange={(e) => setUser({ ...user, skills: e.target.value.split(",").map((s) => s.trim()) })}
+            />
+          ) : user.skills?.length > 0 ? (
             <div className="skills-container">
               {user.skills.map((skill, index) => (
-                <span key={index} className="skill-badge">{skill}</span>
+                <span key={index} className="skill-badge">
+                  {skill}
+                </span>
               ))}
             </div>
-          ) :
-            <p>No Skills Found.</p>}
+          ) : (
+            <p>No Skills Found.</p>
+          )}
         </div>
 
         {/* links */}
@@ -284,23 +314,21 @@ const ProfilePage = () => {
             <input
               className="input-field"
               placeholder="Enter social links (comma separated)"
-              value={user.socialLinks.join(", ")}
-              onChange={(e) => setUser({ ...user, socialLinks: e.target.value.split(",").map(s => s.trim()) })}
+              value={user.socialLinks?.join(", ") || ""}
+              onChange={(e) => setUser({ ...user, socialLinks: e.target.value.split(",").map((s) => s.trim()) })}
             />
-          ) : (
+          ) : user.socialLinks?.length > 0 ? (
             <ul className="social-links">
-              {(user.socialLinks != null && user.socialLinks.length > 0) ? (
-                user.socialLinks.map((link, index) => (
-                  <li key={index}>
-                    <a href={link} target="_blank" rel="noopener noreferrer">
-                      {link}
-                    </a>
-                  </li>
-                ))
-              ) : (
-                <p>No social links added</p>
-              )}
+              {user.socialLinks.map((link, index) => (
+                <li key={index}>
+                  <a href={link} target="_blank" rel="noopener noreferrer">
+                    {link}
+                  </a>
+                </li>
+              ))}
             </ul>
+          ) : (
+            <p>No social links added</p>
           )}
         </div>
       </div>
