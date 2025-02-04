@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
 import "../style/ChatBot.css";
+import Constant from "../utils/Constant";
 
 export default function Chatbot() {
   const [messages, setMessages] = useState([
@@ -10,10 +11,12 @@ export default function Chatbot() {
   const [isTyping, setIsTyping] = useState(false);
   const [sessionId] = useState(() => Math.random().toString(36).substr(2, 9));
   const chatRef = useRef(null);
+  const jwt = localStorage.getItem("jwt");
 
   const handleSend = async () => {
     if (!input.trim()) return;
 
+    const URL = `${Constant.BASE_URL}/api/chat/interactive`;
     const userMessage = { text: input, sender: "user" };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
@@ -21,9 +24,12 @@ export default function Chatbot() {
     setIsTyping(true);
 
     try {
-      const response = await fetch("http://localhost:8080/api/chat/interactive", {
+      const response = await fetch(URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${jwt}`
+        },
         body: JSON.stringify({ sessionId, message: input }),
       });
 

@@ -12,7 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import "../style/Navbar.css";
 import Constant from "../utils/Constant.js";
-import defaultProfileImage from "./Assets/userLogo.png";
+import defaultProfileImage from "./assets/userLogo.png";
 import Chatbot from "./ChatBot.jsx";
 
 export default function Navbar() {
