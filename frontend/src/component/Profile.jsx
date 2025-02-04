@@ -26,7 +26,7 @@ const ProfilePage = () => {
     location: "N/A",
     education: [],
     skills: [],
-    resumeUrl: localStorage.getItem("resumeUrl") || "No resume link found",
+    resumeUrl: localStorage.getItem("resumeUrl") || null,
     profileImageUrl: localStorage.getItem("profileImageUrl") || defaultProfileImage,
     socialLinks: [],
   });
@@ -113,7 +113,10 @@ const ProfilePage = () => {
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
-    if (!file) return;
+    if (!file) {
+      showError("Please provide file");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("image", file);
@@ -218,11 +221,9 @@ const ProfilePage = () => {
               onChange={(e) => setUser({ ...user, resumeUrl: e.target.value })}
             />
           ) : (
-            <p className="profile-info">
-              <a href={user.resumeUrl || "#"} target="_blank" rel="noopener noreferrer">
-                {user.resumeUrl || "No resume link found"}
-              </a>
-            </p>
+            <div className="profile-info">
+              <a href={user.resumeUrl || "#"} target="_blank" rel="noopener noreferrer">Resume</a>
+            </div>
           )}
 
           {/* save and edit button */}
