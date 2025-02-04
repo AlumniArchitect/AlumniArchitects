@@ -57,6 +57,12 @@ public class UserProfileServiceImpl implements UserProfileService {
         if (StringUtils.hasText(userProfile.getLocation())) {
             existingProfile.setLocation(userProfile.getLocation());
         }
+        if (StringUtils.hasText(userProfile.getMobileNumber())) {
+            existingProfile.setMobileNumber(userProfile.getMobileNumber());
+        }
+        if (userProfile.getEducation() != null && !userProfile.getEducation().isEmpty()) {
+            existingProfile.setEducation(userProfile.getEducation());
+        }
 
         return userProfileRepository.save(existingProfile);
     }

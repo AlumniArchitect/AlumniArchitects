@@ -98,9 +98,9 @@ const ProfilePage = () => {
             <label>Resume URL:</label>
             <input type="text" name="resumeUrl" value={user.resumeUrl} onChange={handleChange} className="profile-input" />
             <label>Social Links (comma-separated):</label>
-            <input type="text" name="socialLinks" value={user.socialLinks.join(", ")} onChange={(e) => setUser({ ...user, socialLinks: e.target.value.split(",") })} className="profile-input" />
+            <input type="text" name="socialLinks" value={user.socialLinks} onChange={(e) => setUser({ ...user, socialLinks: e.target.value.split(",") })} className="profile-input" />
             <label>Skills (comma-separated):</label>
-            <input type="text" name="skills" value={user.skills.join(", ")} onChange={(e) => setUser({ ...user, skills: e.target.value.split(",") })} className="profile-input" />
+            <input type="text" name="skills" value={user.skills} onChange={(e) => setUser({ ...user, skills: e.target.value.split(",") })} className="profile-input" />
           </div>
           <button onClick={handleSave} className="save-button">
             Save Changes
