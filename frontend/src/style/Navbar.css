@@ -101,6 +101,17 @@
   color: #ffffff;
 }
 
+.dropdown-profile {
+  background-color: #FFEAE3;
+  padding: 12px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 10px;
+  margin: -20px -20px 0 -20px;
+}
+
 .logout {
   color: #ff4d4d !important;
   font-weight: bold;
