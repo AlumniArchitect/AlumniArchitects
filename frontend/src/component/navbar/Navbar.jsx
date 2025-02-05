@@ -41,10 +41,7 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("email");
-    localStorage.removeItem("jwt");
-    localStorage.removeItem("profileImageUrl");
-    localStorage.removeItem("resumeUrl");
+    localStorage.clear();
     navigate("/signin");
   };
 

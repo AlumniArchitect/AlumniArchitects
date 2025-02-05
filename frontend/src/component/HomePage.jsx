@@ -14,7 +14,7 @@ export default function Homepage() {
 
             navigate("/signin");
         }
-    }, [navigate]);
+    }, [navigate, error]);
 
     const showError = (message) => {
         setError(message);
