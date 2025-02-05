@@ -9,9 +9,9 @@ import {
   FaExclamationCircle
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import "../style/Navbar.css";
-import Constant from "../utils/Constant.js";
-import defaultProfileImage from "./assets/userLogo.png";
+import "../../style/navbar/Navbar.css";
+import Constant from "../../utils/Constant.js";
+import defaultProfileImage from ".././assets/userLogo.png";
 import Chatbot from "./ChatBot.jsx";
 
 export default function Navbar() {

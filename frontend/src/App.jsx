@@ -5,9 +5,8 @@ import Signup from './component/auth/Signup.jsx';
 import HomePage from './component/HomePage.jsx';
 import OtpVerification from './component/auth/OtpVerification.jsx';
 import ForgotPassword from './component/auth/ForgotPassword.jsx';
-import ProfilePage from './component/Profile.jsx';
-import Setting from './utils/Setting.jsx';
-
+import ProfilePage from './component/navbar/Profile.jsx';
+import Setting from './component/navbar/Setting.jsx';
 
 const App = () => {
   return (

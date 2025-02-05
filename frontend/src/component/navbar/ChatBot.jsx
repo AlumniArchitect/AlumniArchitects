@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
-import "../style/ChatBot.css";
-import Constant from "../utils/Constant";
+import "../../style/navbar/ChatBot.css";
+import Constant from "../../utils/Constant";
 
 export default function Chatbot() {
   const [messages, setMessages] = useState([

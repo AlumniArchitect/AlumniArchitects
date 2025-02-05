@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Navbar from "./Navbar";
+import Navbar from "./navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 
 export default function Homepage() {

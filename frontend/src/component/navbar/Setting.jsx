@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AlertTriangle, HelpCircle, Mail, Trash2, Shield } from "lucide-react";
-import "../style/auth/Setting.css";
+import "../../style/navbar/Setting.css";
 
 export default function Setting() {
   const [selectedOption, setSelectedOption] = useState("Select an option");
