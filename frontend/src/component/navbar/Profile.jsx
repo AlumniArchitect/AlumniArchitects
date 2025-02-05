@@ -114,7 +114,7 @@ const ProfilePage = () => {
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) {
-      showError("Please provide file");
+      showError("Please provide a file");
       return;
     }
 
@@ -122,7 +122,7 @@ const ProfilePage = () => {
     formData.append("image", file);
 
     try {
-      const response = await fetch(`${Constant.BASE_URL}/uploadProfileImage/${user.email}`, {
+      const response = await fetch(`${Constant.BASE_URL}/api/userProfile/uploadProfileImage/${user.email}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${jwt}`,
@@ -130,13 +130,17 @@ const ProfilePage = () => {
         body: formData,
       });
 
-      if (!response.ok) throw new Error("Failed to upload image");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to upload image");
+      }
 
       const data = await response.json();
-      const imageUrl = data.secure_url;
+      const imageUrl = data;
 
-      setUser({ ...user, profileImageUrl: imageUrl });
+      setUser((prevUser) => ({ ...prevUser, profileImageUrl: imageUrl }));
       localStorage.setItem("profileImageUrl", imageUrl);
+
     } catch (error) {
       showError("Error uploading image: " + error.message);
     }
@@ -239,7 +243,7 @@ const ProfilePage = () => {
       </div>
       <div className="profile-main">
         <div className="profile-section">
-          
+
           {/* education */}
           <h3 className="section-title">Education</h3>
           {isEditing ? (
