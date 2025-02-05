@@ -1,13 +1,21 @@
 .blog-ui {
     display: flex;
-    height: 100%;
+    background-color: #f0f0f0;
+    align-items: stretch; /* Ensure both sections stretch to the tallest content */
+    height: auto; /* Adjust height dynamically */
+    min-height: 100vh; /* Ensures the page covers the full viewport */
 }
   
 .sidebar {
     width: 25%;
+    top: 10;
     padding: 1rem;
     background-color: #f0f0f0;
-    height: 100% !important;
+    min-height: 100vh; /* Ensures it does not shrink below viewport height */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: sticky; /* Ensures sidebar stretches dynamically */
 }
   
 .tab-button {
@@ -31,8 +39,9 @@
     background-color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    flex-grow: 1; /* Allows it to take the necessary space */
+    padding: 1rem;
 }
-  
 .create-blog {
     display: flex;
     flex-direction: column;
@@ -58,23 +67,24 @@ textarea {
     padding: 1rem;
     width: 20%;
     align-items: center;
-    border: 1px solid #000;
+    text-align: center  !important;
+    /* border: 1px solid #000; */
     background-color: #007bff;
     color: white;
     border-radius: 8px;
     cursor: pointer;
 }
   
-.button:disabled {
-     /* background-color: #000 !important;  */
-     cursor: not-allowed;
+.button:hover {
+    background-color: #007bff;
 }
   
 .view-blogs {
     display: flex;
     flex-direction: column;
-    min-height: auto;
     gap: 1.5rem;
+    padding-right: 10px;
+    min-height: 100vh;
 }
   
 .blog-post {
@@ -148,3 +158,43 @@ textarea {
 .reply-content {
     margin-top: 0.5rem;
 }
+
+
+.my-blogs {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-right: 10px;
+    min-height: 100vh;
+}
+
+.my-blog-post {
+    background-color: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.my-blog-user {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.my-blog-content {
+    margin-bottom: 1rem;
+}
+
+.delete-button {
+    padding: 0.75rem;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}
+
