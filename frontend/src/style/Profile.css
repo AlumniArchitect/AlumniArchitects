@@ -1,3 +1,7 @@
+html body{
+  overflow: auto;
+  height: 100%;
+}
 .education-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -132,6 +136,14 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   margin-bottom: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.profile-section::-webkit-scrollbar {
+  display: none;
 }
 
 .section-title {
@@ -191,6 +203,7 @@
   background-color: #f7f7f7;
   border: 1px solid #ddd;
 }
+
 .add-btn,
 .remove-btn {
   padding: 3px 7px;
