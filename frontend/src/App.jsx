@@ -7,6 +7,7 @@ import OtpVerification from './component/auth/OtpVerification.jsx';
 import ForgotPassword from './component/auth/ForgotPassword.jsx';
 import ProfilePage from './component/navbar/Profile.jsx';
 import Setting from './component/navbar/Setting.jsx';
+import BlogUI from './component/navbar/Blog.jsx';
 
 const App = () => {
   return (
@@ -20,7 +21,7 @@ const App = () => {
       <Route path="*" element={<Navigate to='/signin' />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/setting" element={<Setting />} />
-      
+      <Route path="/blog" element={<BlogUI />} />
     </Routes>
   );
 };

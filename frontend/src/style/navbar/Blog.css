@@ -1,0 +1,150 @@
+.blog-ui {
+    display: flex;
+    height: 100%;
+}
+  
+.sidebar {
+    width: 25%;
+    padding: 1rem;
+    background-color: #f0f0f0;
+    height: 100% !important;
+}
+  
+.tab-button {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #ddd;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+    font-size: 1rem;
+}
+  
+.tab-button.active {
+    background-color: #007bff;
+    color: white;
+}
+  
+.content {
+    width: 75%;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+  
+.create-blog {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh !important;
+}
+  
+.input-field,
+.textarea-field {
+    width: 90% !important;
+    padding: 0.75rem;
+    margin-block: 25px;
+    border: 1px solid #ddd;
+    font-size: 18px;
+    border-radius: 8px;
+}
+  
+textarea {
+    resize: none;
+}
+  
+.button {
+    padding: 1rem;
+    width: 20%;
+    align-items: center;
+    border: 1px solid #000;
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+  
+.button:disabled {
+     /* background-color: #000 !important;  */
+     cursor: not-allowed;
+}
+  
+.view-blogs {
+    display: flex;
+    flex-direction: column;
+    min-height: auto;
+    gap: 1.5rem;
+}
+  
+.blog-post {
+    background-color: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+  
+.blog-user {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+  
+.blog-content {
+    margin-bottom: 1rem;
+}
+  
+.like-button,
+.dislike-button,
+.reply-button {
+    padding: 0.75rem;
+    margin-right: 0.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+  
+.like-button {
+    background-color: #007bff;
+    color: white;
+}
+  
+.like-button.liked {
+    background-color: #5bc0de;
+}
+  
+.dislike-button {
+    background-color: #dc3545;
+    color: white;
+}
+  
+.dislike-button.disliked {
+    background-color: #ff6b6b;
+}
+  
+.reply-button {
+    background-color: #28a745;
+    color: white;
+}
+  
+.reply-form {
+    margin-top: 1rem;
+}
+  
+.replies {
+    margin-top: 1.5rem;
+}
+  
+.reply {
+    background-color: #f0f0f0;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 8px;
+}
+  
+.reply-user {
+    font-weight: bold;
+}
+  
+.reply-content {
+    margin-top: 0.5rem;
+}
