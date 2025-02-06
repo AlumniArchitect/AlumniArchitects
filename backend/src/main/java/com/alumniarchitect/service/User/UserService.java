@@ -11,11 +11,11 @@ public interface UserService {
 
     User findByEmail(String email);
 
-    User findByJWT(String jwt) throws Exception;
-
-    User findById(Long id) throws Exception;
-
     void deleteAccount(User savedUser);
 
     List<User> findAll();
+
+    String getFullName(String email);
+
+    boolean isVerified(String email);
 }

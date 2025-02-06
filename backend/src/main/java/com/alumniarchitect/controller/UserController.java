@@ -22,6 +22,16 @@ public class UserController {
         return "Server Running";
     }
 
+    @GetMapping("/getName/{email}")
+    public String getName(@PathVariable String email) {
+        return userService.getFullName(email);
+    }
+
+    @GetMapping("/isVerified/{email}")
+    public boolean isVerified(@PathVariable String email) {
+        return userService.isVerified(email);
+    }
+
     @GetMapping("/user/{email}")
     public ResponseEntity<UserResponse> getUserProfile(@PathVariable String email) {
         User user = userService.findByEmail(email);

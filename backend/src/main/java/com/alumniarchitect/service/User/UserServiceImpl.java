@@ -26,30 +26,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByJWT(String jwt) throws Exception {
-        String email = JwtProvider.getEmailFromToken(jwt);
-
-        User user = userRepository.findByEmail(email);
-
-        if (user == null) {
-            throw new Exception("User not found.");
-        }
-
-        return user;
-    }
-
-    @Override
-    public User findById(Long id) throws Exception {
-        Optional<User> user = userRepository.findById(id);
-
-        if (user.isPresent()) {
-            return user.get();
-        }
-
-        throw new Exception("User not found.");
-    }
-
-    @Override
     public void deleteAccount(User user) {
         userRepository.delete(user);
     }
@@ -57,5 +33,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public String getFullName(String email) {
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            return null;
+        }else {
+            return user.getFullName();
+        }
+    }
+
+    @Override
+    public boolean isVerified(String email) {
+        return userRepository.findByEmail(email).isVerified();
     }
 }
