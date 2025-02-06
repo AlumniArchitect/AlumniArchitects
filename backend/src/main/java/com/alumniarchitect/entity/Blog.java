@@ -4,7 +4,6 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.security.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +15,6 @@ public class Blog {
     private String id;
     private String email;
     private String author;
-    private Timestamp timestamp;
     private String title;
     private String content;
     private Long upvote;
