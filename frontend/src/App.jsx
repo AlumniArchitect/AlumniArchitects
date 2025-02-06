@@ -22,10 +22,7 @@ const App = () => {
       <Route path="*" element={<Navigate to='/signin' />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/setting" element={<Setting />} />
-<<<<<<< HEAD
-=======
       <Route path="/blog" element={<BlogUI />} />
->>>>>>> 2e3277be2999c980f8068194b0c1c11b784f6e2f
     </Routes>
      </>
   );
