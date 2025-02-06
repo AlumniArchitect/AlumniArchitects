@@ -65,39 +65,39 @@ export default function Setting() {
   return (
     <div className="settings-container">
       {error && <div className="message">{error}</div>}
-      <div className="sidebar">
-        <div className="card">
-          <h2 className="title">Settings</h2>
-          <div className="button-group">
-            <button className="button" onClick={() => setSelectedOption("Report Bug")}>
+      <div className="setting-sidebar">
+        <div className="setting-card">
+          <h2 className="setting-title">Settings</h2>
+          <div className="setting-button-group">
+            <button className="setting-button" onClick={() => setSelectedOption("Report Bug")}>
               <AlertTriangle size={18} /> Report Bug
             </button>
-            <button className="button" onClick={() => setSelectedOption("FAQ")}>
+            <button className="setting-button" onClick={() => setSelectedOption("FAQ")}>
               <HelpCircle size={18} /> FAQ
             </button>
-            <button className="button" onClick={() => setSelectedOption("Contact Us")}>
+            <button className="setting-button" onClick={() => setSelectedOption("Contact Us")}>
               <Mail size={18} /> Contact Us
             </button>
-            <button className="button" onClick={() => setSelectedOption("Privacy Policy")}>
+            <button className="setting-button" onClick={() => setSelectedOption("Privacy Policy")}>
               <Shield size={18} /> Privacy Policy
             </button>
-            <button className="button delete" onClick={handleDeleteAccount}>
+            <button className="setting-button setting-delete" onClick={handleDeleteAccount}>
               <Trash2 size={18} /> Delete Account
             </button>
           </div>
         </div>
       </div>
 
-      <div className="content-area">
-        <div className="card">
-          <h2 className="title">{selectedOption}</h2>
-          <div className="card-content">
+      <div className="setting-content-area">
+        <div className="setting-card">
+          <h2 className="setting-title">{selectedOption}</h2>
+          <div className="setting-card-content">
             <p>{contentMap[selectedOption] || "Select an option to see details."}</p>
-            {showConfirmation && (
-              <div className="confirmation-dialog">
+            {selectedOption === "Delete Account" && showConfirmation && (
+              <div className="setting-confirmation-dialog">
                 <p>Are you sure you want to delete your account?</p>
-                <div className="confirmation-buttons">
-                  <button className="button confirm" onClick={() => handleConfirmation(true)}>
+                <div className="setting-confirmation-buttons">
+                  <button className="setting-button setting-confirm" onClick={() => handleConfirmation(true)}>
                     Yes
                   </button>
                 </div>

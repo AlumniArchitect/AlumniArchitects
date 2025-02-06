@@ -184,6 +184,11 @@ const BlogUI = () => {
       setSelectedBlogIndex(null);
     }
   };
+  const handleResize = (e) => {
+    const textarea = e.target;
+    textarea.style.height = "auto";
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  };
 
   const likeBlog = (index) => {
     if (!likedBlogs.includes(index)) {
@@ -237,6 +242,7 @@ const BlogUI = () => {
               onChange={(e) => setNewBlog(e.target.value)}
               placeholder="Write your blog content here..."
               className="textarea-field"
+              onInput={handleResize}
             />
             <button className="button" onClick={addBlog}>
               Create & Post Blog
@@ -282,6 +288,7 @@ const BlogUI = () => {
                       onChange={(e) => setReplyContent(e.target.value)}
                       placeholder="Write your reply..."
                       className="textarea-field"
+                      onInput={handleResize}
                     />
                     <button className="button" onClick={() => addReply(index)}>
                       Post Reply

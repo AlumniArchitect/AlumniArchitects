@@ -10,7 +10,7 @@ body {
   color: #333;
 }
 
-.message {
+.setting-message {
   position: fixed;
   top: 20px;
   right: 20px;
@@ -35,7 +35,7 @@ body {
   overflow: hidden;
 }
 
-.sidebar {
+.setting-sidebar {
   width: 350px;
   background-color: #fafafa;
   border-right: 1px solid #e0e0e0;
@@ -43,25 +43,25 @@ body {
   height: 90vh;
 }
 
-.sidebar .card {
+.setting-sidebar .setting-card {
   display: flex;
   flex-direction: column;
 }
 
-.sidebar .title {
+.setting-sidebar .setting-title {
   font-size: 25px;
   font-weight: bold;
   margin-bottom: 20px;
   color: #333;
 }
 
-.button-group {
+.setting-button-group {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.button {
+.setting-button {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -69,35 +69,35 @@ body {
   padding: 10px 15px;
   background-color: #fff;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 10px;
   font-size: 16px;
   color: #333;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.button:hover {
+.setting-button:hover {
   background-color: #f0f0f0;
   border-color: #ccc;
 }
 
-.button.delete {
+.setting-button.setting-delete {
   color: #e74c3c;
 }
 
-.button.delete:hover {
+.setting-button.delete:hover {
   background-color: #ffebee;
   border-color: #e74c3c;
 }
 
-.content-area {
+.setting-content-area {
   flex-grow: 1;
   margin-right: 20px;
   padding-right: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.content-area .card {
+.setting-content-area .setting-card {
   background-color: #fff;
   border-radius: 4px;
   padding: 20px;
@@ -105,7 +105,7 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.content-area .title {
+.setting-content-area .setting-title {
   font-size: 25px;
   font-weight: bold;
   margin-bottom: 15px;
@@ -113,7 +113,7 @@ body {
   text-align: center;
 }
 
-.card-content {
+.setting-card-content {
   font-size: 17px;
   line-height: 1.6;
   color: #555;
@@ -124,23 +124,23 @@ body {
   height: 100%;
 }
 
-.confirmation-dialog {
+.setting-confirmation-dialog {
   text-align: center;
   margin-top: 20px;
 }
 
-.confirmation-dialog button {
+.setting-confirmation-dialog button {
   margin-left: 150px;
 }
 
-.confirmation-buttons {
+.setting-confirmation-buttons {
   display: flex;
   gap: 10px;
   margin-top: 15px;
 }
 
-.button.confirm,
-.button.cancel {
+.setting-button.setting-confirm,
+.setting-button.setting-cancel {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -148,12 +148,12 @@ body {
   font-size: 14px;
 }
 
-.button.confirm {
+.setting-button.setting-confirm {
   background-color: #ff4d4d;
   color: white;
 }
 
-.button.cancel {
+.setting-button.setting-cancel {
   background-color: #ccc;
   color: black;
 }
@@ -163,13 +163,13 @@ body {
     flex-direction: column;
   }
 
-  .sidebar {
+  .setting-sidebar {
     width: 100%;
     border-right: none;
     border-bottom: 1px solid #e0e0e0;
   }
 
-  .content-area {
+  .setting-content-area {
     padding: 15px;
   }
 }
