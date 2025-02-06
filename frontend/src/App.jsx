@@ -10,6 +10,7 @@ import Setting from './component/navbar/Setting.jsx';
 
 const App = () => {
   return (
+    <>
     <Routes>
       <Route path="/" element={<Navigate to='/login' />} />
       <Route path="/signup" element={<Signup />} />
@@ -20,8 +21,8 @@ const App = () => {
       <Route path="*" element={<Navigate to='/signin' />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/setting" element={<Setting />} />
-      
     </Routes>
+     </>
   );
 };
 

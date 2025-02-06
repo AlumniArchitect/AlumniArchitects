@@ -5,14 +5,13 @@ import {
   FaUserCircle,
   FaCog,
   FaSignOutAlt,
-  FaCommentDots,
   FaExclamationCircle
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "../../style/navbar/Navbar.css";
 import Constant from "../../utils/Constant.js";
 import defaultProfileImage from ".././assets/userLogo.png";
-import Chatbot from "./ChatBot.jsx";
+
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -20,7 +19,6 @@ export default function Navbar() {
     name: "",
     profileImageUrl: defaultProfileImage,
   });
-  const [visible, setVisible] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const email = localStorage.getItem("email");
@@ -34,10 +32,6 @@ export default function Navbar() {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
-  };
-
-  const handleChatBot = () => {
-    setVisible(!visible);
   };
 
   const handleLogout = () => {
@@ -176,12 +170,6 @@ export default function Navbar() {
           </div>
         )}
       </div>
-
-      <button className="chat-button" onClick={handleChatBot}>
-        <FaCommentDots className="chat-icon" />
-      </button>
-
-      {visible && <Chatbot />}
     </nav>
   );
 }
