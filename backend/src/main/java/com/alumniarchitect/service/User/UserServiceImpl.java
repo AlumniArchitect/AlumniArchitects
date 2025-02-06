@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) throws Exception {
+    public User findById(String id) throws Exception {
         Optional<User> user = userRepository.findById(id);
 
         if (user.isPresent()) {
@@ -57,5 +57,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public String getFullName(String email) {
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            return null;
+        }else {
+            return user.getFullName();
+        }
+    }
+
+    @Override
+    public boolean isVerified(String email) {
+        return userRepository.findByEmail(email).isVerified();
     }
 }

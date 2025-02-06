@@ -47,6 +47,10 @@ export default function Navbar() {
     navigate("/setting"); 
   };
 
+  const handleBlogClick = () => {
+    navigate("/blog"); 
+  };
+
   useEffect(() => {
     const fetchUserName = async () => {
       try {
@@ -155,7 +159,7 @@ export default function Navbar() {
               </li>
               <li>Option 1</li>
               <li>Option 2</li>
-              <li>Option 3</li>
+              <li onClick={handleBlogClick}>Blog</li>
               <li>Option 4</li>
               <li>Option 5</li>
               <li>Option 6</li>

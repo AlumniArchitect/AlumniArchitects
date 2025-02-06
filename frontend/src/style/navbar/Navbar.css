@@ -17,12 +17,18 @@
   cursor: pointer;
 }
 
+.p-img{
+  align-items: center;
+  justify-content: center;
+}
+
 .p-img img {
-  height: 55px;
-  width: 55px;
+  height: 47px;
+  width: 47px;
   border-radius: 50%;
   margin-right: 10px;
   border: 2px solid transparent;
+
 }
 
 .p-name {

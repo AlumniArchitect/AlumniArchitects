@@ -57,7 +57,7 @@ public class UserProfileController {
         userProfile.setProfileImageUrl(data.get("secure_url").toString());
         userProfileService.createOrUpdateUserProfile(userProfile);
 
-        return new ResponseEntity<>(data.toString(), HttpStatus.CREATED);
+        return new ResponseEntity<>(data.get("secure_url").toString(), HttpStatus.OK);
     }
 
     @GetMapping("/getProfileImage/{email}")
