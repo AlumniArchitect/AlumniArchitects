@@ -15,6 +15,10 @@ public interface UserService {
 
     List<User> findAll();
 
+    User findById(String id) throws Exception;
+
+    User findByJWT(String jwt) throws Exception;
+
     String getFullName(String email);
 
     boolean isVerified(String email);
