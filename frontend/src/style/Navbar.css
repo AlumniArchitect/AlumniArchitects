@@ -1,0 +1,148 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #0056b3; /* Blue background */
+  color: white;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.p-img img {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+  border: 2px solid white;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff; /* Darker blue */
+  padding: 5px 10px;
+  border-radius: 20px;
+  width: 40%;
+}
+
+.search-icon {
+  margin-right: 10px;
+  color: blue;
+}
+
+.search-bar input {
+  border: none;
+  background: none;
+  color: black;
+  outline: none;
+  width: 100%;
+}
+
+.nav-icons {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  margin-left: 20px;
+  cursor: pointer;
+  color: white;
+  font-size: 18px;
+}
+
+.icon:hover {
+  color: #d9e6ff; /* Light blue */
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background-color: #ffffff; /* White background */
+  color: #333; /* Dark gray text */
+  padding: 20px;
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+.dropdown-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.dropdown-menu li {
+  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  color: #333; /* Dark gray text */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  /* transition: background-color , color 0.3s ease; */
+}
+
+/* Hover Effect */
+.dropdown-menu li:hover {
+  background-color: #0056b3; /* Blue background */
+  color: #ffffff; /* White text */
+}
+
+/* Logout Button */
+.logout {
+  color: #ff4d4d !important;
+  font-weight: bold;
+}
+
+.logout:hover {
+  background-color: #ff4d4d !important;
+  color: #ffffff !important;
+}
+
+@media (max-width: 768px) {
+  .dropdown-menu {
+    width: 200px;
+  }
+
+  .p-name {
+    display: none;
+  }
+}
+
+.chat-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  z-index: 1000;
+}
+
+.chat-button:hover {
+  background-color: #0056b3;
+}
+
+.chat-icon {
+  font-size: 24px;
+}
