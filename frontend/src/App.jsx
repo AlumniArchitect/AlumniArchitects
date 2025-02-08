@@ -8,13 +8,15 @@ import ForgotPassword from './component/auth/ForgotPassword.jsx';
 import ProfilePage from './component/navbar/Profile.jsx';
 import Setting from './component/navbar/Setting.jsx';
 import BlogUI from './component/navbar/Blog.jsx';
+import SplashScreen from './component/SplashScreen.jsx';
 
 const App = () => {
   return (
     <>
     <Routes>
-      <Route path="/" element={<Navigate to='/splashScreen' />} />
-      <Route path="*" element={<Navigate to='/splashScreen' />} />
+      <Route path="/" element={<Navigate to='/splash-screen' />} />
+      <Route path="*" element={<Navigate to='/splash-screen' />} />
+      <Route path="/splash-screen" element={<SplashScreen />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/verify-otp" element={<OtpVerification />} />
