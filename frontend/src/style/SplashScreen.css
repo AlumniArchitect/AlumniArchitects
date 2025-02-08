@@ -147,6 +147,7 @@ body {
     color: #0056b3;
 }
 
+/* movile apps */
 @media (max-width: 768px) {
     .container-1 {
         flex-direction: column;
