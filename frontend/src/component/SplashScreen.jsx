@@ -1,5 +1,5 @@
 import "../style/SplashScreen.css";
-import img1 from '../component/Assets/img1.jpg'
+import img1 from '../component/assets/img1.jpg'
 import { useNavigate } from "react-router-dom";
 
 const SplashScreen = () => {
@@ -15,7 +15,7 @@ const SplashScreen = () => {
     }
 
     return(
-        <div className="main-wrapper">
+        <div id="splashScreen" className="main-wrapper">
             <div className="header">
                 <div className="title"><i><h1>Alumini Architect</h1></i></div>
                 <div>
