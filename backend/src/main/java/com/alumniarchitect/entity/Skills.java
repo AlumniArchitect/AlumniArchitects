@@ -1,20 +1,21 @@
 package com.alumniarchitect.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import lombok.Data;
+
 import java.util.List;
 
-@Document(collection = "collegegroup")
+@Document(collection = "skills")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CollegeGroup {
+public class Skills {
 
     @Id
     private String id;
-    private String collegeName;
+    private String name;
     private List<String> emails;
 }

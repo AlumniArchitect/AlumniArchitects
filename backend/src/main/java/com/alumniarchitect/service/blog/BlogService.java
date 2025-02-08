@@ -1,8 +1,6 @@
-package com.alumniarchitect.service.Blog;
+package com.alumniarchitect.service.blog;
 
 import com.alumniarchitect.entity.Blog;
-import com.alumniarchitect.response.api.BlogResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

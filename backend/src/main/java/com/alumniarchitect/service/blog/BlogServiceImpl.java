@@ -1,4 +1,4 @@
-package com.alumniarchitect.service.Blog;
+package com.alumniarchitect.service.blog;
 
 import com.alumniarchitect.entity.Blog;
 import com.alumniarchitect.repository.BlogRepository;

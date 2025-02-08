@@ -1,4 +1,4 @@
-package com.alumniarchitect.service.CollageGroup;
+package com.alumniarchitect.service.collageGroup;
 
 import com.alumniarchitect.entity.CollegeGroup;
 

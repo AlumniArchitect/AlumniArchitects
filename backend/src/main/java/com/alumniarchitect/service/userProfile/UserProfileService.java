@@ -1,4 +1,4 @@
-package com.alumniarchitect.service.UserProfile;
+package com.alumniarchitect.service.userProfile;
 
 import com.alumniarchitect.entity.UserProfile;
 import org.springframework.web.multipart.MultipartFile;

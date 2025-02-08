@@ -1,4 +1,4 @@
-package com.alumniarchitect.service.Email;
+package com.alumniarchitect.service.email;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

@@ -2,7 +2,7 @@ package com.alumniarchitect.controller;
 
 import com.alumniarchitect.entity.User;
 import com.alumniarchitect.response.api.UserResponse;
-import com.alumniarchitect.service.User.UserService;
+import com.alumniarchitect.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

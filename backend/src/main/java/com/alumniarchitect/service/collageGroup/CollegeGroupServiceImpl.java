@@ -1,8 +1,8 @@
-package com.alumniarchitect.service.CollageGroup;
+package com.alumniarchitect.service.collageGroup;
 
 import com.alumniarchitect.entity.CollegeGroup;
 import com.alumniarchitect.repository.CollegeGroupRepository;
-import com.alumniarchitect.service.Email.EmailService;
+import com.alumniarchitect.service.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;

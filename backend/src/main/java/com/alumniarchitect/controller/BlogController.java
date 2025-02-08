@@ -2,7 +2,7 @@ package com.alumniarchitect.controller;
 
 import com.alumniarchitect.entity.Blog;
 import com.alumniarchitect.response.api.BlogResponse;
-import com.alumniarchitect.service.Blog.BlogService;
+import com.alumniarchitect.service.blog.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
