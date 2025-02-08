@@ -35,7 +35,9 @@ public class UserProfileController {
         UserProfile updatedProfile = userProfileService.createOrUpdateUserProfile(userProfile);
 
         try {
-            skillsService.addEmailToSkill(userProfile.getSkills(), updatedProfile.getEmail());
+            if(userProfile.getSkills() != null && !userProfile.getSkills().isEmpty()) {
+                skillsService.addEmailToSkill(userProfile.getSkills(), updatedProfile.getEmail());
+            }
         } catch (Exception e) {
             return new ResponseEntity<>(new UserProfileResponse(false, "Error mapping skills asn email: " + e.getMessage(), null),
                     HttpStatus.INTERNAL_SERVER_ERROR);
