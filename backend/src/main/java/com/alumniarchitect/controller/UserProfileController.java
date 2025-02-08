@@ -2,8 +2,9 @@ package com.alumniarchitect.controller;
 
 import com.alumniarchitect.entity.UserProfile;
 import com.alumniarchitect.response.api.UserProfileResponse;
-import com.alumniarchitect.service.User.UserService;
-import com.alumniarchitect.service.UserProfile.UserProfileService;
+import com.alumniarchitect.service.skills.SkillsService;
+import com.alumniarchitect.service.user.UserService;
+import com.alumniarchitect.service.userProfile.UserProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,9 @@ public class UserProfileController {
     private UserProfileService userProfileService;
 
     @Autowired
+    private SkillsService skillsService;
+
+    @Autowired
     private UserService userService;
 
     @PostMapping
@@ -30,7 +34,17 @@ public class UserProfileController {
 
         UserProfile updatedProfile = userProfileService.createOrUpdateUserProfile(userProfile);
 
-        return new ResponseEntity<>(new UserProfileResponse(true, "Profile Updated.", updatedProfile), HttpStatus.OK);
+        try {
+            if(userProfile.getSkills() != null && !userProfile.getSkills().isEmpty()) {
+                skillsService.addEmailToSkill(userProfile.getSkills(), updatedProfile.getEmail());
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(new UserProfileResponse(false, "Error mapping skills asn email: " + e.getMessage(), null),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(new UserProfileResponse(true, "Profile Updated.", updatedProfile),
+                HttpStatus.OK);
     }
 
     @GetMapping("/{email}")
@@ -38,7 +52,8 @@ public class UserProfileController {
         UserProfile userProfile = userProfileService.findByEmail(email);
 
         if (userProfile == null) {
-            return new ResponseEntity<>(new UserProfileResponse(false, "User not found", null), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new UserProfileResponse(false, "User not found", null),
+                    HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<>(new UserProfileResponse(true, "Profile Found.", userProfile), HttpStatus.OK);
@@ -57,7 +72,7 @@ public class UserProfileController {
         userProfile.setProfileImageUrl(data.get("secure_url").toString());
         userProfileService.createOrUpdateUserProfile(userProfile);
 
-        return new ResponseEntity<>(data.toString(), HttpStatus.CREATED);
+        return new ResponseEntity<>(data.get("secure_url").toString(), HttpStatus.OK);
     }
 
     @GetMapping("/getProfileImage/{email}")

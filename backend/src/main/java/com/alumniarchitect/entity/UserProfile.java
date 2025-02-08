@@ -23,4 +23,7 @@ public class UserProfile {
     private List<String> socialLinks;
     private List<String> skills;
     private String location;
+    private String mobileNumber;
+    private List<Education> education;
+    private boolean isComplete = false;
 }

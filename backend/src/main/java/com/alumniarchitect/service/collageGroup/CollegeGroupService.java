@@ -1,4 +1,4 @@
-package com.alumniarchitect.service.CollageGroup;
+package com.alumniarchitect.service.collageGroup;
 
 import com.alumniarchitect.entity.CollegeGroup;
 
@@ -10,5 +10,5 @@ public interface CollegeGroupService {
 
     List<CollegeGroup> getAllCollegeGroups();
 
-    CollegeGroup getCollegeGroupsByName(String collageName);
+    CollegeGroup findByCollegeName(String collageName);
 }

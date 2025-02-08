@@ -1,4 +1,4 @@
-package com.alumniarchitect.service.User;
+package com.alumniarchitect.service.user;
 
 import com.alumniarchitect.entity.User;
 import org.springframework.stereotype.Component;
@@ -11,11 +11,15 @@ public interface UserService {
 
     User findByEmail(String email);
 
-    User findByJWT(String jwt) throws Exception;
-
-    User findById(Long id) throws Exception;
-
     void deleteAccount(User savedUser);
 
     List<User> findAll();
+
+    User findById(String id) throws Exception;
+
+    User findByJWT(String jwt) throws Exception;
+
+    String getFullName(String email);
+
+    boolean isVerified(String email);
 }

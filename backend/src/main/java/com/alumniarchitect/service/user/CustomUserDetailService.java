@@ -1,4 +1,4 @@
-package com.alumniarchitect.service.User;
+package com.alumniarchitect.service.user;
 
 import com.alumniarchitect.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;

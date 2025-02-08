@@ -1,0 +1,235 @@
+html body{
+  overflow: auto;
+  height: 100%;
+}
+.education-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.education-card {
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+}
+
+.education-card:hover {
+  transform: scale(1.02);
+}
+
+.education-type {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: rgb(20, 20, 20);
+}
+
+.education-name {
+  font-size: 1rem;
+  color: rgb(20, 20, 20);
+}
+
+.education-year,
+.education-cgpa {
+  font-size: 0.9rem;
+  color: rgb(20, 20, 20);
+}
+
+.profile-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  padding: 20px;
+}
+
+.profile-sidebar {
+  width: 30%;
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.profile-content {
+  text-align: center;
+}
+
+.profile-photo {
+  margin-bottom: 10px !important;
+  width: 100px;
+  height: 100px;
+  background-color: #ccc;
+  border-radius: 50%;
+  margin: auto;
+  cursor: pointer;
+  background-size: cover;
+}
+
+.photo-placeholder {
+  color: #666;
+}
+
+.photo-options {
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.photo-btn {
+  display: block;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.hidden-input {
+  margin-block: 10px !important;
+  display: none;
+}
+
+.profile-name {
+  margin-block: 10px !important;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.profile-email {
+  margin-block: 10px !important;
+  font-weight: 400;
+  color: rgb(40, 40, 40);
+}
+
+.profile-info {
+  margin-block: 10px !important;
+  font-weight: 400;
+  color: rgb(40, 40, 40);
+}
+
+.file-input {
+  margin-top: 10px;
+}
+
+.resume-info {
+  color: gray;
+}
+
+.edit-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #10b981;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.profile-main {
+  width: 65%;
+  margin-left: 20px;
+}
+
+.profile-section {
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.profile-section::-webkit-scrollbar {
+  display: none;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.input-field {
+  width: 90% !important;
+  margin-block: 1px !important;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.skills-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.skill-badge {
+  background-color: #e5e7eb;
+  padding: 6px 12px;
+  border-radius: 5px;
+}
+
+.social-links {
+  list-style: none;
+  padding: 0;
+}
+
+.social-links li a {
+  color: #3b82f6;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 1rem;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.4);
+  outline: none;
+}
+
+.input-field:hover {
+  border-color: #63c067;
+}
+
+.input-field:disabled {
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+}
+
+.add-btn,
+.remove-btn {
+  padding: 3px 7px;
+  border: none;
+  border-radius: 5px;
+  border: 1px solid rgb(77, 75, 75);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.add-btn {
+  background-color: #4CAF50;
+  color: #fff;
+}
+
+.add-btn:hover {
+  background-color: #66bb6a;
+}
+
+.remove-btn {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.remove-btn:hover {
+  background-color: #e57373;
+}

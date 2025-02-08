@@ -7,8 +7,12 @@ import SplashScreen from "./component/SplashScreen"
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
+<<<<<<< HEAD
     {/* <App /> */}
     {/* <Homepage /> */}
     <SplashScreen />
+=======
+   <App />
+>>>>>>> b67bd94786c28c0718323bfb66d963cfe4bbbeec
   </BrowserRouter>
 );

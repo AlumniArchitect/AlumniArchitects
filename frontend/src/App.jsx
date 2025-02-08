@@ -5,9 +5,13 @@ import Signup from './component/auth/Signup.jsx';
 import HomePage from './component/HomePage.jsx';
 import OtpVerification from './component/auth/OtpVerification.jsx';
 import ForgotPassword from './component/auth/ForgotPassword.jsx';
+import ProfilePage from './component/navbar/Profile.jsx';
+import Setting from './component/navbar/Setting.jsx';
+import BlogUI from './component/navbar/Blog.jsx';
 
 const App = () => {
   return (
+    <>
     <Routes>
       <Route path="/" element={<Navigate to='/login' />} />
       <Route path="/signup" element={<Signup />} />
@@ -15,9 +19,12 @@ const App = () => {
       <Route path="/signin" element={<Signin />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/homepage" element={<HomePage />} />
-      <Route path='/forgot-password' element={<ForgotPassword />} />
       <Route path="*" element={<Navigate to='/signin' />} />
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/setting" element={<Setting />} />
+      <Route path="/blog" element={<BlogUI />} />
     </Routes>
+     </>
   );
 };
 
