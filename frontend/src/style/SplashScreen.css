@@ -21,9 +21,25 @@ body {
     width: 100vw;
     text-align: center;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     background-color: #0056b3;
+    color: white;
+}
+
+.loginBtn {
+    background-color: white;
+    color: black;
+    border: 2px solid black;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.loginBtn:hover {
+    background-color: black;
     color: white;
 }
 
@@ -147,7 +163,6 @@ body {
     color: #0056b3;
 }
 
-/* movile apps */
 @media (max-width: 768px) {
     .container-1 {
         flex-direction: column;
