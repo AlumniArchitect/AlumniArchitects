@@ -1,12 +1,27 @@
 import "../style/SplashScreen.css";
 import img1 from '../component/Assets/img1.jpg'
+import { useNavigate } from "react-router-dom";
 
 const SplashScreen = () => {
+
+    const navigate = useNavigate();
+
+    const handleNavigate = (signin) => {
+        if(signin) {
+            navigate("/signin");
+        } else {
+            navigate("/signup")
+        }
+    }
+
     return(
         <div className="main-wrapper">
             <div className="header">
                 <div className="title"><i><h1>Alumini Architect</h1></i></div>
-                <button className="loginBtn"><b><i>Login</i></b></button>
+                <div>
+                    <button className="loginBtn" onClick={() => handleNavigate(true)}><b><i>Sign in</i></b></button>
+                    <button className="loginBtn" onClick={() => handleNavigate(false)}><b><i>Sign upp</i></b></button>
+                </div>
             </div>
             <div className="container-1">
                 <div>
