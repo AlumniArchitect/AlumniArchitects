@@ -7,7 +7,7 @@ import java.util.List;
 
 @Service
 public interface BlogService {
-    Blog save(Blog blog);
+    void save(Blog blog);
 
     List<Blog> getAllBlogs();
 

@@ -10,5 +10,5 @@ public interface CollegeGroupService {
 
     List<CollegeGroup> getAllCollegeGroups();
 
-    CollegeGroup getCollegeGroupsByName(String collageName);
+    CollegeGroup findByCollegeName(String collageName);
 }

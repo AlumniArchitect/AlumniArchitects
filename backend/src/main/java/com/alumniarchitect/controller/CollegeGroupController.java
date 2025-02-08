@@ -30,7 +30,7 @@ public class CollegeGroupController {
 
         String collegeName = EmailService.extractCollegeName(collegeEmail);
 
-        CollegeGroup collegeGroup = collegeGroupService.getCollegeGroupsByName(collegeName);
+        CollegeGroup collegeGroup = collegeGroupService.findByCollegeName(collegeName);
 
         if(collegeGroup == null) {
             return new ResponseEntity<>(new CollegeGroupResponse(false, "No college details found", null), HttpStatus.NOT_FOUND);

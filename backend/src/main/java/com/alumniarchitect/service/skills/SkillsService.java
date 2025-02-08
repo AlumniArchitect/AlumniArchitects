@@ -9,4 +9,5 @@ public interface SkillsService {
     void addEmailToSkill(String skill, String email);
     void addEmailToSkill(List<String> skills, String email);
     List<Skills> getAllSkills();
-    Skills getSkillByName(String skill);}
+    Skills getSkillByName(String skill);
+}

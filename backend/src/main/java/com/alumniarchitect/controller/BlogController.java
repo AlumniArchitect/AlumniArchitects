@@ -18,18 +18,14 @@ public class BlogController {
     private BlogService blogService;
 
     @PostMapping
-    public ResponseEntity<BlogResponse> addBlog(Blog blog) {
-        if(blog == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> addBlog(@RequestBody Blog blog) {
+        if (blog.getEmail() == null || blog.getTitle() == null || blog.getContent() == null) {
+            throw new IllegalArgumentException("Missing required fields!");
         }
 
-        Blog created = blogService.save(blog);
+        blogService.save(blog);
 
-        if(created == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<>(new BlogResponse(false, "Blog created", created),
+        return new ResponseEntity<>("created",
                 HttpStatus.CREATED);
     }
 

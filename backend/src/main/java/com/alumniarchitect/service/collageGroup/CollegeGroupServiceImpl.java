@@ -40,7 +40,7 @@ public class CollegeGroupServiceImpl implements CollegeGroupService {
     }
 
     @Override
-    public CollegeGroup getCollegeGroupsByName(String collageName) {
+    public CollegeGroup findByCollegeName(String collageName) {
         return collegeGroupRepository.findByCollegeName(collageName);
     }
 }
