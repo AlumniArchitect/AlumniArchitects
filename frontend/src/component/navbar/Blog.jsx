@@ -9,58 +9,110 @@ import {
   Calendar,
 } from "lucide-react";
 import { format } from "date-fns";
-
-const INITIAL_BLOGS = [
-  {
-    id: 1,
-    title: "React 18 Features Deep Dive",
-    content: "Just finished exploring the latest features in React 18! The automatic batching and transitions are absolute game-changers for performance optimization. Here's what I learned...",
-    author: "Alice Johnson",
-    category: "Technical",
-    createdAt: new Date("2024-02-08"),
-    likes: 12,
-    dislikes: 0,
-    comments: [],
-    likedBy: [],
-    dislikedBy: []
-  },
-  {
-    id: 2,
-    title: "Modern State Management",
-    content: "Deep dive into modern state management patterns in React. Comparing Context API, Redux, and Zustand with real-world examples and performance benchmarks...",
-    author: "Bob Smith",
-    category: "Tutorial",
-    createdAt: new Date("2024-02-07"),
-    likes: 8,
-    dislikes: 1,
-    comments: [],
-    likedBy: [],
-    dislikedBy: []
-  }
-];
+import Constant from "../../utils/Constant.js";
 
 const BlogUI = () => {
-  const [blogs, setBlogs] = useState(INITIAL_BLOGS);
-  const [activeTab, setActiveTab] = useState('view');
-  const [newBlog, setNewBlog] = useState('');
-  const [comment, setComment] = useState('');
-  const [activeBlogId, setActiveBlogId] = useState(null);
-  const currentUser = localStorage.getItem("fullName"); // Get the current user's name from localStorage
+  const [allBlogs, setAllBlogs] = useState([]); // Stores all fetched blogs
+  const [loadedBlogs, setLoadedBlogs] = useState([]); // Blogs currently displayed
+  const [activeTab, setActiveTab] = useState("view"); // Active tab state
+  const [newBlog, setNewBlog] = useState({ title: "", content: "" }); // New blog form state
+  const [comment, setComment] = useState(""); // Comment input state
+  const [activeBlogId, setActiveBlogId] = useState(null); // Active blog for comments
+  const [loading, setLoading] = useState(false); // Loading state
+  const [hasMore, setHasMore] = useState(true); // Whether more blogs are available
+  const [page, setPage] = useState(1); // Current page number
 
-  const handleCreateBlog = (e) => {
+  const email = localStorage.getItem("email");
+  const token = localStorage.getItem("jwt"); // JWT token
+
+  // Fetch blogs for a specific page
+  const fetchAllBlogs = useCallback(
+    async (page = 1) => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `${Constant.BASE_URL}/api/suggest/blog/${email}/${page}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || "Failed to fetch blogs");
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Invalid response format");
+        }
+
+        const data = await response.json();
+
+        // Append new blogs to the existing list
+        if (page === 1) {
+          setAllBlogs(data);
+          setLoadedBlogs(data);
+        } else {
+          setAllBlogs((prev) => [...prev, ...data]);
+          setLoadedBlogs((prev) => [...prev, ...data]);
+        }
+
+        // Check if there are more blogs to load
+        setHasMore(data.length > 0);
+      } catch (error) {
+        console.error("Failed to fetch blogs:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [email, token]
+  );
+
+  // Fetch blogs on component mount
+  useEffect(() => {
+    fetchAllBlogs(page);
+  }, [fetchAllBlogs, page]);
+
+  // Load more blogs when the user scrolls to the bottom
+  const loadMoreBlogs = () => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+    setPage((prevPage) => prevPage + 1);
+    fetchAllBlogs(page + 1);
+  };
+
+  // Handle scroll event to load more blogs
+  const handleScroll = useCallback(() => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 100 &&
+      !loading &&
+      hasMore
+    ) {
+      loadMoreBlogs();
+    }
+  }, [loading, hasMore]);
+
+  // Add scroll event listener
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
+
+  // Handle creating a new blog
+  const handleCreateBlog = async (e) => {
     e.preventDefault();
     if (!newBlog.title.trim() || !newBlog.content.trim()) return;
 
     const blog = {
-      id: blogs.length + 1,
-      title: newBlog.split('\n')[0] || 'Untitled',
-      content: newBlog,
-      author: currentUser, // Set the author to the current user
-      profilePic: localStorage.getItem("profileImageUrl") || "https://i.pravatar.cc/50",
-      category: 'General',
-      createdAt: new Date(),
-      likes: 0,
-      dislikes: 0,
+      email: email,
+      title: newBlog.title,
+      content: newBlog.content,
+      upvote: 0,
       comments: [],
     };
 
@@ -240,7 +292,7 @@ const BlogUI = () => {
         <div className="blog-card-footer">
           <div className="blog-card-author">
             <div className="blog-card-author-avatar">
-              <img src={blog.profilePic} alt="Profile" className="user-profile-pic"/>
+              <User className="w-5 h-5" />
             </div>
             <div className="blog-card-author-info">
               <span className="blog-card-author-name">{blog.author}</span>
@@ -311,9 +363,10 @@ const BlogUI = () => {
 
   // Render the list of blogs
   const renderBlogs = () => {
-    const filteredBlogs = activeTab === 'my-blogs'
-      ? blogs.filter(blog => blog.author === currentUser) // Filter blogs by the current user
-      : blogs;
+    const filteredBlogs =
+      activeTab === "my-blogs"
+        ? loadedBlogs.filter((blog) => blog.email === email)
+        : loadedBlogs;
 
     return (
       <div className="blog-list">

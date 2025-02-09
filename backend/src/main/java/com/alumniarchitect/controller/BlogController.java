@@ -74,6 +74,20 @@ public class BlogController {
                 HttpStatus.BAD_REQUEST);
     }
 
+    @PutMapping("/update-upvote/{id}")
+    public ResponseEntity<String> updateBlogUpvote(@PathVariable String id) {
+        Blog blog = blogService.getBlogById(id);
+
+        if (blog == null) {
+            return new ResponseEntity<>("Blog not found!", HttpStatus.NOT_FOUND);
+        }
+
+        blog.setUpvote(blog.getUpvote() + 1);
+        blogService.save(blog);
+
+        return new ResponseEntity<>("updated", HttpStatus.ACCEPTED);
+    }
+
     @DeleteMapping
     public ResponseEntity<String> deleteBlog(@RequestParam String id) {
         if (!blogService.deleteBlog(id)) {

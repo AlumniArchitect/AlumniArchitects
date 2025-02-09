@@ -36,13 +36,13 @@ public class SuggestionController {
     @Autowired
     private BlogService blogService;
 
-    @GetMapping("/user-profile/{email}")
-    public ResponseEntity<?> getUserProfile(@PathVariable String email) {
+    @GetMapping("/user-profile/{email}/{page}")
+    public ResponseEntity<?> getUserProfile(@PathVariable String email, @PathVariable int page) {
         if (email.isEmpty() || !EmailService.isValidCollegeEmail(email)) {
             return ResponseEntity.badRequest().build();
         }
 
-        List<String> suggestedEmails = getUserAndBlogSuggestion(email);
+        List<String> suggestedEmails = getUserAndBlogSuggestion(email, page);
         if (suggestedEmails.isEmpty()) {
             return ResponseEntity.ok("add user");
         }
@@ -55,13 +55,13 @@ public class SuggestionController {
         return ResponseEntity.ok(profiles);
     }
 
-    @GetMapping("/blog/{email}")
-    public ResponseEntity<?> getBlog(@PathVariable String email) {
+    @GetMapping("/blog/{email}/{page}")
+    public ResponseEntity<?> getBlog(@PathVariable String email, @PathVariable int page) {
         if (email.isEmpty() || !EmailService.isValidCollegeEmail(email)) {
             return ResponseEntity.badRequest().build();
         }
 
-        List<String> suggestedEmails = getUserAndBlogSuggestion(email);
+        List<String> suggestedEmails = getUserAndBlogSuggestion(email, page);
         if (suggestedEmails.isEmpty()) {
             return ResponseEntity.ok("add user");
         }
@@ -73,28 +73,24 @@ public class SuggestionController {
         return ResponseEntity.ok(blogs);
     }
 
-    private List<String> getUserAndBlogSuggestion(String email) {
-        if (email.isEmpty() || !EmailService.isValidCollegeEmail(email)) {
+    private List<String> getUserAndBlogSuggestion(String email, int page) {
+        if (email.isEmpty() || !EmailService.isValidCollegeEmail(email) || page < 1) {
             return Collections.emptyList();
         }
 
         String collegeName = EmailService.extractCollegeName(email);
-
-        // Fetch emails of other users from the same college
         List<String> sameCollegeEmails = Optional.ofNullable(collegeGroupService.findByCollegeName(collegeName))
                 .map(CollegeGroup::getEmails)
                 .orElse(Collections.emptyList());
 
         sameCollegeEmails.remove(email);
 
-        // Fetch skills of the requesting user
         List<String> userSkills = Optional.ofNullable(userProfileService.findByEmail(email))
                 .map(UserProfile::getSkills)
                 .orElse(Collections.emptyList());
 
         Map<String, Integer> emailToPoints = new HashMap<>();
 
-        // Case 1: Both College and Skills Exist
         if (!sameCollegeEmails.isEmpty() && !userSkills.isEmpty()) {
             for (String skill : userSkills) {
                 List<String> usersWithSkill = Optional.ofNullable(skillsService.getSkillByName(skill))
@@ -111,11 +107,10 @@ public class SuggestionController {
             }
         }
 
-        // Case 2: No College Users, Use Only Skills
         if (sameCollegeEmails.isEmpty() && !userSkills.isEmpty()) {
             for (String skill : userSkills) {
                 List<String> usersWithSkill = Optional.ofNullable(skillsService.getSkillByName(skill))
-                        .map(skillObj -> skillObj.getEmails())
+                        .map(Skills::getEmails)
                         .orElse(Collections.emptyList());
 
                 for (String user : usersWithSkill) {
@@ -124,23 +119,29 @@ public class SuggestionController {
             }
         }
 
-        // Case 3: No Skills, Use Only College
         if (!sameCollegeEmails.isEmpty() && userSkills.isEmpty()) {
             for (String user : sameCollegeEmails) {
                 emailToPoints.put(user, emailToPoints.getOrDefault(user, 0) + 1);
             }
         }
 
-        // Case 4: No College, No Skills → Return "add user"
         if (sameCollegeEmails.isEmpty() && userSkills.isEmpty()) {
             return Collections.emptyList();
         }
 
-        // Sort by highest points and return the top 10
-        return emailToPoints.entrySet().stream()
+        List<String> sortedEmails = emailToPoints.entrySet().stream()
                 .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
                 .map(Map.Entry::getKey)
-                .limit(10)
                 .collect(Collectors.toList());
+
+        int pageSize = 10;
+        int startIndex = (page - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, sortedEmails.size());
+
+        if (startIndex >= sortedEmails.size()) {
+            return Collections.emptyList();
+        }
+
+        return sortedEmails.subList(startIndex, endIndex);
     }
 }
