@@ -200,7 +200,7 @@ const BlogUI = () => {
         <div className="blog-card-footer">
           <div className="blog-card-author">
             <div className="blog-card-author-avatar">
-              <img src={blog.profilePic} alt="Profile" />
+              <img src={blog.profilePic} alt="Profile" className="user-profile-pic"/>
             </div>
             <div className="blog-card-author-info">
               <span className="blog-card-author-name">{blog.author}</span>
