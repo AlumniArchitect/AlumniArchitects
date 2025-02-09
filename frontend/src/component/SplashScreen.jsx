@@ -1,5 +1,5 @@
 import "../style/SplashScreen.css";
-import img1 from '../component/assets/img1.jpg';
+import img1 from '../assets/img1.jpg';
 import { useNavigate } from "react-router-dom";
 
 const SplashScreen = () => {
