@@ -1,304 +1,296 @@
-// import React, { useState } from "react";
-// import '../../style/navbar/Blog.css';
-
-// const BlogUI = () => {
-//   const [blogs, setBlogs] = useState([
-//     { user: "Alice", content: "My first blog post!", replies: [], likes: 0, dislikes: 0, likedBy: [], dislikedBy: [] },
-//     { user: "Bob", content: "Exploring React components.", replies: [], likes: 0, dislikes: 0, likedBy: [], dislikedBy: [] },
-//     { user: "Charlie", content: "Understanding state management.", replies: [], likes: 0, dislikes: 0, likedBy: [], dislikedBy: [] }
-//   ]);
-//   const [newBlog, setNewBlog] = useState("");
-//   const [user, setUser] = useState("akash");
-//   const [activeTab, setActiveTab] = useState("create");
-//   const [replyContent, setReplyContent] = useState("");
-//   const [selectedBlogIndex, setSelectedBlogIndex] = useState(null);
-//   const [likedBlogs, setLikedBlogs] = useState([]);
-//   const [dislikedBlogs, setDislikedBlogs] = useState([]);
-
-//   const addBlog = () => {
-//     if (newBlog.trim()) {
-//       const newEntry = { user, content: newBlog, replies: [], likes: 0, dislikes: 0, likedBy: [], dislikedBy: [] };
-//       setBlogs((prevBlogs) => [newEntry, ...prevBlogs]);
-//       setNewBlog("");
-//     }
-//   };
-
-//   const addReply = (index) => {
-//     if (replyContent.trim()) {
-//       const updatedBlogs = [...blogs];
-//       updatedBlogs[index].replies.push({ user: "Guest", content: replyContent });
-//       setBlogs(updatedBlogs);
-//       setReplyContent("");
-//       setSelectedBlogIndex(null);
-//     }
-//   };
-
-//   const likeBlog = (index) => {
-//     if (!likedBlogs.includes(index)) {
-//       if (dislikedBlogs.includes(index)) {
-//         const updatedBlogs = [...blogs];
-//         updatedBlogs[index].dislikes -= 1;
-//         setBlogs(updatedBlogs);
-//         setDislikedBlogs(prev => prev.filter(i => i !== index));
-//       }
-//       const updatedBlogs = [...blogs];
-//       updatedBlogs[index].likes += 1;
-//       setBlogs(updatedBlogs);
-//       setLikedBlogs((prev) => [...prev, index]);
-//     }
-//   };
-
-//   const dislikeBlog = (index) => {
-//     if (!dislikedBlogs.includes(index)) {
-//       if (likedBlogs.includes(index)) {
-//         const updatedBlogs = [...blogs];
-//         updatedBlogs[index].likes -= 1;
-//         setBlogs(updatedBlogs);
-//         setLikedBlogs(prev => prev.filter(i => i !== index));
-//       }
-//       const updatedBlogs = [...blogs];
-//       updatedBlogs[index].dislikes += 1;
-//       setBlogs(updatedBlogs);
-//       setDislikedBlogs((prev) => [...prev, index]);
-//     }
-//   };
-
-//   return (
-//     <div className="blog-ui" id="blog">
-//       <div className="sidebar">
-//         <button className={`tab-button ${activeTab === "create" ? "active" : ""}`} onClick={() => setActiveTab("create")}>
-//           Create Blog
-//         </button>
-//         <button className={`tab-button ${activeTab === "myblogs" ? "active" : ""}`} onClick={() => setActiveTab("myblogs")}>
-//           My Blogs
-//         </button>
-//         <button className={`tab-button ${activeTab === "view" ? "active" : ""}`} onClick={() => setActiveTab("view")}>
-//           View Blogs
-//         </button>
-//       </div>
-
-//       <div className="content">
-//         {activeTab === "create" ? (
-//           <div className="create-blog">
-//             <textarea
-//               value={newBlog}
-//               onChange={(e) => setNewBlog(e.target.value)}
-//               placeholder="Write your blog content here..."
-//               className="textarea-field"
-//             />
-//             <button className="button" onClick={addBlog}>
-//               Create & Post Blog
-//             </button>
-//           </div>
-//         ) : activeTab === "myblogs" ? (
-//           <div className="view-blogs">
-//             {blogs.filter(blog => blog.user === user).map((blog, index) => (
-//               <div key={index} className="blog-post">
-//                 <p className="blog-user">{blog.user}</p>
-//                 <p className="blog-content">{blog.content}</p>
-//                 <div className="replies">
-//                   {blog.replies.map((reply, replyIndex) => (
-//                     <div key={replyIndex} className="reply">
-//                       <p className="reply-user">{reply.user}</p>
-//                       <p className="reply-content">{reply.content}</p>
-//                     </div>
-//                   ))}
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         ) : (
-//           <div className="view-blogs">
-//             {blogs.map((blog, index) => (
-//               <div key={index} className="blog-post">
-//                 <p className="blog-user">{blog.user}</p>
-//                 <p className="blog-content">{blog.content}</p>
-//                 <button onClick={() => likeBlog(index)} className={`like-button ${likedBlogs.includes(index) ? "liked" : ""}`}>
-//                   Like ({blog.likes})
-//                 </button>
-//                 <button onClick={() => dislikeBlog(index)} className={`dislike-button ${dislikedBlogs.includes(index) ? "disliked" : ""}`}>
-//                   Dislike ({blog.dislikes})
-//                 </button>
-//                 <button onClick={() => setSelectedBlogIndex(index)} className="reply-button">
-//                   Reply
-//                 </button>
-//                 {selectedBlogIndex === index && (
-//                   <div className="reply-form">
-//                     <textarea
-//                       value={replyContent}
-//                       onChange={(e) => setReplyContent(e.target.value)}
-//                       placeholder="Write your reply..."
-//                       className="textarea-field"
-//                     />
-//                     <button className="button" onClick={() => addReply(index)}>
-//                       Post Reply
-//                     </button>
-//                   </div>
-//                 )}
-//               </div>
-//             ))}
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default BlogUI;
-
 import React, { useState } from "react";
-import '../../style/navbar/Blog.css';
+import "../../style/navbar/Blog.css"
+import { 
+  PenSquare, 
+  BookOpen, 
+  User, 
+  ThumbsUp, 
+  ThumbsDown, 
+  MessageCircle, 
+  Calendar 
+} from "lucide-react";
+import { format } from "date-fns";
+import Navbar from "./Navbar";
+
+// Mock data structure
+const INITIAL_BLOGS = [
+  {
+    id: 1,
+    title: "React 18 Features Deep Dive",
+    content: "Just finished exploring the latest features in React 18! The automatic batching and transitions are absolute game-changers for performance optimization. Here's what I learned...",
+    author: "Alice Johnson",
+    category: "Technical",
+    createdAt: new Date("2024-02-08"),
+    likes: 12,
+    dislikes: 0,
+    comments: [],
+  },
+  {
+    id: 2,
+    title: "Modern State Management",
+    content: "Deep dive into modern state management patterns in React. Comparing Context API, Redux, and Zustand with real-world examples and performance benchmarks...",
+    author: "Bob Smith",
+    category: "Tutorial",
+    createdAt: new Date("2024-02-07"),
+    likes: 8,
+    dislikes: 1,
+    comments: [],
+  }
+];
 
 const BlogUI = () => {
-  const [blogs, setBlogs] = useState([
-    { user: "Alice", content: "My first blog post!", replies: [], likes: 0, dislikes: 0, likedBy: [], dislikedBy: [] },
-    { user: "Bob", content: "Exploring React components.", replies: [], likes: 0, dislikes: 0, likedBy: [], dislikedBy: [] },
-    { user: "Charlie", content: "Understanding state management.", replies: [], likes: 0, dislikes: 0, likedBy: [], dislikedBy: [] }
-  ]);
-  const [newBlog, setNewBlog] = useState("");
-  const [user, setUser] = useState("akash");
-  const [activeTab, setActiveTab] = useState("create");
-  const [replyContent, setReplyContent] = useState("");
-  const [selectedBlogIndex, setSelectedBlogIndex] = useState(null);
-  const [likedBlogs, setLikedBlogs] = useState([]);
-  const [dislikedBlogs, setDislikedBlogs] = useState([]);
+  const [blogs, setBlogs] = useState(INITIAL_BLOGS);
+  const [activeTab, setActiveTab] = useState('view');
+  const [newBlog, setNewBlog] = useState('');
+  const [comment, setComment] = useState('');
+  const [activeBlogId, setActiveBlogId] = useState(null);
+  const [currentUser] = useState('John Doe'); 
+  
+  const handleCreateBlog = (e) => {
+    e.preventDefault();
+    if (!newBlog.trim()) return;
 
-  const addBlog = () => {
-    if (newBlog.trim()) {
-      const newEntry = { user, content: newBlog, replies: [], likes: 0, dislikes: 0, likedBy: [], dislikedBy: [] };
-      setBlogs((prevBlogs) => [newEntry, ...prevBlogs]);
-      setNewBlog("");
-    }
+    const blog = {
+      id: blogs.length + 1,
+      title: newBlog.split('\n')[0] || 'Untitled',
+      content: newBlog,
+      author: currentUser,
+      category: 'General',
+      createdAt: new Date(),
+      likes: 0,
+      dislikes: 0,
+      comments: [],
+      imageUrl: "https://images.unsplash.com/photo-1633356122544-f134324a6cee"
+    };
+
+    setBlogs([blog, ...blogs]);
+    setNewBlog('');
+    setActiveTab('view');
   };
 
-  const deleteBlog = (index) => {
-    setBlogs(blogs.filter((_, i) => i !== index));
-  };
-
-  const addReply = (index) => {
-    if (replyContent.trim()) {
-      const updatedBlogs = [...blogs];
-      updatedBlogs[index].replies.push({ user: "Guest", content: replyContent });
-      setBlogs(updatedBlogs);
-      setReplyContent("");
-      setSelectedBlogIndex(null);
-    }
-  };
-  const handleResize = (e) => {
-    const textarea = e.target;
-    textarea.style.height = "auto";
-    textarea.style.height = `${textarea.scrollHeight}px`;
-  };
-
-  const likeBlog = (index) => {
-    if (!likedBlogs.includes(index)) {
-      if (dislikedBlogs.includes(index)) {
-        const updatedBlogs = [...blogs];
-        updatedBlogs[index].dislikes -= 1;
-        setBlogs(updatedBlogs);
-        setDislikedBlogs(prev => prev.filter(i => i !== index));
+  const handleLike = (blogId) => {
+    setBlogs(blogs.map(blog => {
+      if (blog.id === blogId) {
+        const hasDisliked = blog.dislikes > 0;
+  
+        return {
+          ...blog,
+          likes: blog.likes + 1,
+          dislikes: hasDisliked ? blog.dislikes - 1 : blog.dislikes
+        };
       }
-      const updatedBlogs = [...blogs];
-      updatedBlogs[index].likes += 1;
-      setBlogs(updatedBlogs);
-      setLikedBlogs((prev) => [...prev, index]);
-    }
+      return blog;
+    }));
+  };
+  
+  const handleDislike = (blogId) => {
+    setBlogs(blogs.map(blog => {
+      if (blog.id === blogId) {
+        const hasLiked = blog.likes > 0;
+  
+        return {
+          ...blog,
+          dislikes: blog.dislikes + 1,
+          likes: hasLiked ? blog.likes - 1 : blog.likes 
+        };
+      }
+      return blog;
+    }));
+  };
+  
+  const handleComment = (blogId) => {
+    if (!comment.trim()) return;
+
+    setBlogs(blogs.map(blog => 
+      blog.id === blogId 
+        ? {
+            ...blog,
+            comments: [...blog.comments, {
+              id: blog.comments.length + 1,
+              text: comment,
+              author: currentUser,
+              createdAt: new Date()
+            }]
+          }
+        : blog
+    ));
+
+    setComment('');
+    setActiveBlogId(null);
   };
 
-  const dislikeBlog = (index) => {
-    if (!dislikedBlogs.includes(index)) {
-      if (likedBlogs.includes(index)) {
-        const updatedBlogs = [...blogs];
-        updatedBlogs[index].likes -= 1;
-        setBlogs(updatedBlogs);
-        setLikedBlogs(prev => prev.filter(i => i !== index));
-      }
-      const updatedBlogs = [...blogs];
-      updatedBlogs[index].dislikes += 1;
-      setBlogs(updatedBlogs);
-      setDislikedBlogs((prev) => [...prev, index]);
-    }
+  const handleDeleteBlog = (blogId) => {
+    setBlogs(blogs.filter(blog => blog.id !== blogId));
+  };
+
+  // Render functions
+  const renderSidebar = () => (
+    <div className="sidebar">
+      <button 
+        className={`tab-button ${activeTab === 'create' ? 'active' : ''}`}
+        onClick={() => setActiveTab('create')}
+      >
+        <PenSquare className="w-5 h-5" />
+        Create Blog
+      </button>
+      <button 
+        className={`tab-button ${activeTab === 'my-blogs' ? 'active' : ''}`}
+        onClick={() => setActiveTab('my-blogs')}
+      >
+        <User className="w-5 h-5" />
+        My Blogs
+      </button>
+      <button 
+        className={`tab-button ${activeTab === 'view' ? 'active' : ''}`}
+        onClick={() => setActiveTab('view')}
+      >
+        <BookOpen className="w-5 h-5" />
+        All Blogs
+      </button>
+    </div>
+  );
+
+  const renderCreateBlog = () => (
+    <div className="create-blog">
+      <h2 className="text-2xl font-bold mb-4">Create a New Blog Post</h2>
+      <form onSubmit={handleCreateBlog}>
+        <textarea
+          value={newBlog}
+          onChange={(e) => setNewBlog(e.target.value)}
+          placeholder="Write your blog post here..."
+          className="textarea-field"
+          required
+        />
+        <button type="submit" className="button">
+          Publish Blog
+        </button>
+      </form>
+    </div>
+  );
+
+  const renderBlogCard = (blog) => (
+    <article key={blog.id} className="blog-card">
+      <div className="blog-card-image">
+        <img src={blog.imageUrl} alt={blog.title} />
+      </div>
+      <div className="blog-card-content">
+        <div className="blog-card-header">
+          <span className="blog-card-category">{blog.category}</span>
+          <span className="blog-card-date">
+            <Calendar className="w-4 h-4" />
+            {format(blog.createdAt, "MMM d, yyyy")}
+          </span>
+        </div>
+        
+        <h2 className="blog-card-title">{blog.title}</h2>
+        <p className="blog-card-excerpt">{blog.content}</p>
+        
+        <div className="blog-card-footer">
+          <div className="blog-card-author">
+            <div className="blog-card-author-avatar">
+              <User className="w-5 h-5" />
+            </div>
+            <div className="blog-card-author-info">
+              <span className="blog-card-author-name">{blog.author}</span>
+              <span className="blog-card-author-role">Author</span>
+            </div>
+          </div>
+          
+          <div className="blog-card-stats">
+            <button 
+              onClick={() => handleLike(blog.id)}
+              className="blog-card-stat"
+            >
+              <ThumbsUp className="w-4 h-4" />
+              {blog.likes}
+            </button>
+            <button 
+              onClick={() => handleDislike(blog.id)}
+              className="blog-card-stat"
+            >
+              <ThumbsDown className="w-4 h-4" />
+              {blog.dislikes}
+            </button>
+            <button 
+              onClick={() => setActiveBlogId(activeBlogId === blog.id ? null : blog.id)}
+              className="blog-card-stat"
+            >
+              <MessageCircle className="w-4 h-4" />
+              {blog.comments.length}
+            </button>
+            {blog.author === currentUser && (
+              <button 
+                onClick={() => handleDeleteBlog(blog.id)}
+                className="blog-card-stat text-red-500"
+              >
+                {/* <Trash2 className="w-4 h-4" /> */}
+              </button>
+            )}
+          </div>
+        </div>
+
+        {activeBlogId === blog.id && (
+          <div className="blog-card-comments">
+            {blog.comments.map(comment => (
+              <div key={comment.id} className="blog-comment">
+                <div className="blog-comment-header">
+                  <span className="blog-comment-author">{comment.author}</span>
+                  <span className="blog-comment-date">
+                    {format(comment.createdAt, "MMM d, yyyy")}
+                  </span>
+                </div>
+                <p className="blog-comment-text">{comment.text}</p>
+              </div>
+            ))}
+            <div className="blog-comment-form">
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Write a comment..."
+                className="textarea-field"
+              />
+              <button 
+                onClick={() => handleComment(blog.id)}
+                className="button"
+              >
+                Post Comment
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </article>
+  );
+
+  const renderBlogs = () => {
+    const filteredBlogs = activeTab === 'my-blogs'
+      ? blogs.filter(blog => blog.author === currentUser)
+      : blogs;
+
+    return (
+      <div className="blog-list">
+        <div className="blog-list-header">
+          <h1 className="blog-list-title">
+            {activeTab === 'my-blogs' ? 'My Blog Posts' : 'Latest Blog Posts'}
+          </h1>
+          <p className="blog-list-description">
+            {activeTab === 'my-blogs'
+              ? 'Manage and view your published blog posts'
+              : 'Discover insightful articles from our community'}
+          </p>
+        </div>
+        <div className="blog-card-list">
+          {filteredBlogs.map(renderBlogCard)}
+        </div>
+      </div>
+    );
   };
 
   return (
-    <div className="blog-ui" id="blog">
-      <div className="sidebar">
-        <button className={`tab-button ${activeTab === "create" ? "active" : ""}`} onClick={() => setActiveTab("create")}>
-          Create Blog
-        </button>
-        <button className={`tab-button ${activeTab === "myblogs" ? "active" : ""}`} onClick={() => setActiveTab("myblogs")}>
-          My Blogs
-        </button>
-        <button className={`tab-button ${activeTab === "view" ? "active" : ""}`} onClick={() => setActiveTab("view")}>
-          View Blogs
-        </button>
-      </div>
-
+    <div className="blog-ui">
+      {renderSidebar()}
       <div className="content">
-        {activeTab === "create" ? (
-          <div className="create-blog">
-            <textarea
-              value={newBlog}
-              onChange={(e) => setNewBlog(e.target.value)}
-              placeholder="Write your blog content here..."
-              className="textarea-field"
-              onInput={handleResize}
-            />
-            <button className="button" onClick={addBlog}>
-              Create & Post Blog
-            </button>
-          </div>
-        ) : activeTab === "myblogs" ? (
-          <div className="view-blogs">
-            {blogs.filter(blog => blog.user === user).map((blog, index) => (
-              <div key={index} className="blog-post">
-                <p className="blog-user">{blog.user}</p>
-                <p className="blog-content">{blog.content}</p>
-                <button className="delete-button" onClick={() => deleteBlog(index)}>Delete</button>
-                <div className="replies">
-                  {blog.replies.map((reply, replyIndex) => (
-                    <div key={replyIndex} className="reply">
-                      <p className="reply-user">{reply.user}</p>
-                      <p className="reply-content">{reply.content}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="view-blogs">
-            {blogs.map((blog, index) => (
-              <div key={index} className="blog-post">
-                <p className="blog-user">{blog.user}</p>
-                <p className="blog-content">{blog.content}</p>
-                <button onClick={() => likeBlog(index)} className={`like-button ${likedBlogs.includes(index) ? "liked" : ""}`}>
-                  Like ({blog.likes})
-                </button>
-                <button onClick={() => dislikeBlog(index)} className={`dislike-button ${dislikedBlogs.includes(index) ? "disliked" : ""}`}>
-                  Dislike ({blog.dislikes})
-                </button>
-                <button onClick={() => setSelectedBlogIndex(index)} className="reply-button">
-                  Reply
-                </button>
-                {selectedBlogIndex === index && (
-                  <div className="reply-form">
-                    <textarea
-                      value={replyContent}
-                      onChange={(e) => setReplyContent(e.target.value)}
-                      placeholder="Write your reply..."
-                      className="textarea-field"
-                      onInput={handleResize}
-                    />
-                    <button className="button" onClick={() => addReply(index)}>
-                      Post Reply
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+        {activeTab === 'create' ? renderCreateBlog() : renderBlogs()}
       </div>
     </div>
   );
