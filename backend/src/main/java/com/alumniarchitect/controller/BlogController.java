@@ -18,41 +18,67 @@ public class BlogController {
     private BlogService blogService;
 
     @PostMapping
-    public ResponseEntity<String> addBlog(@RequestBody Blog blog) {
+    public ResponseEntity<String> addOrUpdateBlog(@RequestBody Blog blog) {
         if (blog.getEmail() == null || blog.getTitle() == null || blog.getContent() == null) {
             throw new IllegalArgumentException("Missing required fields!");
         }
 
-        blogService.save(blog);
+        if (blog.getId() == null) {
+            blogService.save(blog);
+            return new ResponseEntity<>("created", HttpStatus.ACCEPTED);
+        } else {
+            Blog existingBlog = blogService.getBlogById(blog.getId());
 
-        return new ResponseEntity<>("created",
-                HttpStatus.CREATED);
+            if (existingBlog == null) {
+                return new ResponseEntity<>("Blog not found!", HttpStatus.NOT_FOUND);
+            }
+
+            existingBlog.setTitle(blog.getTitle());
+            existingBlog.setContent(blog.getContent());
+            existingBlog.setUpvote(blog.getUpvote());
+            existingBlog.setComments(blog.getComments());
+
+            blogService.save(existingBlog);
+            return new ResponseEntity<>("modified", HttpStatus.ACCEPTED);
+        }
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Blog> getAllBlogs() {
         return blogService.getAllBlogs();
     }
 
-    @GetMapping("{email}")
-    public List<Blog> getBlogsByEmail(@PathVariable String email) {
-        return blogService.getBlogsByEmail(email);
-    }
+    @GetMapping
+    public ResponseEntity<?> getBlog(
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String id) {
 
-    @GetMapping("{id}")
-    public ResponseEntity<BlogResponse> getBlogById(@PathVariable String id) {
-        Blog blog = blogService.getBlogById(id);
-
-        if(blog == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (id != null) {
+            Blog blog = blogService.getBlogById(id);
+            if (blog == null) {
+                return new ResponseEntity<>(new BlogResponse(false, "Blog not found", null),
+                        HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(new BlogResponse(true, "Success", blog), HttpStatus.OK);
         }
 
-        return new ResponseEntity<>(new BlogResponse(true, "Success", blog),
-                HttpStatus.FOUND);
+        if (email != null) {
+            List<Blog> blogs = blogService.getBlogsByEmail(email);
+            if (blogs.isEmpty()) {
+                return new ResponseEntity<>("No blogs found for the given email!", HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(blogs, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("Please provide either 'id' or 'email' as a query parameter",
+                HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping("{id}")
-    public boolean deleteBlog(@PathVariable String id) {
-        return blogService.deleteBlog(id);
+    @DeleteMapping
+    public ResponseEntity<String> deleteBlog(@RequestParam String id) {
+        if (!blogService.deleteBlog(id)) {
+            return new ResponseEntity<>("Blog not found!", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>("Deleted successfully", HttpStatus.OK);
     }
 }
