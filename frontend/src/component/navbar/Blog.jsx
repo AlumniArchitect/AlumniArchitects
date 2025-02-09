@@ -12,18 +12,18 @@ import { format } from "date-fns";
 import Constant from "../../utils/Constant.js";
 
 const BlogUI = () => {
-  const [allBlogs, setAllBlogs] = useState([]); // Stores all fetched blogs
-  const [loadedBlogs, setLoadedBlogs] = useState([]); // Blogs currently displayed
-  const [activeTab, setActiveTab] = useState("view"); // Active tab state
-  const [newBlog, setNewBlog] = useState({ title: "", content: "" }); // New blog form state
-  const [comment, setComment] = useState(""); // Comment input state
-  const [activeBlogId, setActiveBlogId] = useState(null); // Active blog for comments
-  const [loading, setLoading] = useState(false); // Loading state
-  const [hasMore, setHasMore] = useState(true); // Whether more blogs are available
-  const [page, setPage] = useState(1); // Current page number
+  const [allBlogs, setAllBlogs] = useState([]);
+  const [loadedBlogs, setLoadedBlogs] = useState([]);
+  const [activeTab, setActiveTab] = useState("view");
+  const [newBlog, setNewBlog] = useState({ title: "", content: "" });
+  const [comment, setComment] = useState(""); 
+  const [activeBlogId, setActiveBlogId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
 
   const email = localStorage.getItem("email");
-  const token = localStorage.getItem("jwt"); // JWT token
+  const token = localStorage.getItem("jwt");
 
   // Fetch blogs for a specific page
   const fetchAllBlogs = useCallback(
