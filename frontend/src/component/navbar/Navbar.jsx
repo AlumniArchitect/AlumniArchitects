@@ -10,7 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import "../../style/navbar/Navbar.css";
 import Constant from "../../utils/Constant.js";
-import defaultProfileImage from ".././assets/userLogo.png";
+import defaultProfileImage from "../../assets/userLogo.png";
 
 
 export default function Navbar() {

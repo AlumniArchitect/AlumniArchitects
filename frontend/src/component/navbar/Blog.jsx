@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../style/navbar/Blog.css"
+import "../../style/navbar/Blog.css";
 import { 
   PenSquare, 
   BookOpen, 
@@ -10,9 +10,7 @@ import {
   Calendar 
 } from "lucide-react";
 import { format } from "date-fns";
-import Navbar from "./Navbar";
 
-// Mock data structure
 const INITIAL_BLOGS = [
   {
     id: 1,
@@ -24,6 +22,8 @@ const INITIAL_BLOGS = [
     likes: 12,
     dislikes: 0,
     comments: [],
+    likedBy: [],
+    dislikedBy: []
   },
   {
     id: 2,
@@ -35,8 +35,11 @@ const INITIAL_BLOGS = [
     likes: 8,
     dislikes: 1,
     comments: [],
+    likedBy: [],
+    dislikedBy: []
   }
 ];
+
 
 const BlogUI = () => {
   const [blogs, setBlogs] = useState(INITIAL_BLOGS);
@@ -60,7 +63,6 @@ const BlogUI = () => {
       likes: 0,
       dislikes: 0,
       comments: [],
-      imageUrl: "https://images.unsplash.com/photo-1633356122544-f134324a6cee"
     };
 
     setBlogs([blog, ...blogs]);
@@ -71,12 +73,19 @@ const BlogUI = () => {
   const handleLike = (blogId) => {
     setBlogs(blogs.map(blog => {
       if (blog.id === blogId) {
-        const hasDisliked = blog.dislikes > 0;
+        const hasLiked = blog.likedBy?.includes(currentUser);
+        const hasDisliked = blog.dislikedBy?.includes(currentUser);
+  
+        if (hasLiked) return blog; // User has already liked the blog
   
         return {
           ...blog,
           likes: blog.likes + 1,
-          dislikes: hasDisliked ? blog.dislikes - 1 : blog.dislikes
+          dislikes: hasDisliked ? blog.dislikes - 1 : blog.dislikes,
+          likedBy: [...(blog.likedBy || []), currentUser],
+          dislikedBy: hasDisliked 
+            ? blog.dislikedBy.filter(user => user !== currentUser) 
+            : blog.dislikedBy
         };
       }
       return blog;
@@ -86,17 +95,24 @@ const BlogUI = () => {
   const handleDislike = (blogId) => {
     setBlogs(blogs.map(blog => {
       if (blog.id === blogId) {
-        const hasLiked = blog.likes > 0;
+        const hasDisliked = blog.dislikedBy?.includes(currentUser);
+        const hasLiked = blog.likedBy?.includes(currentUser);
+  
+        if (hasDisliked) return blog; // User has already disliked the blog
   
         return {
           ...blog,
           dislikes: blog.dislikes + 1,
-          likes: hasLiked ? blog.likes - 1 : blog.likes 
+          likes: hasLiked ? blog.likes - 1 : blog.likes,
+          dislikedBy: [...(blog.dislikedBy || []), currentUser],
+          likedBy: hasLiked 
+            ? blog.likedBy.filter(user => user !== currentUser) 
+            : blog.likedBy
         };
       }
       return blog;
     }));
-  };
+  };  
   
   const handleComment = (blogId) => {
     if (!comment.trim()) return;
@@ -123,7 +139,6 @@ const BlogUI = () => {
     setBlogs(blogs.filter(blog => blog.id !== blogId));
   };
 
-  // Render functions
   const renderSidebar = () => (
     <div className="sidebar">
       <button 
@@ -170,9 +185,6 @@ const BlogUI = () => {
 
   const renderBlogCard = (blog) => (
     <article key={blog.id} className="blog-card">
-      <div className="blog-card-image">
-        <img src={blog.imageUrl} alt={blog.title} />
-      </div>
       <div className="blog-card-content">
         <div className="blog-card-header">
           <span className="blog-card-category">{blog.category}</span>
@@ -223,7 +235,7 @@ const BlogUI = () => {
                 onClick={() => handleDeleteBlog(blog.id)}
                 className="blog-card-stat text-red-500"
               >
-                {/* <Trash2 className="w-4 h-4" /> */}
+                Delete
               </button>
             )}
           </div>
