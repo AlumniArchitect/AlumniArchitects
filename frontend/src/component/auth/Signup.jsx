@@ -53,6 +53,7 @@ const Signup = () => {
 
       if (result.status) {
         localStorage.setItem("email", signupInfo.email);
+        localStorage.setItem("fullName",signupInfo.fullName);
         navigate("/verify-otp", { state: { isForgotPassword: false } });
       } else {
         showError("Error occurred: " + result.message);

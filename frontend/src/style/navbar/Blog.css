@@ -357,4 +357,10 @@
       justify-content: space-around;
     }
   }
+
+  .user-profile-pic{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+  }
   
