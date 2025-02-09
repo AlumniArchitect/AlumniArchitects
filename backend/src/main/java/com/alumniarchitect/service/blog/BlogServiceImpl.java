@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class BlogServiceImpl implements BlogService{
+public class BlogServiceImpl implements BlogService {
 
     @Autowired
     private BlogRepository blogRepository;
@@ -25,18 +26,28 @@ public class BlogServiceImpl implements BlogService{
 
     @Override
     public List<Blog> getBlogsByEmail(String email) {
-        return blogRepository.findByEmail(email);
+        List<Blog> blogs = blogRepository.findByEmail(email);
+
+        if (blogs == null || blogs.isEmpty()) {
+            throw new IllegalArgumentException("No blogs found for the given email!");
+        }
+
+        return blogs;
     }
 
     @Override
     public Blog getBlogById(String id) {
-        return blogRepository.findById(id).get();
+        return blogRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Blog not found with ID: " + id));
     }
 
     @Override
     public boolean deleteBlog(String id) {
-        blogRepository.deleteById(id);
+        if (!blogRepository.existsById(id)) {
+            throw new IllegalArgumentException("Blog not found with ID: " + id);
+        }
 
+        blogRepository.deleteById(id);
         return true;
     }
 }
