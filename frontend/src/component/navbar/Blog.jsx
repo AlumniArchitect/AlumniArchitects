@@ -40,15 +40,14 @@ const INITIAL_BLOGS = [
   }
 ];
 
-
 const BlogUI = () => {
   const [blogs, setBlogs] = useState(INITIAL_BLOGS);
   const [activeTab, setActiveTab] = useState('view');
   const [newBlog, setNewBlog] = useState('');
   const [comment, setComment] = useState('');
   const [activeBlogId, setActiveBlogId] = useState(null);
-  const [currentUser] = useState('John Doe'); 
-  
+  const currentUser = localStorage.getItem("fullName"); // Get the current user's name from localStorage
+
   const handleCreateBlog = (e) => {
     e.preventDefault();
     if (!newBlog.trim()) return;
@@ -57,7 +56,8 @@ const BlogUI = () => {
       id: blogs.length + 1,
       title: newBlog.split('\n')[0] || 'Untitled',
       content: newBlog,
-      author: currentUser,
+      author: currentUser, // Set the author to the current user
+      profilePic: localStorage.getItem("profileImageUrl") || "https://i.pravatar.cc/50",
       category: 'General',
       createdAt: new Date(),
       likes: 0,
@@ -200,7 +200,7 @@ const BlogUI = () => {
         <div className="blog-card-footer">
           <div className="blog-card-author">
             <div className="blog-card-author-avatar">
-              <User className="w-5 h-5" />
+              <img src={blog.profilePic} alt="Profile" />
             </div>
             <div className="blog-card-author-info">
               <span className="blog-card-author-name">{blog.author}</span>
@@ -276,7 +276,7 @@ const BlogUI = () => {
 
   const renderBlogs = () => {
     const filteredBlogs = activeTab === 'my-blogs'
-      ? blogs.filter(blog => blog.author === currentUser)
+      ? blogs.filter(blog => blog.author === currentUser) // Filter blogs by the current user
       : blogs;
 
     return (
