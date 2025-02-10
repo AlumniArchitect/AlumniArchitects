@@ -37,6 +37,13 @@ html body{
   color: rgb(20, 20, 20);
 }
 
+.education-edit{
+  display: flex;
+  flex-direction: column;
+  gap:5px;
+}
+
+
 .profile-container {
   display: flex;
   min-height: 100vh;
@@ -226,6 +233,7 @@ html body{
 }
 
 .remove-btn {
+  width:120PX;
   background-color: #f44336;
   color: #fff;
 }
