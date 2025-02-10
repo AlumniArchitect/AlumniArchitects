@@ -1,95 +1,154 @@
+/* EventPage.css */
+
 .events-page {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
     padding: 20px;
     background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.page-title {
     color: #333;
-  }
-  
-  .page-title {
     text-align: center;
-    font-size: 2.5rem;
-    color: #4a90e2;
     margin-bottom: 20px;
-  }
-  
-  section {
+}
+
+.section-icon {
+    margin-right: 8px;
+    color: #007bff;
+}
+
+.all-events-section,
+.current-event-section,
+.registered-events-section {
     margin-bottom: 30px;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  h2 {
-    font-size: 1.8rem;
-    color: #333;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.all-events-section h2,
+.current-event-section h2,
+.registered-events-section h2 {
+    color: #555;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
     margin-bottom: 15px;
-    border-bottom: 2px solid #4a90e2;
-    display: inline-block;
-    padding-bottom: 5px;
-  }
-  
-  .events-list,
-  .registered-events-list {
+    display: flex;
+    align-items: center;
+}
+
+.events-list,
+.registered-events-list {
     list-style: none;
     padding: 0;
-    margin: 0;
-  }
-  
-  .event-item,
-  .registered-event-item {
-    border: 1px solid #ddd;
-    border-radius: 8px;
+}
+
+.event-item,
+.registered-event-item {
     padding: 15px;
-    margin-bottom: 15px;
-    background: #fafafa;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  
-  .event-item:hover,
-  .registered-event-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .event-item h3,
-  .registered-event-item h3 {
-    font-size: 1.5rem;
-    color: #4a90e2;
+    border-bottom: 1px solid #eee;
+}
+
+.event-item:last-child,
+.registered-event-item:last-child {
+    border-bottom: none;
+}
+
+.event-item h3,
+.registered-event-item h3,
+.current-event h3 {
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.event-item p,
+.registered-event-item p,
+.current-event p {
+    color: #777;
     margin-bottom: 10px;
-  }
-  
-  .event-item p,
-  .registered-event-item p {
-    font-size: 1rem;
-    margin: 5px 0;
-  }
-  
-  button {
-    display: inline-block;
-    padding: 8px 15px;
-    font-size: 1rem;
+}
+
+.event-date {
+    font-weight: bold;
+    color: #555;
+    margin-right: 5px;
+}
+
+.event-description {
+    line-height: 1.6;
+}
+
+.register-button {
+    background-color: #007bff;
     color: white;
-    background-color: #4a90e2;
+    padding: 10px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  button:hover {
-    background-color: #357ab7;
-  }
-  
-  .current-event {
-    background-color: #e3f2fd;
+    transition: background-color 0.3s ease;
+}
+
+.register-button:hover {
+    background-color: #0056b3;
+}
+
+.current-event {
     padding: 15px;
-    border-left: 4px solid #4a90e2;
+    border: 1px solid #ddd;
     border-radius: 5px;
-  }
-  
-  .current-event h3 {
-    font-size: 1.6rem;
-    margin-bottom: 10px;
-  }
-  
+    margin-top: 10px;
+}
+
+.no-events {
+    text-align: center;
+    color: #999;
+    padding: 10px;
+}
+
+.no-events-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 5px;
+    vertical-align: middle;
+    color: #cc6600; /* A warning/alert color */
+}
+
+.success-message,
+.error-message {
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.message-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+
+.inline-icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 4px;
+    color: #007bff;
+}
