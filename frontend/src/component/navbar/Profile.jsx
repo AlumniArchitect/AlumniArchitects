@@ -307,7 +307,7 @@ const ProfilePage = () => {
             <div className="skills-container">
               {user.skills.map((skill, index) => (
                 <span key={index} className="skill-badge">
-                  {skill}
+                  {skill.toUpperCase()}
                 </span>
               ))}
             </div>
