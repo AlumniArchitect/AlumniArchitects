@@ -1,54 +1,73 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import "../../style/navbar/EventPage.css";
 
 const EventsPage = () => {
   const [events, setEvents] = useState([
-    { title: "Hackathon", date: "2025-02-11", description: "24-hour coding competition." },
+    { id: 1, name: 'Alumni Meetup', date: '2025-02-15', description: 'Reconnect with alumni and network.' },
+    { id: 2, name: 'Hackathon', date: '2025-02-18', description: 'Join our 24-hour coding event.' },
+    { id: 3, name: 'Webinar on AI', date: '2025-02-20', description: 'Learn the latest trends in AI.' }
   ]);
-  const [newEvent, setNewEvent] = useState({ title: "", date: "", description: "" });
 
-  const addEvent = () => {
-    if (newEvent.title && newEvent.date) {
-      setEvents([...events, newEvent]);
-      setNewEvent({ title: "", date: "", description: "" });
-    } else {
-      alert("Please enter event title and date.");
+  const [currentEvent, setCurrentEvent] = useState(events[0]);
+  const [registeredEvents, setRegisteredEvents] = useState([]);
+
+  const handleRegister = (eventId) => {
+    const eventToRegister = events.find(event => event.id === eventId);
+    if (eventToRegister && !registeredEvents.includes(eventToRegister)) {
+      setRegisteredEvents([...registeredEvents, eventToRegister]);
     }
   };
 
   return (
-    <div className="events-container">
-      <h2>Upcoming Events</h2>
-      <ul className="events-list">
-        {events.map((event, index) => (
-          <li key={index} className="event-item">
-            <h3>{event.title}</h3>
-            <p>{event.date}</p>
-            <p>{event.description}</p>
-          </li>
-        ))}
-      </ul>
+    <div className="events-page">
+      <h1 className="page-title">Events Page</h1>
 
-      <div className="add-event">
-        <h3>Add New Event</h3>
-        <input
-          type="text"
-          placeholder="Event Title"
-          value={newEvent.title}
-          onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-        />
-        <input
-          type="date"
-          value={newEvent.date}
-          onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
-        />
-        <textarea
-          placeholder="Event Description"
-          value={newEvent.description}
-          onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
-        />
-        <button onClick={addEvent}>Add Event</button>
-      </div>
+      {/* All Events Section */}
+      <section className="all-events-section">
+        <h2>All Events</h2>
+        <ul className="events-list">
+          {events.map(event => (
+            <li key={event.id} className="event-item">
+              <h3>{event.name}</h3>
+              <p><strong>Date:</strong> {event.date}</p>
+              <p>{event.description}</p>
+              <button onClick={() => handleRegister(event.id)}>Register</button>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Notification of Current Event */}
+      <section className="current-event-section">
+        <h2>Notification of Current Event</h2>
+        {currentEvent ? (
+          <div className="current-event">
+            <h3>{currentEvent.name}</h3>
+            <p><strong>Date:</strong> {currentEvent.date}</p>
+            <p>{currentEvent.description}</p>
+          </div>
+        ) : (
+          <p>No current event selected.</p>
+        )}
+      </section>
+
+      {/* Registered Events Section */}
+      <section className="registered-events-section">
+        <h2>Registered Events</h2>
+        {registeredEvents.length > 0 ? (
+          <ul className="registered-events-list">
+            {registeredEvents.map(event => (
+              <li key={event.id} className="registered-event-item">
+                <h3>{event.name}</h3>
+                <p><strong>Date:</strong> {event.date}</p>
+                <p>{event.description}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No events registered yet.</p>
+        )}
+      </section>
     </div>
   );
 };
