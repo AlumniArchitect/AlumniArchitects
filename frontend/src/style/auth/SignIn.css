@@ -20,13 +20,14 @@ html, body {
 .form-container {
   background-color: #fff;
   width: 50vw;
-  max-width: 500px;
+  min-width: 350px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 30px;
   border-radius: 8px;
+  min-height: 400px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
