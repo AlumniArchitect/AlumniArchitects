@@ -88,8 +88,8 @@ public class BlogController {
         return new ResponseEntity<>("updated", HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> deleteBlog(@RequestParam String id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteBlog(@PathVariable String id) {
         if (!blogService.deleteBlog(id)) {
             return new ResponseEntity<>("Blog not found!", HttpStatus.NOT_FOUND);
         }

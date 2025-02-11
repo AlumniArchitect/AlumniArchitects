@@ -29,7 +29,7 @@ public class BlogServiceImpl implements BlogService {
         List<Blog> blogs = blogRepository.findByEmail(email);
 
         if (blogs == null || blogs.isEmpty()) {
-            throw new IllegalArgumentException("No blogs found for the given email!");
+            return null;
         }
 
         return blogs;
@@ -37,8 +37,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public Blog getBlogById(String id) {
-        return blogRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Blog not found with ID: " + id));
+        return blogRepository.findById(id).orElse(null);
     }
 
     @Override

@@ -10,12 +10,8 @@ import com.alumniarchitect.service.email.EmailService;
 import com.alumniarchitect.service.skills.SkillsService;
 import com.alumniarchitect.service.userProfile.UserProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,13 +34,13 @@ public class SuggestionController {
 
     @GetMapping("/user-profile/{email}/{page}")
     public ResponseEntity<?> getUserProfile(@PathVariable String email, @PathVariable int page) {
-        if (email.isEmpty() || !EmailService.isValidCollegeEmail(email)) {
-            return ResponseEntity.badRequest().build();
+        if (isValidRequest(email, page)) {
+            return ResponseEntity.badRequest().body("Invalid email or page number.");
         }
 
         List<String> suggestedEmails = getUserAndBlogSuggestion(email, page);
         if (suggestedEmails.isEmpty()) {
-            return ResponseEntity.ok("add user");
+            return ResponseEntity.ok(Collections.singletonMap("message", "No suggestions available."));
         }
 
         List<UserProfile> profiles = suggestedEmails.stream()
@@ -57,24 +53,27 @@ public class SuggestionController {
 
     @GetMapping("/blog/{email}/{page}")
     public ResponseEntity<?> getBlog(@PathVariable String email, @PathVariable int page) {
-        if (email.isEmpty() || !EmailService.isValidCollegeEmail(email)) {
-            return ResponseEntity.badRequest().build();
+        if (isValidRequest(email, page)) {
+            return ResponseEntity.badRequest().body("Invalid email or page number.");
         }
 
         List<String> suggestedEmails = getUserAndBlogSuggestion(email, page);
         if (suggestedEmails.isEmpty()) {
-            return ResponseEntity.ok("add user");
+            return ResponseEntity.ok(Collections.singletonMap("message", "No suggestions available."));
         }
 
+        System.out.println(suggestedEmails);
         List<Blog> blogs = suggestedEmails.stream()
-                .flatMap(user -> blogService.getBlogsByEmail(user).stream())
+                .map(blogService::getBlogsByEmail)
+                .filter(Objects::nonNull)
+                .flatMap(List::stream)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(blogs);
     }
 
     private List<String> getUserAndBlogSuggestion(String email, int page) {
-        if (email.isEmpty() || !EmailService.isValidCollegeEmail(email) || page < 1) {
+        if (isValidRequest(email, page)) {
             return Collections.emptyList();
         }
 
@@ -83,50 +82,33 @@ public class SuggestionController {
                 .map(CollegeGroup::getEmails)
                 .orElse(Collections.emptyList());
 
-        sameCollegeEmails.remove(email);
-
         List<String> userSkills = Optional.ofNullable(userProfileService.findByEmail(email))
                 .map(UserProfile::getSkills)
                 .orElse(Collections.emptyList());
 
         Map<String, Integer> emailToPoints = new HashMap<>();
 
-        if (!sameCollegeEmails.isEmpty() && !userSkills.isEmpty()) {
+        if (!userSkills.isEmpty()) {
             for (String skill : userSkills) {
                 List<String> usersWithSkill = Optional.ofNullable(skillsService.getSkillByName(skill))
                         .map(Skills::getEmails)
                         .orElse(Collections.emptyList());
 
                 for (String user : usersWithSkill) {
-                    if (sameCollegeEmails.contains(user)) {
-                        emailToPoints.put(user, emailToPoints.getOrDefault(user, 0) + 2);
-                    } else {
-                        emailToPoints.put(user, emailToPoints.getOrDefault(user, 0) + 1);
+                    if (!user.equals(email)) {
+                        emailToPoints.put(user, emailToPoints.getOrDefault(user, 0) +
+                                (sameCollegeEmails.contains(user) ? 2 : 1));
                     }
                 }
             }
         }
 
-        if (sameCollegeEmails.isEmpty() && !userSkills.isEmpty()) {
-            for (String skill : userSkills) {
-                List<String> usersWithSkill = Optional.ofNullable(skillsService.getSkillByName(skill))
-                        .map(Skills::getEmails)
-                        .orElse(Collections.emptyList());
-
-                for (String user : usersWithSkill) {
+        if (!sameCollegeEmails.isEmpty()) {
+            for (String user : sameCollegeEmails) {
+                if (!user.equals(email)) {
                     emailToPoints.put(user, emailToPoints.getOrDefault(user, 0) + 1);
                 }
             }
-        }
-
-        if (!sameCollegeEmails.isEmpty() && userSkills.isEmpty()) {
-            for (String user : sameCollegeEmails) {
-                emailToPoints.put(user, emailToPoints.getOrDefault(user, 0) + 1);
-            }
-        }
-
-        if (sameCollegeEmails.isEmpty() && userSkills.isEmpty()) {
-            return Collections.emptyList();
         }
 
         List<String> sortedEmails = emailToPoints.entrySet().stream()
@@ -136,12 +118,16 @@ public class SuggestionController {
 
         int pageSize = 10;
         int startIndex = (page - 1) * pageSize;
-        int endIndex = Math.min(startIndex + pageSize, sortedEmails.size());
 
         if (startIndex >= sortedEmails.size()) {
             return Collections.emptyList();
         }
 
+        int endIndex = Math.min(startIndex + pageSize, sortedEmails.size());
         return sortedEmails.subList(startIndex, endIndex);
+    }
+
+    private boolean isValidRequest(String email, int page) {
+        return email == null || email.isEmpty() || !EmailService.isValidCollegeEmail(email) || page <= 0;
     }
 }

@@ -65,6 +65,7 @@ export default function Navbar() {
 
         const data = await res.json();
         if (data.status) {
+          localStorage.setItem("fullName", data.user.fullName);
           setUserProfile((prev) => ({ ...prev, name: data.user.fullName }));
         } else {
           showError("User name not found");

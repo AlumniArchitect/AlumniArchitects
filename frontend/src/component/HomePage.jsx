@@ -45,7 +45,6 @@ export default function Homepage() {
             <div id="homepage">
                 <Navbar />
             </div>
-
         </>
     );
 }

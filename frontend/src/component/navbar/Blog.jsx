@@ -6,96 +6,81 @@ import {
   User,
   ThumbsUp,
   MessageCircle,
-  Calendar,
 } from "lucide-react";
 import { format } from "date-fns";
 import Constant from "../../utils/Constant.js";
 
 const BlogUI = () => {
+  const [myBlogs, setMyBlogs] = useState([]);
   const [allBlogs, setAllBlogs] = useState([]);
-  const [loadedBlogs, setLoadedBlogs] = useState([]);
   const [activeTab, setActiveTab] = useState("view");
   const [newBlog, setNewBlog] = useState({ title: "", content: "" });
-  const [comment, setComment] = useState(""); 
+  const [comment, setComment] = useState("");
   const [activeBlogId, setActiveBlogId] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
 
   const email = localStorage.getItem("email");
   const token = localStorage.getItem("jwt");
 
-  // Fetch blogs for a specific page
-  const fetchAllBlogs = useCallback(
-    async (page = 1) => {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `${Constant.BASE_URL}/api/suggest/blog/${email}/${page}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+  // Fetch All Blogs
+  const fetchAllBlogs = useCallback(async (page = 1) => {
+    setLoading(true);
+    try {
+      const url = `${Constant.BASE_URL}/api/suggest/blog/${email}/${page}`;
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || "Failed to fetch blogs");
-        }
+      if (!response.ok) throw new Error("Failed to fetch blogs");
+      const data = await response.json();
+      if (!Array.isArray(data)) return;
 
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-          throw new Error("Invalid response format");
-        }
+      setAllBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
+    } catch (error) {
+      console.error("Error fetching all blogs:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [email, token]);
 
-        const data = await response.json();
+  // Fetch My Blogs
+  const fetchMyBlogs = useCallback(async () => {
+    setLoading(true);
+    try {
+      const url = `${Constant.BASE_URL}/api/blog?email=${email}`;
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-        // Append new blogs to the existing list
-        if (page === 1) {
-          setAllBlogs(data);
-          setLoadedBlogs(data);
-        } else {
-          setAllBlogs((prev) => [...prev, ...data]);
-          setLoadedBlogs((prev) => [...prev, ...data]);
-        }
+      if (!response.ok) throw new Error("Failed to fetch my blogs");
+      const data = await response.json();
+      if (!Array.isArray(data)) return;
 
-        // Check if there are more blogs to load
-        setHasMore(data.length > 0);
-      } catch (error) {
-        console.error("Failed to fetch blogs:", error);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [email, token]
-  );
+      setMyBlogs(data);
+    } catch (error) {
+      console.error("Error fetching my blogs:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [email, token]);
 
-  // Fetch blogs on component mount
+  // Fetch blogs when the tab changes
   useEffect(() => {
-    fetchAllBlogs(page);
-  }, [fetchAllBlogs, page]);
+    if (activeTab === "view") fetchAllBlogs(page);
+    if (activeTab === "my-blogs") fetchMyBlogs();
+  }, [fetchAllBlogs, fetchMyBlogs, activeTab, page]);
 
   // Load more blogs when the user scrolls to the bottom
-  const loadMoreBlogs = () => {
-    if (loading || !hasMore) return;
-
-    setLoading(true);
-    setPage((prevPage) => prevPage + 1);
-    fetchAllBlogs(page + 1);
-  };
-
-  // Handle scroll event to load more blogs
   const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight - 100 &&
-      !loading &&
-      hasMore
+      document.documentElement.offsetHeight - 100 &&
+      !loading
     ) {
-      loadMoreBlogs();
+      setPage((prevPage) => prevPage + 1);
     }
-  }, [loading, hasMore]);
+  }, [loading]);
 
   // Add scroll event listener
   useEffect(() => {
@@ -110,6 +95,7 @@ const BlogUI = () => {
 
     const blog = {
       email: email,
+      author: localStorage.getItem("fullName"),
       title: newBlog.title,
       content: newBlog.content,
       upvote: 0,
@@ -127,8 +113,8 @@ const BlogUI = () => {
       });
       if (response.ok) {
         const createdBlog = await response.json();
+        setMyBlogs((prev) => [createdBlog, ...prev]);
         setAllBlogs((prev) => [createdBlog, ...prev]);
-        setLoadedBlogs((prev) => [createdBlog, ...prev]);
         setNewBlog({ title: "", content: "" });
         setActiveTab("view");
       }
@@ -136,6 +122,44 @@ const BlogUI = () => {
       console.error("Failed to create blog:", error);
     }
   };
+
+  const fetchBlogs = useCallback(async (page = 1) => {
+    setLoading(true);
+    try {
+      const url =
+        activeTab === "my-blogs"
+          ? `${Constant.BASE_URL}/api/blog?email=${email}&page=${page}`
+          : `${Constant.BASE_URL}/api/suggest/blog/${email}/${page}`;
+
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to fetch blogs");
+      }
+
+      const data = await response.json();
+
+      if (!Array.isArray(data)) {
+        console.error("Unexpected data format:", data);
+        return;
+      }
+
+      if (activeTab === "my-blogs") {
+        setMyBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
+      } else {
+        setAllBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
+      }
+    } catch (error) {
+      console.error("Failed to fetch blogs:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeTab, email, token]);
 
   // Handle liking a blog
   const handleLike = async (blogId) => {
@@ -151,19 +175,20 @@ const BlogUI = () => {
       );
       if (response.ok) {
         const updatedBlog = await response.json();
-        setAllBlogs((prev) =>
-          prev.map((blog) => (blog.id === blogId ? updatedBlog : blog))
-        );
-        setLoadedBlogs((prev) =>
-          prev.map((blog) => (blog.id === blogId ? updatedBlog : blog))
-        );
+        const updateState = (prev) =>
+          prev.map((blog) => (blog.id === blogId ? updatedBlog : blog));
+        if (activeTab === "my-blogs") {
+          setMyBlogs(updateState);
+        } else {
+          setAllBlogs(updateState);
+        }
       }
     } catch (error) {
       console.error("Failed to upvote blog:", error);
     }
   };
 
-  // Handle posting a comment
+  // handel comment blog
   const handleComment = async (blogId) => {
     if (!comment.trim()) return;
 
@@ -181,12 +206,13 @@ const BlogUI = () => {
       );
       if (response.ok) {
         const updatedBlog = await response.json();
-        setAllBlogs((prev) =>
-          prev.map((blog) => (blog.id === blogId ? updatedBlog : blog))
-        );
-        setLoadedBlogs((prev) =>
-          prev.map((blog) => (blog.id === blogId ? updatedBlog : blog))
-        );
+        const updateState = (prev) =>
+          prev.map((blog) => (blog.id === blogId ? updatedBlog : blog));
+        if (activeTab === "my-blogs") {
+          setMyBlogs(updateState);
+        } else {
+          setAllBlogs(updateState);
+        }
         setComment("");
         setActiveBlogId(null);
       }
@@ -195,11 +221,11 @@ const BlogUI = () => {
     }
   };
 
-  // Handle deleting a blog
+  // handle delete blog
   const handleDeleteBlog = async (blogId) => {
     try {
       const response = await fetch(
-        `${Constant.BASE_URL}/api/blog?id=${blogId}`,
+        `${Constant.BASE_URL}/api/blog/${blogId}`,
         {
           method: "DELETE",
           headers: {
@@ -208,8 +234,11 @@ const BlogUI = () => {
         }
       );
       if (response.ok) {
-        setAllBlogs((prev) => prev.filter((blog) => blog.id !== blogId));
-        setLoadedBlogs((prev) => prev.filter((blog) => blog.id !== blogId));
+        if (activeTab === "my-blogs") {
+          setMyBlogs((prev) => prev.filter((blog) => blog.id !== blogId));
+        } else {
+          setAllBlogs((prev) => prev.filter((blog) => blog.id !== blogId));
+        }
       }
     } catch (error) {
       console.error("Failed to delete blog:", error);
@@ -255,7 +284,7 @@ const BlogUI = () => {
             setNewBlog((prev) => ({ ...prev, title: e.target.value }))
           }
           placeholder="Title"
-          className="textarea-field"
+          className="textarea-field-title"
           required
         />
         <textarea
@@ -264,7 +293,7 @@ const BlogUI = () => {
             setNewBlog((prev) => ({ ...prev, content: e.target.value }))
           }
           placeholder="Write your blog post here..."
-          className="textarea-field"
+          className="textarea-field-content"
           required
         />
         <button type="submit" className="button">
@@ -274,18 +303,10 @@ const BlogUI = () => {
     </div>
   );
 
-  // Render a single blog card
+  // render blog card
   const renderBlogCard = (blog) => (
     <article key={blog.id} className="blog-card">
       <div className="blog-card-content">
-        <div className="blog-card-header">
-          <span className="blog-card-category">{blog.category}</span>
-          <span className="blog-card-date">
-            <Calendar className="w-4 h-4" />
-            {format(new Date(blog.createdAt), "MMM d, yyyy")}
-          </span>
-        </div>
-
         <h2 className="blog-card-title">{blog.title}</h2>
         <p className="blog-card-excerpt">{blog.content}</p>
 
@@ -317,7 +338,7 @@ const BlogUI = () => {
               <MessageCircle className="w-4 h-4" />
               {blog.comments.length}
             </button>
-            {blog.email === email && (
+            {activeTab === "my-blogs" && blog.email === email && (
               <button
                 onClick={() => handleDeleteBlog(blog.id)}
                 className="blog-card-stat text-red-500"
@@ -361,12 +382,9 @@ const BlogUI = () => {
     </article>
   );
 
-  // Render the list of blogs
+  // Render a single blog card
   const renderBlogs = () => {
-    const filteredBlogs =
-      activeTab === "my-blogs"
-        ? loadedBlogs.filter((blog) => blog.email === email)
-        : loadedBlogs;
+    const blogs = activeTab === "my-blogs" ? myBlogs : allBlogs;
 
     return (
       <div className="blog-list">
@@ -381,9 +399,9 @@ const BlogUI = () => {
           </p>
         </div>
         <div className="blog-card-list">
-          {filteredBlogs.map(renderBlogCard)}
+          {blogs.map(renderBlogCard)}
           {loading && <p>Loading...</p>}
-          {!hasMore && <p>No more blogs to load.</p>}
+          {blogs.length === 0 && !loading && <p>No blogs available.</p>}
         </div>
       </div>
     );

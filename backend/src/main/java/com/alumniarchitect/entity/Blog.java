@@ -21,6 +21,6 @@ public class Blog {
     private String author;
     private String title;
     private String content;
-    private Long upvote;
+    private int upvote = 0;
     private List<Map<String, String>> comments;
 }
