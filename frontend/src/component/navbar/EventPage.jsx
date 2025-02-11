@@ -9,7 +9,7 @@ const eventsData = [];
 export default function UpcomingEvents() {
   const [search, setSearch] = useState("");
   const [filteredEvents, setFilteredEvents] = useState(eventsData);
-  const [events, setEvents] = useState(eventsData);
+  const [events, setEvents] = useState(eventsData); 
   const [showForm, setShowForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [registeredEvents, setRegisteredEvents] = useState([]);
