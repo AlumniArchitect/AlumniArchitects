@@ -1,15 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { formatDistanceToNow } from "date-fns";
-// import DatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
+import { formatDistanceToNow, format, parseISO } from "date-fns";
 import "../../style/navbar/EventPage.css";
 
 const eventsData = [];
 
 export default function UpcomingEvents() {
   const [search, setSearch] = useState("");
-  const [filteredEvents, setFilteredEvents] = useState(eventsData);
   const [events, setEvents] = useState(eventsData);
+  const [filteredEvents, setFilteredEvents] = useState(eventsData);
   const [showForm, setShowForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [registeredEvents, setRegisteredEvents] = useState([]);
@@ -21,8 +19,9 @@ export default function UpcomingEvents() {
     type: "Technical",
     format: "Offline",
     link: "",
-    image: "",
+    image: null, // Store the image file here
   });
+  const [imagePreview, setImagePreview] = useState(null); // Store the image URL for preview
   const modalRef = useRef(null);
 
   // Calculate the minimum date (tomorrow)
@@ -30,13 +29,12 @@ export default function UpcomingEvents() {
   minDate.setDate(minDate.getDate() + 1);
 
   useEffect(() => {
-    setFilteredEvents(
-      [...events]
-        .sort((a, b) => new Date(a.date) - new Date(b.date))
-        .filter((event) =>
-          event.title.toLowerCase().includes(search.toLowerCase())
-        )
-    );
+    const filtered = [...events]
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .filter((event) =>
+        event.title.toLowerCase().includes(search.toLowerCase())
+      );
+    setFilteredEvents(filtered);
   }, [search, events]);
 
   useEffect(() => {
@@ -44,13 +42,16 @@ export default function UpcomingEvents() {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
         setShowForm(false);
         setEditingEvent(null);
+        setImagePreview(null); // Clear the preview when the form is closed
       }
     };
+
     if (showForm) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -58,65 +59,93 @@ export default function UpcomingEvents() {
 
   const handleAddOrUpdateEvent = (e) => {
     e.preventDefault();
-    // Check if the event date is in the past
+
+    if (!newEvent.title || !newEvent.date || !newEvent.location || !newEvent.description) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
     if (new Date(newEvent.date) < minDate) {
       alert("Event date must be from tomorrow onwards.");
       return;
     }
-    if (
-      !newEvent.title ||
-      !newEvent.date ||
-      !newEvent.location ||
-      !newEvent.description
-    )
-      return;
-    if (editingEvent) {
-      setEvents(
-        events.map((event) =>
-          event.id === editingEvent.id
-            ? { ...newEvent, id: editingEvent.id }
-            : event
-        )
-      );
-    } else {
-      setEvents([
-        ...events,
-        {
-          ...newEvent,
-          id: events.length + 1,
-          date: newEvent.date.toISOString().split("T")[0],
-        },
-      ]);
-    }
+
+    //Convert newEvent.image (File object) to base64 string
+    const fileToBase64 = (file) => {
+      return new Promise(resolve => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          resolve(reader.result);
+        };
+      });
+    };
+
+    const addEvent = async () => {
+      const base64Image = newEvent.image ? await fileToBase64(newEvent.image) : null;
+      if (editingEvent) {
+        setEvents((prevEvents) =>
+          prevEvents.map((event) =>
+            event.id === editingEvent.id ? { ...newEvent, id: editingEvent.id, image: base64Image } : event
+          )
+        );
+      } else {
+        setEvents((prevEvents) => [
+          ...prevEvents,
+          {
+            ...newEvent,
+            id: prevEvents.length > 0 ? Math.max(...prevEvents.map(e => e.id)) + 1 : 1,
+            date: newEvent.date,
+            image: base64Image, // Store as base64 string
+          },
+        ]);
+      }
+    };
+
+    addEvent();
     resetForm();
   };
 
   const handleEditEvent = (event) => {
-    setNewEvent(event);
+    setNewEvent({
+      ...event,
+      date: parseISO(event.date), // Ensure date is a Date object
+    });
     setEditingEvent(event);
     setShowForm(true);
+    // setImagePreview(event.image || null); // Set the image preview for editing
   };
 
   const handleDeleteEvent = (eventId) => {
-    setEvents(events.filter((event) => event.id !== eventId));
+    const confirmDelete = window.confirm("Are you sure you want to delete this event?");
+    if (confirmDelete) {
+      setEvents((prevEvents) => prevEvents.filter((event) => event.id !== eventId));
+    }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewEvent({ ...newEvent, [name]: value });
+    setNewEvent((prevEvent) => ({ ...prevEvent, [name]: value }));
+  };
+
+  const handleDateChange = (e) => {
+    setNewEvent((prevEvent) => ({ ...prevEvent, date: new Date(e.target.value) }));
   };
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setNewEvent({ ...newEvent, image: imageUrl });
+      // const imageUrl = URL.createObjectURL(file);
+      setNewEvent({ ...newEvent, image: file });
     }
   };
 
   const handleRegister = (event) => {
-    if (!registeredEvents.some((e) => e.id === event.id)) {
-      setRegisteredEvents([...registeredEvents, event]);
+    if (!registeredEvents.find((e) => e.id === event.id)) {
+      setRegisteredEvents((prevRegisteredEvents) => [...prevRegisteredEvents, event]);
+      alert(`You have successfully registered for ${event.title}!`);
+    } else {
+      alert(`You are already registered for ${event.title}!`);
     }
   };
 
@@ -129,10 +158,11 @@ export default function UpcomingEvents() {
       type: "Technical",
       format: "Offline",
       link: "",
-      image: "",
+      image: null,
     });
     setEditingEvent(null);
     setShowForm(false);
+    setImagePreview(null);
   };
 
   return (
@@ -153,6 +183,7 @@ export default function UpcomingEvents() {
         onChange={(e) => setSearch(e.target.value)}
         className="search-box"
       />
+
       {showForm && (
         <div className="modal-overlay">
           <div className="modal" ref={modalRef}>
@@ -173,11 +204,9 @@ export default function UpcomingEvents() {
                 <input
                   type="date"
                   name="date"
-                  value={newEvent.date.toISOString().split("T")[0]} // Format the date as YYYY-MM-DD
-                  onChange={(e) =>
-                    setNewEvent({ ...newEvent, date: new Date(e.target.value) })
-                  }
-                  min={minDate.toISOString().split("T")[0]} // Restrict selection to dates from tomorrow onwards
+                  value={format(newEvent.date, "yyyy-MM-dd")}
+                  onChange={handleDateChange}
+                  min={format(minDate, "yyyy-MM-dd")}
                   required
                 />
               </div>
@@ -257,6 +286,7 @@ export default function UpcomingEvents() {
           </div>
         </div>
       )}
+
       {filteredEvents.length === 0 ? (
         <p className="no-events-message">No Upcoming Events.</p>
       ) : (
@@ -271,7 +301,7 @@ export default function UpcomingEvents() {
             )}
             <h2>{event.title}</h2>
             <p>📍 {event.location}</p>
-            <p>📅 {event.date}</p>
+            <p>📅 {format(new Date(event.date), "MMMM dd, yyyy")}</p>
             <p>{event.description}</p>
             <p>Type: {event.type}</p>
             <p>Format: {event.format}</p>
@@ -309,6 +339,7 @@ export default function UpcomingEvents() {
           </div>
         ))
       )}
+
       {registeredEvents.length > 0 && (
         <div className="registered-events">
           <h2>Registered Events</h2>
@@ -323,7 +354,7 @@ export default function UpcomingEvents() {
               )}
               <h2>{event.title}</h2>
               <p>📍 {event.location}</p>
-              <p>📅 {event.date}</p>
+              <p>📅 {format(new Date(event.date), "MMMM dd, yyyy")}</p>
               <p>{event.description}</p>
               <p>Type: {event.type}</p>
               <p>Format: {event.format}</p>
