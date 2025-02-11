@@ -301,13 +301,13 @@ const ProfilePage = () => {
             <input
               className="input-field"
               value={user.skills?.join(", ") || ""}
-              onChange={(e) => setUser({ ...user, skills: e.target.value.split(",").map((s) => s.trim()) })}
+              onChange={(e) => setUser({ ...user, skills: e.target.value.split(",").map((s) => s.trim().toUpperCase()) })}
             />
           ) : user.skills?.length > 0 ? (
             <div className="skills-container">
               {user.skills.map((skill, index) => (
                 <span key={index} className="skill-badge">
-                  {skill}
+                  {skill.toUpperCase()}
                 </span>
               ))}
             </div>

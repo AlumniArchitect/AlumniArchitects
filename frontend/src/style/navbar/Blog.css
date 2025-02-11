@@ -244,6 +244,7 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
+<<<<<<< HEAD
 .textarea-field-title {
   width: 100%;
   padding: 1rem;
@@ -259,6 +260,11 @@
 .textarea-field-content{
   min-height: 150px;
   width: 100%;
+=======
+.textarea-field {
+  width: 100%;
+  min-height: 150px;
+>>>>>>> fdd97f56fe1fff777eb652a194f2c7a1247e5fc4
   padding: 1rem;
   border: 2px solid #e5e5e5;
   border-radius: 0.75rem;
@@ -374,4 +380,8 @@
   height: 50px;
   width: 50px;
   border-radius: 50%;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> fdd97f56fe1fff777eb652a194f2c7a1247e5fc4

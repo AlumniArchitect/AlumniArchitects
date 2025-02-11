@@ -51,6 +51,10 @@ export default function Navbar() {
     navigate("/blog"); 
   };
 
+  const handleEventClick = () => {
+    navigate("/event"); 
+  };
+
   useEffect(() => {
     const fetchUserName = async () => {
       try {
@@ -159,7 +163,7 @@ export default function Navbar() {
                 <FaUserCircle /> &nbsp; Profile
               </li>
               <li>Option 1</li>
-              <li>Option 2</li>
+              <li onClick={handleEventClick}>Event</li>
               <li onClick={handleBlogClick}>Blog</li>
               <li>Option 4</li>
               <li>Option 5</li>
