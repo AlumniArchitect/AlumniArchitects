@@ -6,7 +6,7 @@ import "../../style/navbar/EventPage.css";
 
 const eventsData = [
   // Existing events data
-];
+      ];
 
 export default function UpcomingEvents() {
   const [search, setSearch] = useState("");
@@ -16,7 +16,7 @@ export default function UpcomingEvents() {
     date: new Date(),
     location: "",
     description: "",
-    type: "Technical", // Default type
+    type: "Technical",
     format: "Offline", // Default format
     link: "", // Link for online events
     image: "",
