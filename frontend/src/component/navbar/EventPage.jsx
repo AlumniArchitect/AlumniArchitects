@@ -44,7 +44,6 @@ export default function EventPage() {
     if (storedEvents) {
       setEvents(JSON.parse(storedEvents));
     }
-
     const storedRegistrations = localStorage.getItem("registeredEvents");
     if (storedRegistrations) {
       setRegisteredEvents(JSON.parse(storedRegistrations));
@@ -84,19 +83,16 @@ export default function EventPage() {
         const matchesSearch =
           event.title.toLowerCase().includes(search.toLowerCase()) ||
           event.description.toLowerCase().includes(search.toLowerCase());
-
         const matchesCategory =
           !filters.category || event.category === filters.category;
         const matchesType = !filters.type || event.type === filters.type;
         const matchesFormat =
           !filters.format || event.format === filters.format;
-
         const eventDate = new Date(event.date);
         const matchesDateFrom =
           !filters.dateFrom || eventDate >= new Date(filters.dateFrom);
         const matchesDateTo =
           !filters.dateTo || eventDate <= new Date(filters.dateTo);
-
         return (
           matchesSearch &&
           matchesCategory &&
@@ -119,7 +115,6 @@ export default function EventPage() {
 
   const handleAddOrUpdateEvent = (e) => {
     e.preventDefault();
-
     if (editingEvent) {
       setEvents(
         events.map((event) =>
@@ -132,24 +127,38 @@ export default function EventPage() {
       const newEventWithId = {
         ...newEvent,
         id: Date.now(),
-        userId: currentUser.id, 
+        userId: currentUser.id,
         createdAt: new Date().toLocaleString(),
       };
       setEvents([...events, newEventWithId]);
     }
-
     resetForm();
   };
 
   const handleRegister = (eventId) => {
-    const registration = {
-      id: Date.now(),
-      eventId,
-      userId: currentUser.id,
-      registeredAt: new Date().toLocaleString(),
-    };
-    setRegisteredEvents([...registeredEvents, registration]);
-    alert("Successfully registered for the event!");
+    if (
+      !registeredEvents.some(
+        (reg) => reg.eventId === eventId && reg.userId === currentUser.id
+      )
+    ) {
+      const registration = {
+        id: Date.now(),
+        eventId,
+        userId: currentUser.id,
+        registeredAt: new Date().toLocaleString(),
+      };
+      setRegisteredEvents([...registeredEvents, registration]);
+      alert("Successfully registered for the event!");
+    } else {
+      alert("You are already registered for this event.");
+    }
+  };
+
+  const handleUnregister = (registrationId) => {
+    setRegisteredEvents(
+      registeredEvents.filter((reg) => reg.id !== registrationId)
+    );
+    alert("You have successfully unregistered from the event.");
   };
 
   const handleDeleteEvent = (eventId) => {
@@ -166,6 +175,17 @@ export default function EventPage() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewEvent({ ...newEvent, [name]: value });
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewEvent({ ...newEvent, image: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const resetForm = () => {
@@ -189,9 +209,18 @@ export default function EventPage() {
   const upcomingEvents = filteredEvents.filter(
     (event) => new Date(event.date) >= new Date()
   );
+  const pastEvents = filteredEvents.filter(
+    (event) => new Date(event.date) < new Date()
+  );
 
   const isEventCreator = (event) => {
     return event.userId === currentUser.id;
+  };
+
+  const isRegistered = (eventId) => {
+    return registeredEvents.some(
+      (reg) => reg.eventId === eventId && reg.userId === currentUser.id
+    );
   };
 
   return (
@@ -214,17 +243,17 @@ export default function EventPage() {
         </div>
       </div>
 
-      <div className="filters-section">
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Search events..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="search-box"
-          />
-        </div>
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search events..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="search-box"
+        />
+      </div>
 
+      <div className="filters-section">
         <div className="filter-controls">
           <div className="filter-group">
             <label>Category:</label>
@@ -309,11 +338,9 @@ export default function EventPage() {
       </div>
 
       {view === "manage" && (
-        <div className="management-controls">
-          <button className="create-button" onClick={() => setShowForm(true)}>
-            Create New Event
-          </button>
-        </div>
+        <button className="create-button" onClick={() => setShowForm(true)}>
+          Create New Event
+        </button>
       )}
 
       {showForm && (
@@ -331,18 +358,18 @@ export default function EventPage() {
                   required
                 />
               </div>
-
               <div className="form-group">
                 <label>Date & Time</label>
                 <input
                   type="datetime-local"
                   name="date"
-                  value={newEvent.date.toLocaleString().slice(0, 16)}
-                  onChange={handleInputChange}
+                  value={newEvent.date.toLocaleString().split(".")[0]}
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, date: new Date(e.target.value) })
+                  }
                   required
                 />
               </div>
-
               <div className="form-group">
                 <label>Location</label>
                 <input
@@ -353,7 +380,6 @@ export default function EventPage() {
                   required
                 />
               </div>
-
               <div className="form-group">
                 <label>Description</label>
                 <textarea
@@ -361,33 +387,32 @@ export default function EventPage() {
                   value={newEvent.description}
                   onChange={handleInputChange}
                   required
-                />
+                ></textarea>
               </div>
-
               <div className="form-group">
                 <label>Type</label>
                 <select
                   name="type"
                   value={newEvent.type}
                   onChange={handleInputChange}
+                  required
                 >
                   <option value="Technical">Technical</option>
                   <option value="Non-Technical">Non-Technical</option>
                 </select>
               </div>
-
               <div className="form-group">
                 <label>Format</label>
                 <select
                   name="format"
                   value={newEvent.format}
                   onChange={handleInputChange}
+                  required
                 >
                   <option value="Offline">Offline</option>
                   <option value="Online">Online</option>
                 </select>
               </div>
-
               {newEvent.format === "Online" && (
                 <div className="form-group">
                   <label>Event Link</label>
@@ -396,20 +421,18 @@ export default function EventPage() {
                     name="link"
                     value={newEvent.link}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
               )}
-
               <div className="form-group">
-                <label>Max Participants (0 for unlimited)</label>
+                <label>Event Image (Optional)</label>
                 <input
-                  type="number"
-                  name="maxParticipants"
-                  value={newEvent.maxParticipants}
-                  onChange={handleInputChange}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
                 />
               </div>
-
               <div className="form-actions">
                 <button type="button" onClick={resetForm}>
                   Cancel
@@ -423,75 +446,173 @@ export default function EventPage() {
         </div>
       )}
 
-      <div className="events-grid">
-        {(view === "all" ? upcomingEvents : filteredEvents).map((event) => (
-          <div key={event.id} className="event-card">
-            <h2>{event.title}</h2>
-            <p className="event-location">📍 {event.location}</p>
-            <p className="event-date">
-              📅 {new Date(event.date).toLocaleString()}
-            </p>
-            <p className="event-description">{event.description}</p>
-            <p className="event-type">Type: {event.type}</p>
-            <p className="event-format">Format: {event.format}</p>
-            {event.format === "Online" && event.link && (
-              <p className="event-link">
-                🔗{" "}
-                <a href={event.link} target="_blank" rel="noopener noreferrer">
-                  Join Event
-                </a>
-              </p>
-            )}
-            <div className="event-time">
-              {formatDistanceToNow(new Date(event.date), { addSuffix: true })}
-            </div>
-            <div className="event-actions">
-              {isEventCreator(event) ? (
-                <>
-                  <button onClick={() => handleEditEvent(event)}>Edit</button>
-                  <button onClick={() => handleDeleteEvent(event.id)}>
-                    Delete
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={() => handleRegister(event.id)}
-                  className="register-button"
-                  disabled={!event.registrationOpen}
-                >
-                  {event.registrationOpen
-                    ? "Register Now"
-                    : "Registration Closed"}
-                </button>
-              )}
-            </div>
+      {/* Upcoming Events Section */}
+      {upcomingEvents.length > 0 && (
+        <div>
+          <h2>Upcoming Events</h2>
+          <div className="events-grid">
+            {upcomingEvents.map((event) => (
+              <div key={event.id} className="event-card">
+                {event.image && (
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="event-image"
+                  />
+                )}
+                <h2>{event.title}</h2>
+                <p className="event-location">📍 {event.location}</p>
+                <p className="event-date">
+                  📅 {new Date(event.date).toLocaleString()}
+                </p>
+                <p className="event-description">{event.description}</p>
+                <p className="event-type">Type: {event.type}</p>
+                <p className="event-format">Format: {event.format}</p>
+                {event.format === "Online" && event.link && (
+                  <p className="event-link">
+                    🔗{" "}
+                    <a
+                      href={event.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Join Event
+                    </a>
+                  </p>
+                )}
+                <p className="event-time">
+                  {formatDistanceToNow(new Date(event.date), {
+                    addSuffix: true,
+                  })}
+                </p>
+                <div className="event-actions">
+                  {view === "manage" && isEventCreator(event) && (
+                    <>
+                      <button
+                        className="edit-button"
+                        onClick={() => handleEditEvent(event)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDeleteEvent(event.id)}
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
+                  {view === "all" && (
+                    <>
+                      {!isRegistered(event.id) ? (
+                        <button
+                          className="register-button"
+                          onClick={() => handleRegister(event.id)}
+                          disabled={!event.registrationOpen}
+                        >
+                          {event.registrationOpen
+                            ? "Register Now"
+                            : "Registration Closed"}
+                        </button>
+                      ) : (
+                        <button
+                          className="unregister-button"
+                          onClick={() => {
+                            const registrationId = registeredEvents.find(
+                              (reg) =>
+                                reg.eventId === event.id &&
+                                reg.userId === currentUser.id
+                            ).id;
+                            handleUnregister(registrationId);
+                          }}
+                        >
+                          Unregister
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
+      {/* Missed Events Section */}
+      {pastEvents.length > 0 && (
+        <div>
+          <h2>Missed Events</h2>
+          <div className="events-grid">
+            {pastEvents.map((event) => (
+              <div key={event.id} className="event-card missed">
+                {event.image && (
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="event-image"
+                  />
+                )}
+                <h2>{event.title}</h2>
+                <p className="event-location">📍 {event.location}</p>
+                <p className="event-date">
+                  📅 {new Date(event.date).toLocaleString()}
+                </p>
+                <p className="event-description">{event.description}</p>
+                <p className="event-type">Type: {event.type}</p>
+                <p className="event-format">Format: {event.format}</p>
+                {event.format === "Online" && event.link && (
+                  <p className="event-link">
+                    🔗{" "}
+                    <a
+                      href={event.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View Event
+                    </a>
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Registered Events Section */}
       {registeredEvents.length > 0 && (
         <div className="registered-events">
           <h2>Your Registered Events</h2>
-          <div className="events-grid">
-            {registeredEvents.map((registration) => {
-              const event = events.find((e) => e.id === registration.eventId);
-              if (!event) return null;
-              return (
-                <div key={registration.id} className="event-card registered">
-                  <h2>{event.title}</h2>
-                  <p className="event-location">📍 {event.location}</p>
-                  <p className="event-date">
-                    📅 {new Date(event.date).toLocaleString()}
-                  </p>
-                  <p className="event-description">{event.description}</p>
-                  <p className="registration-info">
-                    Registered on:{" "}
-                    {new Date(registration.registeredAt).toLocaleDateString()}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
+          {registeredEvents.map((registration) => {
+            const event = events.find((e) => e.id === registration.eventId);
+            if (!event) return null;
+            return (
+              <div key={registration.id} className="event-card registered">
+                {event.image && (
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="event-image"
+                  />
+                )}
+                <h2>{event.title}</h2>
+                <p className="event-location">📍 {event.location}</p>
+                <p className="event-date">
+                  📅 {new Date(event.date).toLocaleString()}
+                </p>
+                <p className="event-description">{event.description}</p>
+                <p className="registration-info">
+                  Registered on:{" "}
+                  {new Date(registration.registeredAt).toLocaleDateString()}
+                </p>
+                <button
+                  className="unregister-button"
+                  onClick={() => handleUnregister(registration.id)}
+                >
+                  Unregister
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

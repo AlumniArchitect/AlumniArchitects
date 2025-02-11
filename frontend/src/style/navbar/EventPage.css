@@ -85,23 +85,36 @@
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .event-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .event-card.registered {
   border-left: 4px solid #28a745;
 }
 
+.event-card.missed {
+  border-left: 4px solid #dc3545; /* Red border for missed events */
+}
+
 .event-card h2 {
   font-size: 1.5rem;
   margin-bottom: 10px;
   color: #333;
+}
+
+/* Event Image Styling */
+.event-image {
+  width: 100%;
+  height: 200px; /* Fixed height for consistency */
+  object-fit: cover; /* Ensures the image covers the area without distortion */
+  border-radius: 8px;
+  margin-bottom: 15px;
 }
 
 .event-location,
@@ -153,12 +166,32 @@
   cursor: not-allowed;
 }
 
-.event-actions button:first-child {
-  background-color: #28a745;
+.unregister-button {
+  background-color: #dc3545;
   color: white;
+  width: 30%;
+  border-radius: 5px;
 }
 
-.event-actions button:last-child {
+.unregister-button:hover {
+  background-color: #c82333;
+}
+
+.event-card .unregister-button {
+  background-color: #dc3545;
+  color: white;
+  width: 100px;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+}
+
+.edit-button {
+  background-color: #ffc107;
+  color: black;
+}
+
+.delete-button {
   background-color: #dc3545;
   color: white;
 }
@@ -169,7 +202,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -277,7 +310,7 @@
   padding: 20px;
   background: #f8f9fa;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .filter-controls {
@@ -313,7 +346,7 @@
 .filter-group input[type="date"]:focus {
   outline: none;
   border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0,123,255,0.1);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
 }
 
 .sort-controls {
@@ -365,6 +398,7 @@
     flex: 1;
     max-width: 150px;
   }
+
   .filter-controls {
     grid-template-columns: 1fr;
   }
