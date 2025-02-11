@@ -16,7 +16,7 @@ const SplashScreen = () => {
     return (
         <>
             <div id="splash-screen" className="main-wrapper">
-                <div className="header">
+                <div className="splash-header">
                     <div className="title">
                         <h1><i>Alumini Architect</i></h1>
                     </div>

@@ -24,25 +24,28 @@ const BlogUI = () => {
   const token = localStorage.getItem("jwt");
 
   // Fetch All Blogs
-  const fetchAllBlogs = useCallback(async (page = 1) => {
-    setLoading(true);
-    try {
-      const url = `${Constant.BASE_URL}/api/suggest/blog/${email}/${page}`;
-      const response = await fetch(url, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+  const fetchAllBlogs = useCallback(
+    async (page = 1) => {
+      setLoading(true);
+      try {
+        const url = `${Constant.BASE_URL}/api/suggest/blog/${email}/${page}`;
+        const response = await fetch(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-      if (!response.ok) throw new Error("Failed to fetch blogs");
-      const data = await response.json();
-      if (!Array.isArray(data)) return;
+        if (!response.ok) throw new Error("Failed to fetch blogs");
+        const data = await response.json();
+        if (!Array.isArray(data)) return;
 
-      setAllBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
-    } catch (error) {
-      console.error("Error fetching all blogs:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [email, token]);
+        setAllBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
+      } catch (error) {
+        console.error("Error fetching all blogs:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [email, token]
+  );
 
   // Fetch My Blogs
   const fetchMyBlogs = useCallback(async () => {
@@ -75,7 +78,7 @@ const BlogUI = () => {
   const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop >=
-      document.documentElement.offsetHeight - 100 &&
+        document.documentElement.offsetHeight - 100 &&
       !loading
     ) {
       setPage((prevPage) => prevPage + 1);
@@ -123,43 +126,46 @@ const BlogUI = () => {
     }
   };
 
-  const fetchBlogs = useCallback(async (page = 1) => {
-    setLoading(true);
-    try {
-      const url =
-        activeTab === "my-blogs"
-          ? `${Constant.BASE_URL}/api/blog?email=${email}&page=${page}`
-          : `${Constant.BASE_URL}/api/suggest/blog/${email}/${page}`;
+  const fetchBlogs = useCallback(
+    async (page = 1) => {
+      setLoading(true);
+      try {
+        const url =
+          activeTab === "my-blogs"
+            ? `${Constant.BASE_URL}/api/blog?email=${email}&page=${page}`
+            : `${Constant.BASE_URL}/api/suggest/blog/${email}/${page}`;
 
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || "Failed to fetch blogs");
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || "Failed to fetch blogs");
+        }
+
+        const data = await response.json();
+
+        if (!Array.isArray(data)) {
+          console.error("Unexpected data format:", data);
+          return;
+        }
+
+        if (activeTab === "my-blogs") {
+          setMyBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
+        } else {
+          setAllBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
+        }
+      } catch (error) {
+        console.error("Failed to fetch blogs:", error);
+      } finally {
+        setLoading(false);
       }
-
-      const data = await response.json();
-
-      if (!Array.isArray(data)) {
-        console.error("Unexpected data format:", data);
-        return;
-      }
-
-      if (activeTab === "my-blogs") {
-        setMyBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
-      } else {
-        setAllBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
-      }
-    } catch (error) {
-      console.error("Failed to fetch blogs:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [activeTab, email, token]);
+    },
+    [activeTab, email, token]
+  );
 
   // Handle liking a blog
   const handleLike = async (blogId) => {
@@ -224,15 +230,12 @@ const BlogUI = () => {
   // handle delete blog
   const handleDeleteBlog = async (blogId) => {
     try {
-      const response = await fetch(
-        `${Constant.BASE_URL}/api/blog/${blogId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${Constant.BASE_URL}/api/blog/${blogId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.ok) {
         if (activeTab === "my-blogs") {
           setMyBlogs((prev) => prev.filter((blog) => blog.id !== blogId));
@@ -369,10 +372,7 @@ const BlogUI = () => {
                 placeholder="Write a comment..."
                 className="textarea-field"
               />
-              <button
-                onClick={() => handleComment(blog.id)}
-                className="button"
-              >
+              <button onClick={() => handleComment(blog.id)} className="button">
                 Post Comment
               </button>
             </div>

@@ -1,68 +1,188 @@
 import { useState, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import "../../style/navbar/EventPage.css";
 
+<<<<<<< HEAD
 const eventsData = [
   // Existing events data
       ];
 
 export default function UpcomingEvents() {
+=======
+export default function EventPage() {
+>>>>>>> 9aee65ff16676fbc4f54be2265bf019b85f827a4
   const [search, setSearch] = useState("");
-  const [filteredEvents, setFilteredEvents] = useState(eventsData);
+  const [events, setEvents] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [editingEvent, setEditingEvent] = useState(null);
+  const [registeredEvents, setRegisteredEvents] = useState([]);
+  const [view, setView] = useState("all");
+  const [filters, setFilters] = useState({
+    category: "",
+    type: "",
+    format: "",
+    dateFrom: "",
+    dateTo: "",
+    sortBy: "date",
+    sortOrder: "asc",
+  });
+
+  // Add current user state (this would come from auth in a real app)
+  const [currentUser] = useState({
+    id: 1,
+    name: "Current User",
+  });
+
   const [newEvent, setNewEvent] = useState({
     title: "",
     date: new Date(),
     location: "",
     description: "",
     type: "Technical",
+<<<<<<< HEAD
     format: "Offline", // Default format
     link: "", // Link for online events
+=======
+    format: "Offline",
+    link: "",
+>>>>>>> 9aee65ff16676fbc4f54be2265bf019b85f827a4
     image: "",
+    maxParticipants: 0,
+    registrationOpen: true,
   });
-  const [events, setEvents] = useState(eventsData);
-  const [showForm, setShowForm] = useState(false);
-  const [registeredEvents, setRegisteredEvents] = useState([]);
 
+  // Load events from localStorage on component mount
   useEffect(() => {
-    setFilteredEvents(
-      [...events]
-        .sort((a, b) => new Date(a.date) - new Date(b.date))
-        .filter((event) =>
-          event.title.toLowerCase().includes(search.toLowerCase())
-        )
-    );
-  }, [search, events]);
-
-  const handleAddEvent = (e) => {
-    e.preventDefault(); // Prevent form submission from refreshing the page
-    if (
-      newEvent.title &&
-      newEvent.date &&
-      newEvent.location &&
-      newEvent.description
-    ) {
-      setEvents([
-        ...events,
-        {
-          ...newEvent,
-          id: events.length + 1,
-          date: newEvent.date.toISOString().split("T")[0],
-        },
-      ]);
-      setNewEvent({
-        title: "",
-        date: new Date(),
-        location: "",
-        description: "",
-        type: "Technical",
-        format: "Offline",
-        link: "",
-        image: "",
-      });
-      setShowForm(false);
+    const storedEvents = localStorage.getItem("events");
+    if (storedEvents) {
+      setEvents(JSON.parse(storedEvents));
     }
+    const storedRegistrations = localStorage.getItem("registeredEvents");
+    if (storedRegistrations) {
+      setRegisteredEvents(JSON.parse(storedRegistrations));
+    }
+  }, []);
+
+  // Save events to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("events", JSON.stringify(events));
+  }, [events]);
+
+  // Save registrations to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("registeredEvents", JSON.stringify(registeredEvents));
+  }, [registeredEvents]);
+
+  const handleFilterChange = (name, value) => {
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSortChange = (sortBy) => {
+    setFilters((prev) => ({
+      ...prev,
+      sortBy,
+      sortOrder:
+        prev.sortBy === sortBy
+          ? prev.sortOrder === "asc"
+            ? "desc"
+            : "asc"
+          : "asc",
+    }));
+  };
+
+  const filterAndSortEvents = (events) => {
+    return events
+      .filter((event) => {
+        const matchesSearch =
+          event.title.toLowerCase().includes(search.toLowerCase()) ||
+          event.description.toLowerCase().includes(search.toLowerCase());
+        const matchesCategory =
+          !filters.category || event.category === filters.category;
+        const matchesType = !filters.type || event.type === filters.type;
+        const matchesFormat =
+          !filters.format || event.format === filters.format;
+        const eventDate = new Date(event.date);
+        const matchesDateFrom =
+          !filters.dateFrom || eventDate >= new Date(filters.dateFrom);
+        const matchesDateTo =
+          !filters.dateTo || eventDate <= new Date(filters.dateTo);
+        return (
+          matchesSearch &&
+          matchesCategory &&
+          matchesType &&
+          matchesFormat &&
+          matchesDateFrom &&
+          matchesDateTo
+        );
+      })
+      .sort((a, b) => {
+        if (filters.sortBy === "date") {
+          const comparison = new Date(a.date) - new Date(b.date);
+          return filters.sortOrder === "asc" ? comparison : -comparison;
+        } else {
+          const comparison = a.title.localeCompare(b.title);
+          return filters.sortOrder === "asc" ? comparison : -comparison;
+        }
+      });
+  };
+
+  const handleAddOrUpdateEvent = (e) => {
+    e.preventDefault();
+    if (editingEvent) {
+      setEvents(
+        events.map((event) =>
+          event.id === editingEvent.id
+            ? { ...newEvent, id: editingEvent.id }
+            : event
+        )
+      );
+    } else {
+      const newEventWithId = {
+        ...newEvent,
+        id: Date.now(),
+        userId: currentUser.id,
+        createdAt: new Date().toLocaleString(),
+      };
+      setEvents([...events, newEventWithId]);
+    }
+    resetForm();
+  };
+
+  const handleRegister = (eventId) => {
+    if (
+      !registeredEvents.some(
+        (reg) => reg.eventId === eventId && reg.userId === currentUser.id
+      )
+    ) {
+      const registration = {
+        id: Date.now(),
+        eventId,
+        userId: currentUser.id,
+        registeredAt: new Date().toLocaleString(),
+      };
+      setRegisteredEvents([...registeredEvents, registration]);
+      alert("Successfully registered for the event!");
+    } else {
+      alert("You are already registered for this event.");
+    }
+  };
+
+  const handleUnregister = (registrationId) => {
+    setRegisteredEvents(
+      registeredEvents.filter((reg) => reg.id !== registrationId)
+    );
+    alert("You have successfully unregistered from the event.");
+  };
+
+  const handleDeleteEvent = (eventId) => {
+    setEvents(events.filter((event) => event.id !== eventId));
+  };
+
+  const handleEditEvent = (event) => {
+    setNewEvent(event);
+    setEditingEvent(event);
+    setShowForm(true);
+    setView("manage");
   };
 
   const handleInputChange = (e) => {
@@ -73,38 +193,174 @@ export default function UpcomingEvents() {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file); // Generate a URL for the uploaded file
-      setNewEvent({ ...newEvent, image: imageUrl });
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewEvent({ ...newEvent, image: reader.result });
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleRegister = (event) => {
-    setRegisteredEvents([...registeredEvents, event]);
+  const resetForm = () => {
+    setNewEvent({
+      title: "",
+      date: new Date(),
+      location: "",
+      description: "",
+      type: "Technical",
+      format: "Offline",
+      link: "",
+      image: "",
+      maxParticipants: 0,
+      registrationOpen: true,
+    });
+    setEditingEvent(null);
+    setShowForm(false);
+  };
+
+  const filteredEvents = filterAndSortEvents(events);
+  const upcomingEvents = filteredEvents.filter(
+    (event) => new Date(event.date) >= new Date()
+  );
+  const pastEvents = filteredEvents.filter(
+    (event) => new Date(event.date) < new Date()
+  );
+
+  const isEventCreator = (event) => {
+    return event.userId === currentUser.id;
+  };
+
+  const isRegistered = (eventId) => {
+    return registeredEvents.some(
+      (reg) => reg.eventId === eventId && reg.userId === currentUser.id
+    );
   };
 
   return (
     <div className="container">
       <div className="header">
-        <h1>Upcoming Events</h1>
-        <div className="button-group">
-          <button onClick={() => setShowForm(true)}>New Event</button>
-          <button onClick={() => (window.location.href = "/homepage")}>
-            Home
+        <h1>Alumni Events</h1>
+        <div className="view-controls">
+          <button
+            className={`view-button ${view === "all" ? "active" : ""}`}
+            onClick={() => setView("all")}
+          >
+            All Events
+          </button>
+          <button
+            className={`view-button ${view === "manage" ? "active" : ""}`}
+            onClick={() => setView("manage")}
+          >
+            My Events
           </button>
         </div>
       </div>
-      <input
-        type="text"
-        placeholder="Search events..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="search-box"
-      />
+
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search events..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="search-box"
+        />
+      </div>
+
+      <div className="filters-section">
+        <div className="filter-controls">
+          <div className="filter-group">
+            <label>Category:</label>
+            <select
+              value={filters.category}
+              onChange={(e) => handleFilterChange("category", e.target.value)}
+            >
+              <option value="">All Categories</option>
+              <option value="Reunion">Reunion</option>
+              <option value="Networking">Networking</option>
+              <option value="Career Fair">Career Fair</option>
+              <option value="Workshop">Workshop</option>
+              <option value="Seminar">Seminar</option>
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Type:</label>
+            <select
+              value={filters.type}
+              onChange={(e) => handleFilterChange("type", e.target.value)}
+            >
+              <option value="">All Types</option>
+              <option value="Technical">Technical</option>
+              <option value="Non-Technical">Non-Technical</option>
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Format:</label>
+            <select
+              value={filters.format}
+              onChange={(e) => handleFilterChange("format", e.target.value)}
+            >
+              <option value="">All Formats</option>
+              <option value="Online">Online</option>
+              <option value="Offline">Offline</option>
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Date From:</label>
+            <input
+              type="date"
+              value={filters.dateFrom}
+              onChange={(e) => handleFilterChange("dateFrom", e.target.value)}
+            />
+          </div>
+
+          <div className="filter-group">
+            <label>Date To:</label>
+            <input
+              type="date"
+              value={filters.dateTo}
+              onChange={(e) => handleFilterChange("dateTo", e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="sort-controls">
+          <button
+            className={`sort-button ${
+              filters.sortBy === "date" ? "active" : ""
+            }`}
+            onClick={() => handleSortChange("date")}
+          >
+            Sort by Date{" "}
+            {filters.sortBy === "date" &&
+              (filters.sortOrder === "asc" ? "↑" : "↓")}
+          </button>
+          <button
+            className={`sort-button ${
+              filters.sortBy === "title" ? "active" : ""
+            }`}
+            onClick={() => handleSortChange("title")}
+          >
+            Sort by Title{" "}
+            {filters.sortBy === "title" &&
+              (filters.sortOrder === "asc" ? "↑" : "↓")}
+          </button>
+        </div>
+      </div>
+
+      {view === "manage" && (
+        <button className="create-button" onClick={() => setShowForm(true)}>
+          Create New Event
+        </button>
+      )}
+
       {showForm && (
         <div className="modal-overlay">
           <div className="modal">
-            <h2>Create New Event</h2>
-            <form onSubmit={handleAddEvent}>
+            <h2>{editingEvent ? "Edit Event" : "Create New Event"}</h2>
+            <form onSubmit={handleAddOrUpdateEvent}>
               <div className="form-group">
                 <label>Event Name</label>
                 <input
@@ -116,16 +372,19 @@ export default function UpcomingEvents() {
                 />
               </div>
               <div className="form-group">
-                <label>Event Date</label>
-                <DatePicker
-                  selected={newEvent.date}
-                  onChange={(date) => setNewEvent({ ...newEvent, date })}
-                  dateFormat="yyyy-MM-dd"
+                <label>Date & Time</label>
+                <input
+                  type="datetime-local"
+                  name="date"
+                  value={newEvent.date.toLocaleString().split(".")[0]}
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, date: new Date(e.target.value) })
+                  }
                   required
                 />
               </div>
               <div className="form-group">
-                <label>Event Location</label>
+                <label>Location</label>
                 <input
                   type="text"
                   name="location"
@@ -135,17 +394,16 @@ export default function UpcomingEvents() {
                 />
               </div>
               <div className="form-group">
-                <label>Event Description</label>
+                <label>Description</label>
                 <textarea
-                  className="textarea-field"
                   name="description"
                   value={newEvent.description}
                   onChange={handleInputChange}
                   required
-                />
+                ></textarea>
               </div>
               <div className="form-group">
-                <label>Event Type</label>
+                <label>Type</label>
                 <select
                   name="type"
                   value={newEvent.type}
@@ -157,7 +415,7 @@ export default function UpcomingEvents() {
                 </select>
               </div>
               <div className="form-group">
-                <label>Event Format</label>
+                <label>Format</label>
                 <select
                   name="format"
                   value={newEvent.format}
@@ -189,58 +447,185 @@ export default function UpcomingEvents() {
                 />
               </div>
               <div className="form-actions">
-                <button type="button" onClick={() => setShowForm(false)}>
+                <button type="button" onClick={resetForm}>
                   Cancel
                 </button>
-                <button type="submit">Create Event</button>
+                <button type="submit">
+                  {editingEvent ? "Update Event" : "Create Event"}
+                </button>
               </div>
             </form>
           </div>
         </div>
       )}
-      {filteredEvents.map((event) => (
-        <div key={event.id} className="event-card">
-          {event.image && (
-            <img src={event.image} alt={event.title} className="event-image" />
-          )}
-          <h2>{event.title}</h2>
-          <p>📍 {event.location}</p>
-          <p>📅 {event.date}</p>
-          <p>{event.description}</p>
-          <p>Type: {event.type}</p>
-          <p>Format: {event.format}</p>
-          {event.format === "Online" && (
-            <p>
-              🔗{" "}
-              <a href={event.link} target="_blank" rel="noopener noreferrer">
-                Event Link
-              </a>
-            </p>
-          )}
-          <div className="event-time">
-            <span>
-              {formatDistanceToNow(new Date(event.date), { addSuffix: true })}
-            </span>
+
+      {/* Upcoming Events Section */}
+      {upcomingEvents.length > 0 && (
+        <div>
+          <h2>Upcoming Events</h2>
+          <div className="events-grid">
+            {upcomingEvents.map((event) => (
+              <div key={event.id} className="event-card">
+                {event.image && (
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="event-image"
+                  />
+                )}
+                <h2>{event.title}</h2>
+                <p className="event-location">📍 {event.location}</p>
+                <p className="event-date">
+                  📅 {new Date(event.date).toLocaleString()}
+                </p>
+                <p className="event-description">{event.description}</p>
+                <p className="event-type">Type: {event.type}</p>
+                <p className="event-format">Format: {event.format}</p>
+                {event.format === "Online" && event.link && (
+                  <p className="event-link">
+                    🔗{" "}
+                    <a
+                      href={event.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Join Event
+                    </a>
+                  </p>
+                )}
+                <p className="event-time">
+                  {formatDistanceToNow(new Date(event.date), {
+                    addSuffix: true,
+                  })}
+                </p>
+                <div className="event-actions">
+                  {view === "manage" && isEventCreator(event) && (
+                    <>
+                      <button
+                        className="edit-button"
+                        onClick={() => handleEditEvent(event)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDeleteEvent(event.id)}
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
+                  {view === "all" && (
+                    <>
+                      {!isRegistered(event.id) ? (
+                        <button
+                          className="register-button"
+                          onClick={() => handleRegister(event.id)}
+                          disabled={!event.registrationOpen}
+                        >
+                          {event.registrationOpen
+                            ? "Register Now"
+                            : "Registration Closed"}
+                        </button>
+                      ) : (
+                        <button
+                          className="unregister-button"
+                          onClick={() => {
+                            const registrationId = registeredEvents.find(
+                              (reg) =>
+                                reg.eventId === event.id &&
+                                reg.userId === currentUser.id
+                            ).id;
+                            handleUnregister(registrationId);
+                          }}
+                        >
+                          Unregister
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
-          <button
-            className="register-button"
-            onClick={() => handleRegister(event)}
-          >
-            Register
-          </button>
         </div>
-      ))}
+      )}
+
+      {/* Missed Events Section */}
+      {pastEvents.length > 0 && (
+        <div>
+          <h2>Missed Events</h2>
+          <div className="events-grid">
+            {pastEvents.map((event) => (
+              <div key={event.id} className="event-card missed">
+                {event.image && (
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="event-image"
+                  />
+                )}
+                <h2>{event.title}</h2>
+                <p className="event-location">📍 {event.location}</p>
+                <p className="event-date">
+                  📅 {new Date(event.date).toLocaleString()}
+                </p>
+                <p className="event-description">{event.description}</p>
+                <p className="event-type">Type: {event.type}</p>
+                <p className="event-format">Format: {event.format}</p>
+                {event.format === "Online" && event.link && (
+                  <p className="event-link">
+                    🔗{" "}
+                    <a
+                      href={event.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View Event
+                    </a>
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Registered Events Section */}
       {registeredEvents.length > 0 && (
         <div className="registered-events">
-          <h2>Registered Events</h2>
-          {registeredEvents.map((event) => (
-            <div key={event.id} className="event-card">
-              <h2>{event.title}</h2>
-              <p>📍 {event.location}</p>
-              <p>📅 {event.date}</p>
-              <p>{event.description}</p>
-            </div>
-          ))}
+          <h2>Your Registered Events</h2>
+          {registeredEvents.map((registration) => {
+            const event = events.find((e) => e.id === registration.eventId);
+            if (!event) return null;
+            return (
+              <div key={registration.id} className="event-card registered">
+                {event.image && (
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="event-image"
+                  />
+                )}
+                <h2>{event.title}</h2>
+                <p className="event-location">📍 {event.location}</p>
+                <p className="event-date">
+                  📅 {new Date(event.date).toLocaleString()}
+                </p>
+                <p className="event-description">{event.description}</p>
+                <p className="registration-info">
+                  Registered on:{" "}
+                  {new Date(registration.registeredAt).toLocaleDateString()}
+                </p>
+                <button
+                  className="unregister-button"
+                  onClick={() => handleUnregister(registration.id)}
+                >
+                  Unregister
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

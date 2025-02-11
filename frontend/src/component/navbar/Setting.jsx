@@ -15,7 +15,7 @@ export default function Setting() {
     "FAQ": "Find answers to commonly asked questions here.",
     "Contact Us": "Get in touch with our support team for further assistance.",
     "Privacy Policy": "Review our privacy policy to understand how we handle your data.",
-    "Delete Account": "Are you sure you want to delete your account? This action cannot be undone.",
+    "Delete Account": "Are you sure you want to delete your account?  This action cannot be undone.",
   };
 
   const showError = (message) => {
@@ -95,7 +95,6 @@ export default function Setting() {
             <p>{contentMap[selectedOption] || "Select an option to see details."}</p>
             {selectedOption === "Delete Account" && showConfirmation && (
               <div className="setting-confirmation-dialog">
-                <p>Are you sure you want to delete your account?</p>
                 <div className="setting-confirmation-buttons">
                   <button className="setting-button setting-confirm" onClick={() => handleConfirmation(true)}>
                     Yes
