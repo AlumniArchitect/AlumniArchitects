@@ -3,6 +3,7 @@ import Constant from "../../utils/Constant";
 import defaultProfileImage from "../../assets/userLogo.png";
 import "../../style/navbar/Profile.css";
 import { useLocation } from "react-router-dom";
+import UserSuggestion from "./UserSuggestion";
 
 const EducationCard = ({ education }) => {
   return (
@@ -25,6 +26,7 @@ const ProfilePage = () => {
   });
   const [user, setUser] = useState({
     email: email || null,
+    fullName: localStorage.getItem("fullName") || "N/A",
     mobileNumber: "+91",
     location: "",
     education: [],
@@ -57,24 +59,27 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-
     const fetchUserProfile = async () => {
       try {
         console.log(email);
-        
         const res = await fetch(`${Constant.BASE_URL}/api/userProfile/${email}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
         });
-
         if (!res.ok) throw new Error("Failed to fetch user profile");
-
         const data = await res.json();
-
         if (data.status) {
-          setUser((prevUser) => ({ ...prevUser, ...data.userProfile }));
+          setUser((prevUser) => ({
+            ...prevUser,
+            ...data.userProfile,
+            fullName: data.userProfile.fullName || "N/A", // Use fullName from UserProfile
+          }));
+          setUserProfile((prev) => ({
+            ...prev,
+            name: data.userProfile.fullName || "N/A", // Update userProfile name
+          }));
         } else {
           showError(data.message);
         }
@@ -83,31 +88,8 @@ const ProfilePage = () => {
       }
     };
 
-    const fetchUserName = async () => {
-      try {
-        const res = await fetch(`${Constant.BASE_URL}/api/user/${email}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        });
-
-        if (!res.ok) throw new Error("Failed to fetch user profile");
-
-        const data = await res.json();
-        if (data.status) {
-          setUserProfile((prev) => ({ ...prev, name: data.user.fullName }));
-        } else {
-          showError("User name not found");
-        }
-      } catch (error) {
-        showError("Error fetching user name: " + error.message);
-      }
-    };
-
     if (jwt) {
-      fetchUserName();
-      fetchUserProfile();
+      fetchUserProfile(); // Fetch user profile only
     }
   }, [email, jwt]);
 
@@ -122,10 +104,8 @@ const ProfilePage = () => {
       showError("Please provide a file");
       return;
     }
-
     const formData = new FormData();
     formData.append("image", file);
-
     try {
       const response = await fetch(`${Constant.BASE_URL}/api/userProfile/uploadProfileImage/${email}`, {
         method: "POST",
@@ -134,18 +114,14 @@ const ProfilePage = () => {
         },
         body: formData,
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to upload image");
       }
-
       const data = await response.json();
       const imageUrl = data;
-
       setUser((prevUser) => ({ ...prevUser, profileImageUrl: imageUrl }));
       localStorage.setItem("profileImageUrl", imageUrl);
-
     } catch (error) {
       showError("Error uploading image: " + error.message);
     }
@@ -153,14 +129,21 @@ const ProfilePage = () => {
 
   const handleSave = async () => {
     try {
+      // Update fullName in user state before saving
+      const updatedUser = {
+        ...user,
+        fullName: userProfile.name || user.fullName, // Sync fullName with userProfile.name
+      };
+
       const res = await fetch(`${Constant.BASE_URL}/api/userProfile`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${jwt}`,
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify(updatedUser),
       });
+
       const data = await res.json();
       if (data.status) {
         alert("Profile updated successfully!");
@@ -175,12 +158,13 @@ const ProfilePage = () => {
 
   return (
     <div className={`profile-container ${isEditing ? "editing-mode" : ""}`}>
-      {/* error */}
+      {/* Error Message */}
       {error && <div className="error-message">{error}</div>}
 
+      {/* Sidebar */}
       <div className="profile-sidebar">
         <div className="profile-content">
-          {/* profile photo */}
+          {/* Profile Photo */}
           <div
             className="profile-photo"
             onClick={() => setShowPhotoOptions(true)}
@@ -197,7 +181,7 @@ const ProfilePage = () => {
             </label>
           )}
 
-          {/* user name */}
+          {/* User Name */}
           {isEditing ? (
             <input
               className="input-field"
@@ -209,10 +193,10 @@ const ProfilePage = () => {
             <h2 className="profile-name">{userProfile.name || "No name found"}</h2>
           )}
 
-          {/* email */}
+          {/* Email */}
           <p className="profile-email">{user.email || "No email found"}</p>
 
-          {/* mobile */}
+          {/* Mobile Number */}
           {isEditing ? (
             <input
               className="input-field"
@@ -224,7 +208,7 @@ const ProfilePage = () => {
             <p className="profile-info">{user.mobileNumber}</p>
           )}
 
-          {/* resume */}
+          {/* Resume URL */}
           {isEditing ? (
             <input
               className="input-field"
@@ -234,23 +218,25 @@ const ProfilePage = () => {
             />
           ) : (
             <div className="profile-info">
-              <a href={user.resumeUrl || "#"} target="_blank" rel="noopener noreferrer">Resume</a>
+              <a href={user.resumeUrl || "#"} target="_blank" rel="noopener noreferrer">
+                Resume
+              </a>
             </div>
           )}
 
-          {/* save and edit button */}
-          {userEmail === email ??
+          {/* Save/Edit Button */}
+          {userEmail === email && (
             <button className="edit-btn" onClick={isEditing ? handleSave : () => setIsEditing(true)}>
               {isEditing ? "Save" : "Edit"}
-            </button>}
+            </button>
+          )}
         </div>
-
-        {/* Education, Skill, Link */}
       </div>
-      <div className="profile-main">
-        <div className="profile-section">
 
-          {/* education */}
+      {/* Main Content */}
+      <div className="profile-main">
+        {/* Education Section */}
+        <div className="profile-section">
           <h3 className="section-title">Education</h3>
           {isEditing ? (
             <div>
@@ -300,14 +286,19 @@ const ProfilePage = () => {
           )}
         </div>
 
-        {/* skills */}
+        {/* Skills Section */}
         <div className="profile-section">
           <h3 className="section-title">Skills</h3>
           {isEditing ? (
             <input
               className="input-field"
               value={user.skills?.join(", ") || ""}
-              onChange={(e) => setUser({ ...user, skills: e.target.value.split(",").map((s) => s.trim().toUpperCase()) })}
+              onChange={(e) =>
+                setUser({
+                  ...user,
+                  skills: e.target.value.split(",").map((s) => s.trim().toUpperCase()),
+                })
+              }
             />
           ) : user.skills?.length > 0 ? (
             <div className="skills-container">
@@ -322,7 +313,7 @@ const ProfilePage = () => {
           )}
         </div>
 
-        {/* links */}
+        {/* Social Links Section */}
         <div className="profile-section">
           <h3 className="section-title">Social Links</h3>
           {isEditing ? (
@@ -330,7 +321,12 @@ const ProfilePage = () => {
               className="input-field"
               placeholder="Enter social links (comma separated)"
               value={user.socialLinks?.join(", ") || ""}
-              onChange={(e) => setUser({ ...user, socialLinks: e.target.value.split(",").map((s) => s.trim()) })}
+              onChange={(e) =>
+                setUser({
+                  ...user,
+                  socialLinks: e.target.value.split(",").map((s) => s.trim()),
+                })
+              }
             />
           ) : user.socialLinks?.length > 0 ? (
             <ul className="social-links">
@@ -346,6 +342,9 @@ const ProfilePage = () => {
             <p>No social links added</p>
           )}
         </div>
+
+        {/* User Suggestions */}
+        <UserSuggestion email={email} />
       </div>
     </div>
   );

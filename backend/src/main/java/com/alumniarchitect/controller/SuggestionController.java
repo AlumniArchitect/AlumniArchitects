@@ -29,6 +29,7 @@ public class SuggestionController {
 
     @Autowired
     private BlogService blogService;
+
     @Autowired
     private UserService userService;
 

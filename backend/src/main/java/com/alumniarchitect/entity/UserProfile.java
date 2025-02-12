@@ -16,6 +16,7 @@ public class UserProfile {
 
     @Id
     private String id;
+    private String fullName;
     private String email;
     private String profileImageUrl;
     private String resumeUrl;

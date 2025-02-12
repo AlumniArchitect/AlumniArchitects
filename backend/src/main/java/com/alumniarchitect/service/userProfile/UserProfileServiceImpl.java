@@ -2,6 +2,7 @@ package com.alumniarchitect.service.userProfile;
 
 import com.alumniarchitect.entity.UserProfile;
 import com.alumniarchitect.repository.UserProfileRepository;
+import com.alumniarchitect.service.user.UserService;
 import com.cloudinary.Cloudinary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Autowired
     private Cloudinary cloudinary;
+    @Autowired
+    private UserService userService;
 
     @Override
     public UserProfile findByEmail(String email) {
@@ -36,9 +39,13 @@ public class UserProfileServiceImpl implements UserProfileService {
 
         if (existingProfile == null) {
             existingProfile = new UserProfile();
+            userProfile.setFullName(userService.findByEmail(email).getFullName());
             existingProfile.setEmail(email);
         }
 
+        if(StringUtils.hasText(userProfile.getFullName())){
+            existingProfile.setFullName(userProfile.getFullName());
+        }
         if (StringUtils.hasText(userProfile.getProfileImageUrl())) {
             existingProfile.setProfileImageUrl(userProfile.getProfileImageUrl());
         }
