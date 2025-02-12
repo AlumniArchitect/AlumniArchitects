@@ -1,13 +1,11 @@
 package com.alumniarchitect.controller;
 
-import com.alumniarchitect.entity.Blog;
-import com.alumniarchitect.entity.CollegeGroup;
-import com.alumniarchitect.entity.Skills;
-import com.alumniarchitect.entity.UserProfile;
+import com.alumniarchitect.entity.*;
 import com.alumniarchitect.service.blog.BlogService;
 import com.alumniarchitect.service.collageGroup.CollegeGroupService;
 import com.alumniarchitect.service.email.EmailService;
 import com.alumniarchitect.service.skills.SkillsService;
+import com.alumniarchitect.service.user.UserService;
 import com.alumniarchitect.service.userProfile.UserProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +29,21 @@ public class SuggestionController {
 
     @Autowired
     private BlogService blogService;
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/user")
+    public Map<String, String> searchUser(@RequestParam String query) {
+        if (query == null || query.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        List<User> userList = userService.findAll();
+
+        return userList.stream()
+                .filter(user -> user.getFullName() != null && user.getFullName().toLowerCase().contains(query.toLowerCase()))
+                .collect(Collectors.toMap(User::getEmail, User::getFullName, (existing, replacement) -> existing));
+    }
 
     @GetMapping("/user-profile/{email}/{page}")
     public ResponseEntity<?> getUserProfile(@PathVariable String email, @PathVariable int page) {

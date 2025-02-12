@@ -18,7 +18,7 @@ const App = () => {
       <Route path="/" element={<Navigate to='/splash-screen' />} />
       <Route path="*" element={<Navigate to='/splash-screen' />} />
       <Route path="/splash-screen" element={<SplashScreen />} />
-      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/profile" element={<ProfilePage email={localStorage.getItem("email")}/>} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/verify-otp" element={<OtpVerification />} />
       <Route path="/signin" element={<Signin />} />

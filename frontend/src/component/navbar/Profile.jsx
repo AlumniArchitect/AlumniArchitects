@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Constant from "../../utils/Constant";
 import defaultProfileImage from "../../assets/userLogo.png";
 import "../../style/navbar/Profile.css";
+import { useLocation } from "react-router-dom";
 
 const EducationCard = ({ education }) => {
   return (
@@ -15,13 +16,15 @@ const EducationCard = ({ education }) => {
 };
 
 const ProfilePage = () => {
+  const location = useLocation();
+  const email = location.state?.email || "No email found";
   const [isEditing, setIsEditing] = useState(false);
   const [userProfile, setUserProfile] = useState({
     name: "",
     profileImageUrl: defaultProfileImage,
   });
   const [user, setUser] = useState({
-    email: localStorage.getItem("email") || null,
+    email: email || null,
     mobileNumber: "+91",
     location: "",
     education: [],
@@ -32,6 +35,7 @@ const ProfilePage = () => {
   });
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [error, setError] = useState("");
+  const userEmail = localStorage.getItem("email");
   const jwt = localStorage.getItem("jwt");
 
   const handleEducationChange = (index, field, value) => {
@@ -53,11 +57,12 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    const email = localStorage.getItem("email");
 
     const fetchUserProfile = async () => {
       try {
-        const res = await fetch(`${Constant.BASE_URL}/api/userProfile/${user.email}`, {
+        console.log(email);
+        
+        const res = await fetch(`${Constant.BASE_URL}/api/userProfile/${email}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
@@ -100,11 +105,11 @@ const ProfilePage = () => {
       }
     };
 
-    if (email && jwt) {
+    if (jwt) {
       fetchUserName();
       fetchUserProfile();
     }
-  }, [user.email, jwt]);
+  }, [email, jwt]);
 
   const showError = (message) => {
     setError(message);
@@ -122,7 +127,7 @@ const ProfilePage = () => {
     formData.append("image", file);
 
     try {
-      const response = await fetch(`${Constant.BASE_URL}/api/userProfile/uploadProfileImage/${user.email}`, {
+      const response = await fetch(`${Constant.BASE_URL}/api/userProfile/uploadProfileImage/${email}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${jwt}`,
@@ -234,9 +239,10 @@ const ProfilePage = () => {
           )}
 
           {/* save and edit button */}
-          <button className="edit-btn" onClick={isEditing ? handleSave : () => setIsEditing(true)}>
-            {isEditing ? "Save" : "Edit"}
-          </button>
+          {userEmail === email ??
+            <button className="edit-btn" onClick={isEditing ? handleSave : () => setIsEditing(true)}>
+              {isEditing ? "Save" : "Edit"}
+            </button>}
         </div>
 
         {/* Education, Skill, Link */}
