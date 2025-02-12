@@ -57,21 +57,18 @@ export default function EventPage() {
     fetchEvents();
   }, []);
 
-  useEffect(() => {
-    if (view === "all") {
-      setFilteredEvents(events);
-    } else if (view === "manage") {
-      const myEvents = events.filter((event) => event.email === userEmail);
-      setFilteredEvents(myEvents);
-    }
-  }, [events, view, userEmail]);
-
   const handleFilterChange = (name, value) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
   useEffect(() => {
     let filtered = [...events];
+
+    if (view === "manage") {
+      filtered = filtered.filter((event) => event.email === userEmail);
+    } else {
+      filtered = filtered.filter((event) => event.email !== userEmail);
+    }
 
     if (filters.category) {
       filtered = filtered.filter((event) => event.category === filters.category);
@@ -88,8 +85,9 @@ export default function EventPage() {
     if (filters.endDate) {
       filtered = filtered.filter((event) => event.date <= filters.endDate);
     }
+
     setFilteredEvents(filtered);
-  }, [filters, events]);
+  }, [events, view, filters, userEmail]);
 
   const handleAddOrUpdateEvent = async (e) => {
     e.preventDefault();
@@ -99,33 +97,16 @@ export default function EventPage() {
         Authorization: `Bearer ${jwt}`,
         "Content-Type": "application/json",
       };
+      const response = await fetch(`${URL}`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(newEvent),
+      });
 
-      if (editingEvent) {
-        const response = await fetch(`${URL}/${editingEvent.id}`, {
-          method: "PUT",
-          headers: headers,
-          body: JSON.stringify(newEvent),
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        setEvents(
-          events.map((event) => (event.id === editingEvent.id ? newEvent : event))
-        );
-      } else {
-        const response = await fetch(`${URL}`, {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify(newEvent),
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        fetchEvents();
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      fetchEvents();
 
       resetForm();
       fetchEvents();
@@ -469,10 +450,10 @@ export default function EventPage() {
                 )}
               </div>
 
-              <button type="submit" className="submit-button">
+              <button type="submit" className="btn submit-button">
                 {editingEvent ? "Update Event" : "Create Event"}
               </button>
-              <button type="button" className="cancel-button" onClick={resetForm}>
+              <button type="button" className="btn cancel-button" onClick={resetForm}>
                 Cancel
               </button>
             </form>

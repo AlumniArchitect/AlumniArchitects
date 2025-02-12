@@ -407,9 +407,16 @@
 
 .btn{
   height: 40px;
+  background-color: #74b6fd;
+  padding: 10px;
+  font-weight: bold;
   margin-left: 10px;
   border: transparent;
   border-radius: 10px;
+}
+
+.btn:hover{
+  background-color: #4b9df4;
 }
 
 @media (max-width: 768px) {
