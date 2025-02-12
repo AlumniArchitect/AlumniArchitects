@@ -19,6 +19,7 @@ public class Blog {
     private String id;
     private String email;
     private String author;
+    private String profileImageUrl;
     private String title;
     private String content;
     private int upvote = 0;

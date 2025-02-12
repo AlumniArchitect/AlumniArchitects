@@ -75,7 +75,7 @@ const BlogUI = () => {
   const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight - 100 &&
+      document.documentElement.offsetHeight - 100 &&
       !loading
     ) {
       setPage((prevPage) => prevPage + 1);
@@ -96,6 +96,7 @@ const BlogUI = () => {
     const blog = {
       email: email,
       author: localStorage.getItem("fullName"),
+      profileImageUrl: localStorage.getItem("profileImageUrl"),
       title: newBlog.title,
       content: newBlog.content,
       upvote: 0,
@@ -122,47 +123,6 @@ const BlogUI = () => {
       console.error("Failed to create blog:", error);
     }
   };
-
-  const fetchBlogs = useCallback(
-    async (page = 1) => {
-      setLoading(true);
-      try {
-        const url =
-          activeTab === "my-blogs"
-            ? `${Constant.BASE_URL}/api/blog?email=${email}&page=${page}`
-            : `${Constant.BASE_URL}/api/suggest/blog/${email}/${page}`;
-
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || "Failed to fetch blogs");
-        }
-
-        const data = await response.json();
-
-        if (!Array.isArray(data)) {
-          console.error("Unexpected data format:", data);
-          return;
-        }
-
-        if (activeTab === "my-blogs") {
-          setMyBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
-        } else {
-          setAllBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
-        }
-      } catch (error) {
-        console.error("Failed to fetch blogs:", error);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [activeTab, email, token]
-  );
 
   // Handle liking a blog
   const handleLike = async (blogId) => {
@@ -317,14 +277,17 @@ const BlogUI = () => {
         <div className="blog-card-footer">
           <div className="blog-card-author">
             <div className="blog-card-author-avatar">
-              <User className="w-5 h-5" />
+              {blog.profileImageUrl ? (
+                <img src={blog.profileImageUrl} alt="Author" className="blog-card-author-avatar" />
+              ) : (
+                <User className="w-5 h-5" />
+              )}
             </div>
             <div className="blog-card-author-info">
               <span className="blog-card-author-name">{blog.author}</span>
               <span className="blog-card-author-role">Author</span>
             </div>
           </div>
-
           <div className="blog-card-stats">
             <button
               onClick={() => handleLike(blog.id)}
@@ -380,7 +343,7 @@ const BlogUI = () => {
           </div>
         )}
       </div>
-    </article>
+    </article >
   );
 
   // Render a single blog card

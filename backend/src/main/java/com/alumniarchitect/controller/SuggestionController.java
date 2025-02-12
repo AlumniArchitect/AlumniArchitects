@@ -62,7 +62,6 @@ public class SuggestionController {
             return ResponseEntity.ok(Collections.singletonMap("message", "No suggestions available."));
         }
 
-        System.out.println(suggestedEmails);
         List<Blog> blogs = suggestedEmails.stream()
                 .map(blogService::getBlogsByEmail)
                 .filter(Objects::nonNull)
