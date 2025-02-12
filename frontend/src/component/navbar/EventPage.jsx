@@ -421,6 +421,21 @@ export default function EventPage() {
                 </select>
               </div>
               <div className="form-group">
+                <label>Category:</label>
+                <select
+                  name="category"
+                  value={newEvent.category}
+                  onChange={handleInputChange}
+                >
+                  <option value="">All Categories</option>
+                  <option value="Reunion">Reunion</option>
+                  <option value="Networking">Networking</option>
+                  <option value="Career Fair">Career Fair</option>
+                  <option value="Workshop">Workshop</option>
+                  <option value="Seminar">Seminar</option>
+                </select>
+              </div>
+              <div className="form-group">
                 <label>Format</label>
                 <select
                   name="format"
@@ -484,7 +499,8 @@ export default function EventPage() {
                 <p className="event-date">
                   📅 {new Date(event.date).toLocaleString()}
                 </p>
-                <p className="event-description">{event.description}</p>
+                <p className="event-description">Description: {event.description}</p>
+                <p className="event-category">category: {event.category}</p>
                 <p className="event-type">Type: {event.type}</p>
                 <p className="event-format">Format: {event.format}</p>
                 {event.format === "Online" && event.link && (
