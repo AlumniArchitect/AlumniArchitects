@@ -1,243 +1,389 @@
-html body{
+/* CSS Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Root Variables */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #28a745;
+  --text-color: #333;
+  --light-text-color: #777;
+  --bg-color: #f9f9f9;
+  --white-color: #fff;
+  --border-color: #ddd;
+
+  --font-size-small: 0.875rem;
+  --font-size-normal: 1rem;
+  --font-size-medium: 1.125rem;
+  --font-size-large: 1.25rem;
+  --font-size-xLarge: 1.5rem;
+
+  --spacing-small: 8px;
+  --spacing-normal: 16px;
+  --spacing-medium: 24px;
+  --spacing-large: 32px;
+
+  --border-radius-small: 4px;
+  --border-radius-normal: 8px;
+  --border-radius-medium: 12px;
+
+  --transition-duration: 0.3s;
+}
+
+/* Body */
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   overflow: auto;
   height: 100%;
 }
-.education-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-.education-card {
-  background: #f9f9f9;
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 10px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  transition: 0.3s;
-}
 
-.education-card:hover {
-  transform: scale(1.02);
-}
-
-.education-type {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: rgb(20, 20, 20);
-}
-
-.education-name {
-  font-size: 1rem;
-  color: rgb(20, 20, 20);
-}
-
-.education-year,
-.education-cgpa {
-  font-size: 0.9rem;
-  color: rgb(20, 20, 20);
-}
-
-.education-edit{
-  display: flex;
-  flex-direction: column;
-  gap:5px;
-}
-
-
+/* =========================
+   Profile Container
+   ========================= */
 .profile-container {
   display: flex;
-  min-height: 100vh;
-  background-color: #f3f4f6;
-  padding: 20px;
+  max-width: 1400px;
+  margin: var(--spacing-normal) auto;
+  background-color: var(--white-color);
+  border-radius: var(--border-radius-normal);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
+/* =========================
+   Profile Sidebar
+   ========================= */
 .profile-sidebar {
-  width: 30%;
-  background-color: white;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-}
-
-.profile-content {
+  width: 300px;
+  padding: var(--spacing-normal);
+  background-color: #f0f0f0;
   text-align: center;
+  border-right: 1px solid var(--border-color);
+  flex-shrink: 0;
 }
 
 .profile-photo {
-  margin-bottom: 10px !important;
-  width: 100px;
-  height: 100px;
-  background-color: #ccc;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
-  margin: auto;
-  cursor: pointer;
+  margin: 0 auto var(--spacing-small);
   background-size: cover;
-}
-
-.photo-placeholder {
-  color: #666;
-}
-
-.photo-options {
-  position: absolute;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.photo-btn {
-  display: block;
-  padding: 8px;
+  background-position: center;
   cursor: pointer;
+  border: 3px solid var(--white-color);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
 }
 
-.hidden-input {
-  margin-block: 10px !important;
-  display: none;
+.profile-photo:hover::before {
+  content: 'Change Photo';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: var(--white-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-small);
+  border-radius: 50%;
 }
 
 .profile-name {
-  margin-block: 10px !important;
-  font-size: 20px;
+  font-size: var(--font-size-xLarge);
   font-weight: bold;
+  margin-bottom: var(--spacing-small);
+  color: #555;
 }
 
-.profile-email {
-  margin-block: 10px !important;
-  font-weight: 400;
-  color: rgb(40, 40, 40);
-}
-
+.profile-email,
 .profile-info {
-  margin-block: 10px !important;
-  font-weight: 400;
-  color: rgb(40, 40, 40);
-}
-
-.file-input {
-  margin-top: 10px;
+  font-size: var(--font-size-normal);
+  color: var(--light-text-color);
+  margin-bottom: var(--spacing-small);
 }
 
 .resume-info {
-  color: gray;
+  display: block;
+  margin-top: var(--spacing-small);
+  color: var(--primary-color);
+  text-decoration: none;
 }
 
 .edit-btn {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #10b981;
-  color: white;
-  border-radius: 5px;
+  background-color: var(--secondary-color);
+  color: var(--white-color);
+  border: none;
+  padding: var(--spacing-small) var(--spacing-normal);
+  margin-top: var(--spacing-small);
+  border-radius: var(--border-radius-small);
   cursor: pointer;
+  transition: background-color var(--transition-duration) ease;
 }
 
+.edit-btn:hover {
+  background-color: #218838;
+}
+
+/* =========================
+   Profile Main Content
+   ========================= */
 .profile-main {
-  width: 65%;
-  margin-left: 20px;
+  flex: 1;
+  padding: var(--spacing-normal);
 }
 
+/* =========================
+   Profile Section
+   ========================= */
 .profile-section {
-  background-color: white;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  margin-bottom: 20px;
-  max-height: 400px;
-  overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.profile-section::-webkit-scrollbar {
-  display: none;
+  margin-bottom: var(--spacing-normal);
+  background-color: var(--white-color);
+  border-radius: var(--border-radius-normal);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: var(--spacing-normal);
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: var(--font-size-large);
   font-weight: bold;
+  color: var(--text-color);
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
+  margin-bottom: var(--spacing-small);
 }
 
+/* =========================
+   Input Field
+   ========================= */
 .input-field {
-  width: 90% !important;
-  margin-block: 1px !important;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 15px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-normal);
+  color: var(--text-color);
+  box-sizing: border-box;
+  transition: border-color var(--transition-duration) ease,
+    box-shadow var(--transition-duration) ease;
 }
 
+.input-field:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* =========================
+   Skills Styling
+   ========================= */
 .skills-container {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: var(--spacing-small);
 }
 
 .skill-badge {
-  background-color: #e5e7eb;
+  background-color: #e9ecef;
+  color: var(--text-color);
   padding: 6px 12px;
-  border-radius: 5px;
+  border-radius: 20px;
+  font-size: var(--font-size-small);
 }
 
+/* =========================
+   Social Links Styling
+   ========================= */
 .social-links {
   list-style: none;
   padding: 0;
 }
 
-.social-links li a {
-  color: #3b82f6;
+.social-links li {
+  margin-bottom: 5px;
 }
 
-.input-field {
-  width: 100%;
+.social-links a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+/* =========================
+   Education Styles
+   ========================= */
+.education-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-normal);
+}
+
+.education-card {
+  padding: var(--spacing-normal);
+  background-color: #f8f9fa;
+  border-radius: var(--border-radius-normal);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.education-type {
+  font-size: var(--font-size-medium);
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: var(--text-color);
+}
+
+.education-name {
+  font-size: var(--font-size-normal);
+  color: var(--text-color);
+  margin-bottom: 8px;
+}
+
+.education-year,
+.education-cgpa {
+  font-size: var(--font-size-small);
+  color: var(--light-text-color);
+}
+
+/* =========================
+   Suggested User Styles
+   ========================= */
+.suggested-users-container {
+  display: flex;
+  overflow-x: auto; /* Enable horizontal scrolling */
+  padding: 10px 0;
+  scroll-snap-type: x mandatory; /* Optional: Snapping effect */
+}
+
+.user-profile-suggestion {
+  width: 200px;
+  margin-right: 15px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fff;
-  font-size: 1rem;
-  transition: border 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0; /* Prevent items from shrinking */
+  scroll-snap-align: start; /* Optional: Snapping alignment */
 }
 
-.input-field:focus {
-  border-color: #4CAF50;
-  box-shadow: 0 0 8px rgba(76, 175, 80, 0.4);
-  outline: none;
+.suggestion-profile-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 8px;
+  object-fit: cover;
 }
 
-.input-field:hover {
-  border-color: #63c067;
+.suggestion-name {
+  font-size: var(--font-size-medium);
+  font-weight: bold;
+  margin-bottom: 3px;
+  color: var(--text-color);
 }
 
-.input-field:disabled {
-  background-color: #f7f7f7;
-  border: 1px solid #ddd;
+.suggestion-email {
+  font-size: var(--font-size-normal);
+  color: var(--light-text-color);
+  word-break: break-word; /* Allow long words to break and wrap */
+  white-space: normal; /* Override nowrap to allow wrapping */
 }
 
+.view-btn {
+  margin-top: 10px;
+}
+
+.view-profile-btn {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  border: none;
+  padding: 8px 12px;
+  border-radius: var(--border-radius-small);
+  cursor: pointer;
+  transition: background-color var(--transition-duration) ease;
+  font-size: var(--font-size-normal);
+}
+
+.view-profile-btn:hover {
+  background-color: #0056b3;
+}
+
+/* =========================
+   Add and Remove Buttons
+   ========================= */
 .add-btn,
 .remove-btn {
-  padding: 3px 7px;
+  background-color: var(--primary-color);
+  color: var(--white-color);
   border: none;
-  border-radius: 5px;
-  border: 1px solid rgb(77, 75, 75);
-  font-size: 1rem;
+  padding: 8px 12px;
+  border-radius: var(--border-radius-small);
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-bottom: 10px;
+  transition: background-color var(--transition-duration) ease;
+  font-size: var(--font-size-normal);
 }
 
-.add-btn {
-  background-color: #4CAF50;
-  color: #fff;
-}
-
-.add-btn:hover {
-  background-color: #66bb6a;
-}
-
-.remove-btn {
-  width:120PX;
-  background-color: #f44336;
-  color: #fff;
-}
-
+.add-btn:hover,
 .remove-btn:hover {
-  background-color: #e57373;
+  background-color: #0056b3;
+}
+
+/* =========================
+   Error Message Styling
+   ========================= */
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: var(--border-radius-small);
+  padding: 10px;
+  margin-bottom: var(--spacing-normal);
+}
+
+/* =========================
+   Media Queries for Responsiveness
+   ========================= */
+@media (max-width: 992px) {
+  .profile-container {
+    flex-direction: column;
+  }
+
+  .profile-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px;
+  }
+
+  .profile-main {
+    width: 100%;
+    margin-left: 0;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .education-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .user-profile-suggestion {
+    width: 120px;
+    margin-right: 10px;
+  }
+
+  .suggestion-profile-photo {
+    width: 60px;
+    height: 60px;
+  }
 }

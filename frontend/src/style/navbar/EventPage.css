@@ -48,6 +48,7 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
+  margin-bottom: 5cd0px;
   transition: background-color 0.3s ease;
 }
 
@@ -250,7 +251,7 @@
 
 .form-group textarea {
   min-height: 100px;
-  resize: vertical;
+  resize: none;
 }
 
 .form-actions {
