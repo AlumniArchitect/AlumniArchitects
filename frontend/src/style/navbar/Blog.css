@@ -15,10 +15,13 @@
   background-color: #fff;
   border-right: 1px solid #e5e5e5;
   padding: 1.5rem;
-  position: sticky;
-  top: 4rem;
-  height: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
 }
+
 
 .content {
   flex: 1;
