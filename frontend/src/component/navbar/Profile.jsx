@@ -74,11 +74,11 @@ const ProfilePage = () => {
           setUser((prevUser) => ({
             ...prevUser,
             ...data.userProfile,
-            fullName: data.userProfile.fullName || "N/A", // Use fullName from UserProfile
+            fullName: data.userProfile.fullName || "N/A",
           }));
           setUserProfile((prev) => ({
             ...prev,
-            name: data.userProfile.fullName || "N/A", // Update userProfile name
+            name: data.userProfile.fullName || "N/A",
           }));
         } else {
           showError(data.message);
@@ -89,7 +89,7 @@ const ProfilePage = () => {
     };
 
     if (jwt) {
-      fetchUserProfile(); // Fetch user profile only
+      fetchUserProfile();
     }
   }, [email, jwt]);
 
@@ -129,10 +129,9 @@ const ProfilePage = () => {
 
   const handleSave = async () => {
     try {
-      // Update fullName in user state before saving
       const updatedUser = {
         ...user,
-        fullName: userProfile.name || user.fullName, // Sync fullName with userProfile.name
+        fullName: userProfile.name || user.fullName,
       };
 
       const res = await fetch(`${Constant.BASE_URL}/api/userProfile`, {
