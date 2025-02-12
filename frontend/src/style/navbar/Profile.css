@@ -1,389 +1,395 @@
-/* CSS Reset */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* Root Variables */
-:root {
-  --primary-color: #007bff;
-  --secondary-color: #28a745;
-  --text-color: #333;
-  --light-text-color: #777;
-  --bg-color: #f9f9f9;
-  --white-color: #fff;
-  --border-color: #ddd;
-
-  --font-size-small: 0.875rem;
-  --font-size-normal: 1rem;
-  --font-size-medium: 1.125rem;
-  --font-size-large: 1.25rem;
-  --font-size-xLarge: 1.5rem;
-
-  --spacing-small: 8px;
-  --spacing-normal: 16px;
-  --spacing-medium: 24px;
-  --spacing-large: 32px;
-
-  --border-radius-small: 4px;
-  --border-radius-normal: 8px;
-  --border-radius-medium: 12px;
-
-  --transition-duration: 0.3s;
-}
-
-/* Body */
-body {
-  font-family: 'Arial', sans-serif;
-  line-height: 1.6;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  overflow: auto;
-  height: 100%;
-}
-
 /* =========================
-   Profile Container
+   Global Reset and Variables
    ========================= */
-.profile-container {
-  display: flex;
-  max-width: 1400px;
-  margin: var(--spacing-normal) auto;
-  background-color: var(--white-color);
-  border-radius: var(--border-radius-normal);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-/* =========================
-   Profile Sidebar
-   ========================= */
-.profile-sidebar {
-  width: 300px;
-  padding: var(--spacing-normal);
-  background-color: #f0f0f0;
-  text-align: center;
-  border-right: 1px solid var(--border-color);
-  flex-shrink: 0;
-}
-
-.profile-photo {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  margin: 0 auto var(--spacing-small);
-  background-size: cover;
-  background-position: center;
-  cursor: pointer;
-  border: 3px solid var(--white-color);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  position: relative;
-  overflow: hidden;
-}
-
-.profile-photo:hover::before {
-  content: 'Change Photo';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: var(--white-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-small);
-  border-radius: 50%;
-}
-
-.profile-name {
-  font-size: var(--font-size-xLarge);
-  font-weight: bold;
-  margin-bottom: var(--spacing-small);
-  color: #555;
-}
-
-.profile-email,
-.profile-info {
-  font-size: var(--font-size-normal);
-  color: var(--light-text-color);
-  margin-bottom: var(--spacing-small);
-}
-
-.resume-info {
-  display: block;
-  margin-top: var(--spacing-small);
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-.edit-btn {
-  background-color: var(--secondary-color);
-  color: var(--white-color);
-  border: none;
-  padding: var(--spacing-small) var(--spacing-normal);
-  margin-top: var(--spacing-small);
-  border-radius: var(--border-radius-small);
-  cursor: pointer;
-  transition: background-color var(--transition-duration) ease;
-}
-
-.edit-btn:hover {
-  background-color: #218838;
-}
-
-/* =========================
-   Profile Main Content
-   ========================= */
-.profile-main {
-  flex: 1;
-  padding: var(--spacing-normal);
-}
-
-/* =========================
-   Profile Section
-   ========================= */
-.profile-section {
-  margin-bottom: var(--spacing-normal);
-  background-color: var(--white-color);
-  border-radius: var(--border-radius-normal);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  padding: var(--spacing-normal);
-}
-
-.section-title {
-  font-size: var(--font-size-large);
-  font-weight: bold;
-  color: var(--text-color);
-  border-bottom: 2px solid #eee;
-  padding-bottom: 5px;
-  margin-bottom: var(--spacing-small);
-}
-
-/* =========================
-   Input Field
-   ========================= */
-.input-field {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0 15px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-small);
-  font-size: var(--font-size-normal);
-  color: var(--text-color);
-  box-sizing: border-box;
-  transition: border-color var(--transition-duration) ease,
-    box-shadow var(--transition-duration) ease;
-}
-
-.input-field:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-}
-
-/* =========================
-   Skills Styling
-   ========================= */
-.skills-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-small);
-}
-
-.skill-badge {
-  background-color: #e9ecef;
-  color: var(--text-color);
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: var(--font-size-small);
-}
-
-/* =========================
-   Social Links Styling
-   ========================= */
-.social-links {
-  list-style: none;
-  padding: 0;
-}
-
-.social-links li {
-  margin-bottom: 5px;
-}
-
-.social-links a {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-/* =========================
-   Education Styles
-   ========================= */
-.education-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--spacing-normal);
-}
-
-.education-card {
-  padding: var(--spacing-normal);
-  background-color: #f8f9fa;
-  border-radius: var(--border-radius-normal);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.education-type {
-  font-size: var(--font-size-medium);
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: var(--text-color);
-}
-
-.education-name {
-  font-size: var(--font-size-normal);
-  color: var(--text-color);
-  margin-bottom: 8px;
-}
-
-.education-year,
-.education-cgpa {
-  font-size: var(--font-size-small);
-  color: var(--light-text-color);
-}
-
-/* =========================
-   Suggested User Styles
-   ========================= */
-.suggested-users-container {
-  display: flex;
-  overflow-x: auto; /* Enable horizontal scrolling */
-  padding: 10px 0;
-  scroll-snap-type: x mandatory; /* Optional: Snapping effect */
-}
-
-.user-profile-suggestion {
-  width: 200px;
-  margin-right: 15px;
-  text-align: center;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-small);
-  padding: 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  flex-shrink: 0; /* Prevent items from shrinking */
-  scroll-snap-align: start; /* Optional: Snapping alignment */
-}
-
-.suggestion-profile-photo {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin-bottom: 8px;
-  object-fit: cover;
-}
-
-.suggestion-name {
-  font-size: var(--font-size-medium);
-  font-weight: bold;
-  margin-bottom: 3px;
-  color: var(--text-color);
-}
-
-.suggestion-email {
-  font-size: var(--font-size-normal);
-  color: var(--light-text-color);
-  word-break: break-word; /* Allow long words to break and wrap */
-  white-space: normal; /* Override nowrap to allow wrapping */
-}
-
-.view-btn {
-  margin-top: 10px;
-}
-
-.view-profile-btn {
-  background-color: var(--primary-color);
-  color: var(--white-color);
-  border: none;
-  padding: 8px 12px;
-  border-radius: var(--border-radius-small);
-  cursor: pointer;
-  transition: background-color var(--transition-duration) ease;
-  font-size: var(--font-size-normal);
-}
-
-.view-profile-btn:hover {
-  background-color: #0056b3;
-}
-
-/* =========================
-   Add and Remove Buttons
-   ========================= */
-.add-btn,
-.remove-btn {
-  background-color: var(--primary-color);
-  color: var(--white-color);
-  border: none;
-  padding: 8px 12px;
-  border-radius: var(--border-radius-small);
-  cursor: pointer;
-  transition: background-color var(--transition-duration) ease;
-  font-size: var(--font-size-normal);
-}
-
-.add-btn:hover,
-.remove-btn:hover {
-  background-color: #0056b3;
-}
-
-/* =========================
-   Error Message Styling
-   ========================= */
-.error-message {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-  border-radius: var(--border-radius-small);
-  padding: 10px;
-  margin-bottom: var(--spacing-normal);
-}
-
-/* =========================
-   Media Queries for Responsiveness
-   ========================= */
-@media (max-width: 992px) {
-  .profile-container {
-    flex-direction: column;
-  }
-
-  .profile-sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-    padding: 10px;
-  }
-
-  .profile-main {
-    width: 100%;
-    margin-left: 0;
-    padding: 10px;
-  }
-}
-
-@media (max-width: 768px) {
-  .education-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .user-profile-suggestion {
-    width: 120px;
-    margin-right: 10px;
-  }
-
-  .suggestion-profile-photo {
-    width: 60px;
-    height: 60px;
-  }
-}
+   *,
+   *::before,
+   *::after {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+   }
+   
+   :root {
+     --primary-color: #007bff;
+     --secondary-color: #28a745;
+     --text-color: #333;
+     --light-text-color: #777;
+     --bg-color: #f9f9f9;
+     --white-color: #fff;
+     --border-color: #ddd;
+     --font-size-small: 0.875rem;
+     --font-size-normal: 1rem;
+     --font-size-medium: 1.125rem;
+     --font-size-large: 1.25rem;
+     --font-size-xLarge: 1.5rem;
+     --spacing-small: 8px;
+     --spacing-normal: 16px;
+     --spacing-medium: 24px;
+     --spacing-large: 32px;
+     --border-radius-small: 4px;
+     --border-radius-normal: 8px;
+     --border-radius-medium: 12px;
+     --transition-duration: 0.3s;
+   }
+   
+   body {
+     font-family: "Arial", sans-serif;
+     line-height: 1.6;
+     background-color: var(--bg-color);
+     color: var(--text-color);
+     overflow: auto;
+     height: 100%;
+   }
+   
+   /* =========================
+      Profile Container
+      ========================= */
+   .profile-container {
+     display: flex;
+     max-width: 1400px;
+     margin: var(--spacing-normal) auto;
+     background-color: var(--white-color);
+     border-radius: var(--border-radius-normal);
+     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+     overflow: hidden;
+   }
+   
+   /* =========================
+      Profile Sidebar (Fixed)
+      ========================= */
+   .profile-sidebar {
+     width: 300px; /* Fixed width */
+     height: 100vh; /* Full viewport height */
+     position: fixed; /* Fixed positioning */
+     top: 0; /* Stick to the top */
+     left: 0; /* Stick to the left */
+     background-color: #f0f0f0;
+     text-align: center;
+     border-right: 1px solid var(--border-color);
+     padding: var(--spacing-normal);
+     overflow-y: auto; /* Enable vertical scrolling if content overflows */
+     z-index: 10; /* Ensure sidebar stays above other content */
+   }
+   
+   /* Profile Photo */
+   .profile-photo {
+     width: 150px;
+     height: 150px;
+     border-radius: 50%;
+     margin: 0 auto var(--spacing-small);
+     background-size: cover;
+     background-position: center;
+     cursor: pointer;
+     border: 3px solid var(--white-color);
+     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+     position: relative;
+     overflow: hidden;
+   }
+   
+   .profile-photo:hover::before {
+     content: "Change Photo";
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background-color: rgba(0, 0, 0, 0.5);
+     color: var(--white-color);
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     font-size: var(--font-size-small);
+     border-radius: 50%;
+   }
+   
+   /* Profile Name */
+   .profile-name {
+     font-size: var(--font-size-xLarge);
+     font-weight: bold;
+     margin-bottom: var(--spacing-small);
+     color: #555;
+   }
+   
+   /* Profile Email and Info */
+   .profile-email,
+   .profile-info {
+     font-size: var(--font-size-normal);
+     color: var(--light-text-color);
+     margin-bottom: var(--spacing-small);
+   }
+   
+   /* Resume Info */
+   .resume-info {
+     display: block;
+     margin-top: var(--spacing-small);
+     color: var(--primary-color);
+     text-decoration: none;
+   }
+   
+   /* Edit Button */
+   .edit-btn {
+     background-color: var(--secondary-color);
+     color: var(--white-color);
+     border: none;
+     padding: var(--spacing-small) var(--spacing-normal);
+     margin-top: var(--spacing-small);
+     border-radius: var(--border-radius-small);
+     cursor: pointer;
+     transition: background-color var(--transition-duration) ease;
+   }
+   
+   .edit-btn:hover {
+     background-color: #218838;
+   }
+   
+   /* =========================
+      Profile Main Content
+      ========================= */
+   .profile-main {
+     flex: 1;
+     padding: var(--spacing-normal);
+     margin-left: 320px; /* Add left margin to avoid overlap with the fixed sidebar */
+   }
+   
+   /* =========================
+      Profile Section
+      ========================= */
+   .profile-section {
+     margin-bottom: var(--spacing-normal);
+     background-color: var(--white-color);
+     border-radius: var(--border-radius-normal);
+     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+     padding: var(--spacing-normal);
+   }
+   
+   .section-title {
+     font-size: var(--font-size-large);
+     font-weight: bold;
+     color: var(--text-color);
+     border-bottom: 2px solid #eee;
+     padding-bottom: 5px;
+     margin-bottom: var(--spacing-small);
+   }
+   
+   /* =========================
+      Input Field
+      ========================= */
+   .input-field {
+     width: 100%;
+     padding: 10px;
+     margin: 5px 0 15px;
+     border: 1px solid var(--border-color);
+     border-radius: var(--border-radius-small);
+     font-size: var(--font-size-normal);
+     color: var(--text-color);
+     box-sizing: border-box;
+     transition: border-color var(--transition-duration) ease,
+       box-shadow var(--transition-duration) ease;
+   }
+   
+   .input-field:focus {
+     outline: none;
+     border-color: var(--primary-color);
+     box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+   }
+   
+   /* =========================
+      Skills Styling
+      ========================= */
+   .skills-container {
+     display: flex;
+     flex-wrap: wrap;
+     gap: var(--spacing-small);
+   }
+   
+   .skill-badge {
+     background-color: #e9ecef;
+     color: var(--text-color);
+     padding: 6px 12px;
+     border-radius: 20px;
+     font-size: var(--font-size-small);
+   }
+   
+   /* =========================
+      Social Links Styling
+      ========================= */
+   .social-links {
+     list-style: none;
+     padding: 0;
+   }
+   
+   .social-links li {
+     margin-bottom: 5px;
+   }
+   
+   .social-links a {
+     color: var(--primary-color);
+     text-decoration: none;
+   }
+   
+   /* =========================
+      Education Styles
+      ========================= */
+   .education-grid {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+     gap: var(--spacing-normal);
+   }
+   
+   .education-card {
+     padding: var(--spacing-normal);
+     background-color: #f8f9fa;
+     border-radius: var(--border-radius-normal);
+     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+   }
+   
+   .education-type {
+     font-size: var(--font-size-medium);
+     font-weight: bold;
+     margin-bottom: 5px;
+     color: var(--text-color);
+   }
+   
+   .education-name {
+     font-size: var(--font-size-normal);
+     color: var(--text-color);
+     margin-bottom: 8px;
+   }
+   
+   .education-year,
+   .education-cgpa {
+     font-size: var(--font-size-small);
+     color: var(--light-text-color);
+   }
+   
+   /* =========================
+      Suggested User Styles
+      ========================= */
+   .suggested-users-container {
+     display: flex;
+     overflow-x: auto; /* Enable horizontal scrolling */
+     padding: 10px 0;
+     scroll-snap-type: x mandatory; /* Optional: Snapping effect */
+   }
+   
+   .user-profile-suggestion {
+     width: 200px;
+     margin-right: 15px;
+     text-align: center;
+     border: 1px solid var(--border-color);
+     border-radius: var(--border-radius-small);
+     padding: 10px;
+     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+     flex-shrink: 0; /* Prevent items from shrinking */
+     scroll-snap-align: start; /* Optional: Snapping alignment */
+   }
+   
+   .suggestion-profile-photo {
+     width: 100px;
+     height: 100px;
+     border-radius: 50%;
+     margin-bottom: 8px;
+     object-fit: cover;
+   }
+   
+   .suggestion-name {
+     font-size: var(--font-size-medium);
+     font-weight: bold;
+     margin-bottom: 3px;
+     color: var(--text-color);
+   }
+   
+   .suggestion-email {
+     font-size: var(--font-size-normal);
+     color: var(--light-text-color);
+     word-break: break-word; /* Allow long words to break and wrap */
+     white-space: normal; /* Override nowrap to allow wrapping */
+   }
+   
+   .view-btn {
+     margin-top: 10px;
+   }
+   
+   .view-profile-btn {
+     background-color: var(--primary-color);
+     color: var(--white-color);
+     border: none;
+     padding: 8px 12px;
+     border-radius: var(--border-radius-small);
+     cursor: pointer;
+     transition: background-color var(--transition-duration) ease;
+     font-size: var(--font-size-normal);
+   }
+   
+   .view-profile-btn:hover {
+     background-color: #0056b3;
+   }
+   
+   /* =========================
+      Add and Remove Buttons
+      ========================= */
+   .add-btn,
+   .remove-btn {
+     background-color: var(--primary-color);
+     color: var(--white-color);
+     border: none;
+     padding: 8px 12px;
+     border-radius: var(--border-radius-small);
+     cursor: pointer;
+     transition: background-color var(--transition-duration) ease;
+     font-size: var(--font-size-normal);
+   }
+   
+   .add-btn:hover,
+   .remove-btn:hover {
+     background-color: #0056b3;
+   }
+   
+   /* =========================
+      Error Message Styling
+      ========================= */
+   .error-message {
+     background-color: #f8d7da;
+     color: #721c24;
+     border: 1px solid #f5c6cb;
+     border-radius: var(--border-radius-small);
+     padding: 10px;
+     margin-bottom: var(--spacing-normal);
+   }
+   
+   /* =========================
+      Media Queries for Responsiveness
+      ========================= */
+   @media (max-width: 992px) {
+     .profile-container {
+       flex-direction: column;
+     }
+   
+     .profile-sidebar {
+       position: relative; /* Make sidebar scrollable with the page on smaller screens */
+       height: auto; /* Reset height to auto */
+       width: 100%; /* Full width */
+       margin-bottom: var(--spacing-normal); /* Add spacing between sidebar and main content */
+     }
+   
+     .profile-main {
+       margin-left: 0; /* Remove left margin */
+       padding: 10px;
+     }
+   }
+   
+   @media (max-width: 768px) {
+     .education-grid {
+       grid-template-columns: 1fr;
+     }
+   
+     .user-profile-suggestion {
+       width: 120px;
+       margin-right: 10px;
+     }
+   
+     .suggestion-profile-photo {
+       width: 60px;
+       height: 60px;
+     }
+   }
