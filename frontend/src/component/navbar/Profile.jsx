@@ -6,10 +6,24 @@ import "../../style/navbar/Profile.css";
 const EducationCard = ({ education }) => {
   return (
     <div className="education-card">
-      <h4 className="education-type">{education.type}</h4>
-      <p className="education-name">{education.name}</p>
-      <p className="education-year">Year: {education.year}</p>
-      <p className="education-cgpa">CGPA: {education.cgpa}</p>
+      <div className="education-type">{education.type}</div>
+      <div className="education-name">{education.name}</div>
+      <div className="education-year">Year: {education.year}</div>
+      <div className="education-cgpa">CGPA: {education.cgpa}</div>
+    </div>
+  );
+};
+
+const UserProfileSuggestion = ({ user }) => {
+  return (
+    <div className="user-profile-suggestion">
+      <img
+        src={user.profileImageUrl || defaultProfileImage}
+        alt="profile"
+        className="suggestion-profile-photo"
+      />
+      <p className="suggestion-name">{user.name}</p>
+      <p className="suggestion-email">{user.email}</p>
     </div>
   );
 };
@@ -32,6 +46,47 @@ const ProfilePage = () => {
   });
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [error, setError] = useState("");
+
+  // Add dummy data for suggested users
+  const [suggestedUsers, setSuggestedUsers] = useState([
+    {
+      name: "John Doe",
+      email: "john.doe@example.com",
+      profileImageUrl: "https://media.istockphoto.com/id/814423752/photo/eye-of-model-with-colorful-art-make-up-close-up.jpg?s=612x612&w=0&k=20&c=l15OdMWjgCKycMMShP8UK94ELVlEGvt7GmB_esHWPYE=",
+    },
+    {
+      name: "Jane Smith",
+      email: "jane.smith@example.com",
+      profileImageUrl: "https://media.istockphoto.com/id/814423752/photo/eye-of-model-with-colorful-art-make-up-close-up.jpg?s=612x612&w=0&k=20&c=l15OdMWjgCKycMMShP8UK94ELVlEGvt7GmB_esHWPYE=",
+    },
+    {
+      name: "Alice Johnson",
+      email: "alice.johnson@example.com",
+      profileImageUrl: "https://media.istockphoto.com/id/814423752/photo/eye-of-model-with-colorful-art-make-up-close-up.jpg?s=612x612&w=0&k=20&c=l15OdMWjgCKycMMShP8UK94ELVlEGvt7GmB_esHWPYE="
+    },
+    {
+      name: "Alice Johnson",
+      email: "alice.johnson@example.com",
+      profileImageUrl: "https://media.istockphoto.com/id/814423752/photo/eye-of-model-with-colorful-art-make-up-close-up.jpg?s=612x612&w=0&k=20&c=l15OdMWjgCKycMMShP8UK94ELVlEGvt7GmB_esHWPYE=",
+    },
+    {
+      name: "Alice Johnson",
+      email: "alice.johnson@example.com",
+      profileImageUrl: "https://via.placeholder.com/80",
+    },
+    {
+      name: "Alice Johnson",
+      email: "alice.johnson@example.com",
+      profileImageUrl: "https://via.placeholder.com/80",
+    },
+    {
+      name: "Alice Johnson",
+      email: "alice.johnson@example.com",
+      profileImageUrl: "https://via.placeholder.com/80",
+    },
+
+  ]);
+
   const jwt = localStorage.getItem("jwt");
 
   const handleEducationChange = (index, field, value) => {
@@ -54,7 +109,6 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const email = localStorage.getItem("email");
-
     const fetchUserProfile = async () => {
       try {
         const res = await fetch(`${Constant.BASE_URL}/api/userProfile/${user.email}`, {
@@ -63,11 +117,8 @@ const ProfilePage = () => {
             Authorization: `Bearer ${jwt}`,
           },
         });
-
         if (!res.ok) throw new Error("Failed to fetch user profile");
-
         const data = await res.json();
-
         if (data.status) {
           setUser((prevUser) => ({ ...prevUser, ...data.userProfile }));
         } else {
@@ -86,9 +137,7 @@ const ProfilePage = () => {
             Authorization: `Bearer ${jwt}`,
           },
         });
-
         if (!res.ok) throw new Error("Failed to fetch user profile");
-
         const data = await res.json();
         if (data.status) {
           setUserProfile((prev) => ({ ...prev, name: data.user.fullName }));
@@ -100,9 +149,30 @@ const ProfilePage = () => {
       }
     };
 
+    const fetchSuggestedUsers = async () => {
+      try {
+        const res = await fetch(`${Constant.BASE_URL}/api/userProfile/suggestions`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+        if (!res.ok) throw new Error("Failed to fetch suggested users");
+        const data = await res.json();
+        if (data.status) {
+          setSuggestedUsers(data.suggestedUsers);
+        } else {
+          showError(data.message);
+        }
+      } catch (err) {
+        showError("Error fetching suggested users: " + err.message);
+      }
+    };
+
     if (email && jwt) {
       fetchUserName();
       fetchUserProfile();
+      fetchSuggestedUsers();
     }
   }, [user.email, jwt]);
 
@@ -117,10 +187,8 @@ const ProfilePage = () => {
       showError("Please provide a file");
       return;
     }
-
     const formData = new FormData();
     formData.append("image", file);
-
     try {
       const response = await fetch(`${Constant.BASE_URL}/api/userProfile/uploadProfileImage/${user.email}`, {
         method: "POST",
@@ -129,18 +197,14 @@ const ProfilePage = () => {
         },
         body: formData,
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to upload image");
       }
-
       const data = await response.json();
       const imageUrl = data;
-
       setUser((prevUser) => ({ ...prevUser, profileImageUrl: imageUrl }));
       localStorage.setItem("profileImageUrl", imageUrl);
-
     } catch (error) {
       showError("Error uploading image: " + error.message);
     }
@@ -169,120 +233,106 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className={`profile-container ${isEditing ? "editing-mode" : ""}`}>
-      {/* error */}
-      {error && <div className="error-message">{error}</div>}
+    <div className="profile-container">
+      {/* Error */}
+      {error && <div>{error}</div>}
 
+      {/* Profile Sidebar */}
       <div className="profile-sidebar">
-        <div className="profile-content">
-          {/* profile photo */}
-          <div
-            className="profile-photo"
-            onClick={() => setShowPhotoOptions(true)}
-            style={{
-              backgroundImage: user.profileImageUrl ? `url('${user.profileImageUrl}')` : "none",
-            }}
-          >
-            {!user.profileImageUrl && <span className="photo-placeholder">+</span>}
-          </div>
-          {showPhotoOptions && (
-            <label className="photo-btn">
-              Change Photo
-              <input type="file" className="hidden-input" onChange={handleFileUpload} />
-            </label>
-          )}
-
-          {/* user name */}
-          {isEditing ? (
-            <input
-              className="input-field"
-              value={userProfile.name || ""}
-              placeholder="Enter name"
-              onChange={(e) => setUserProfile({ ...userProfile, name: e.target.value })}
-            />
-          ) : (
-            <h2 className="profile-name">{userProfile.name || "No name found"}</h2>
-          )}
-
-          {/* email */}
-          <p className="profile-email">{user.email || "No email found"}</p>
-
-          {/* mobile */}
-          {isEditing ? (
-            <input
-              className="input-field"
-              placeholder="Enter Mobile Number"
-              value={user.mobileNumber || ""}
-              onChange={(e) => setUser({ ...user, mobileNumber: e.target.value })}
-            />
-          ) : (
-            <p className="profile-info">{user.mobileNumber}</p>
-          )}
-
-          {/* resume */}
-          {isEditing ? (
-            <input
-              className="input-field"
-              placeholder="Enter Resume URL"
-              value={user.resumeUrl || ""}
-              onChange={(e) => setUser({ ...user, resumeUrl: e.target.value })}
-            />
-          ) : (
-            <div className="profile-info">
-              <a href={user.resumeUrl || "#"} target="_blank" rel="noopener noreferrer">Resume</a>
-            </div>
-          )}
-
-          {/* save and edit button */}
-          <button className="edit-btn" onClick={isEditing ? handleSave : () => setIsEditing(true)}>
-            {isEditing ? "Save" : "Edit"}
-          </button>
+        {/* Profile Photo */}
+        <div
+          className="profile-photo"
+          onClick={() => setShowPhotoOptions(true)}
+          style={{
+            backgroundImage: user.profileImageUrl ? `url('${user.profileImageUrl}')` : "none",
+          }}
+        >
+          {!user.profileImageUrl && "+"}
+          {showPhotoOptions && <div>Change Photo</div>}
         </div>
+        {/* User Name */}
+        {isEditing ? (
+          <input
+            className="input-field"
+            value={userProfile.name}
+            onChange={(e) => setUserProfile({ ...userProfile, name: e.target.value })}
+          />
+        ) : (
+          <div className="profile-name">{userProfile.name || "No name found"}</div>
+        )}
 
-        {/* Education, Skill, Link */}
+        {/* Email */}
+        <div className="profile-email">{user.email || "No email found"}</div>
+
+        {/* Mobile */}
+        {isEditing ? (
+          <input
+            className="input-field"
+            value={user.mobileNumber}
+            onChange={(e) => setUser({ ...user, mobileNumber: e.target.value })}
+          />
+        ) : (
+          <div className="profile-info">{user.mobileNumber}</div>
+        )}
+
+        {/* Resume */}
+        {isEditing ? (
+          <input
+            className="input-field"
+            value={user.resumeUrl}
+            onChange={(e) => setUser({ ...user, resumeUrl: e.target.value })}
+          />
+        ) : (
+          <a href={user.resumeUrl} className="resume-info">
+            Resume
+          </a>
+        )}
+
+        {/* Save and Edit Button */}
+        <button
+          className="edit-btn"
+          onClick={isEditing ? handleSave : () => setIsEditing(true)}
+        >
+          {isEditing ? "Save" : "Edit"}
+        </button>
       </div>
-      <div className="profile-main">
-        <div className="profile-section">
 
-          {/* education */}
+      {/* Profile Main Content */}
+      <div className="profile-main">
+        {/* Education Section */}
+        <div className="profile-section">
           <h3 className="section-title">Education</h3>
           {isEditing ? (
-            <div>
-              {user.education?.map((edu, index) => (
-                <div key={index} className="education-edit">
-                  <input
-                    className="input-field"
-                    placeholder="Type"
-                    value={edu.type || ""}
-                    onChange={(e) => handleEducationChange(index, "type", e.target.value)}
-                  />
-                  <input
-                    className="input-field"
-                    placeholder="Name"
-                    value={edu.name || ""}
-                    onChange={(e) => handleEducationChange(index, "name", e.target.value)}
-                  />
-                  <input
-                    className="input-field"
-                    placeholder="Year"
-                    value={edu.year || ""}
-                    onChange={(e) => handleEducationChange(index, "year", e.target.value)}
-                  />
-                  <input
-                    className="input-field"
-                    placeholder="CGPA"
-                    value={edu.cgpa || ""}
-                    onChange={(e) => handleEducationChange(index, "cgpa", e.target.value)}
-                  />
-                  <button className="remove-btn" onClick={() => handleRemoveEducation(index)}>
-                    Remove
-                  </button>
-                </div>
-              ))}
-              <button className="add-btn" onClick={handleAddEducation}>
-                Add Education
-              </button>
-            </div>
+            user.education?.map((edu, index) => (
+              <div key={index} className="education-edit">
+                <input
+                  className="input-field"
+                  value={edu.type}
+                  onChange={(e) => handleEducationChange(index, "type", e.target.value)}
+                />
+                <input
+                  className="input-field"
+                  value={edu.name}
+                  onChange={(e) => handleEducationChange(index, "name", e.target.value)}
+                />
+                <input
+                  className="input-field"
+                  value={edu.year}
+                  onChange={(e) => handleEducationChange(index, "year", e.target.value)}
+                />
+                <input
+                  className="input-field"
+                  value={edu.cgpa}
+                  onChange={(e) => handleEducationChange(index, "cgpa", e.target.value)}
+                />
+                <button
+                  className="remove-btn"
+                  onClick={() => handleRemoveEducation(index)}
+                >
+                  Remove
+                </button>
+              </div>
+            ))
           ) : user.education?.length > 0 ? (
             <div className="education-grid">
               {user.education.map((edu, index) => (
@@ -290,55 +340,96 @@ const ProfilePage = () => {
               ))}
             </div>
           ) : (
-            <p>No Education added.</p>
+            <div>No Education added.</div>
           )}
+          <button className="add-btn" onClick={handleAddEducation}>
+            Add Education
+          </button>
         </div>
 
-        {/* skills */}
+        {/* Skills Section */}
         <div className="profile-section">
           <h3 className="section-title">Skills</h3>
           {isEditing ? (
             <input
               className="input-field"
-              value={user.skills?.join(", ") || ""}
-              onChange={(e) => setUser({ ...user, skills: e.target.value.split(",").map((s) => s.trim().toUpperCase()) })}
+              value={user.skills.join(",")}
+              onChange={(e) =>
+                setUser({ ...user, skills: e.target.value.split(",").map((s) => s.trim().toUpperCase()) })
+              }
             />
           ) : user.skills?.length > 0 ? (
             <div className="skills-container">
               {user.skills.map((skill, index) => (
-                <span key={index} className="skill-badge">
+                <div key={index} className="skill-badge">
                   {skill.toUpperCase()}
-                </span>
+                </div>
               ))}
             </div>
           ) : (
-            <p>No Skills Found.</p>
+            <div>No Skills Found.</div>
           )}
         </div>
 
-        {/* links */}
+        {/* Social Links Section */}
         <div className="profile-section">
           <h3 className="section-title">Social Links</h3>
           {isEditing ? (
             <input
               className="input-field"
-              placeholder="Enter social links (comma separated)"
-              value={user.socialLinks?.join(", ") || ""}
-              onChange={(e) => setUser({ ...user, socialLinks: e.target.value.split(",").map((s) => s.trim()) })}
+              value={user.socialLinks.join(",")}
+              onChange={(e) =>
+                setUser({ ...user, socialLinks: e.target.value.split(",").map((s) => s.trim()) })
+              }
             />
           ) : user.socialLinks?.length > 0 ? (
             <ul className="social-links">
               {user.socialLinks.map((link, index) => (
                 <li key={index}>
-                  <a href={link} target="_blank" rel="noopener noreferrer">
-                    {link}
-                  </a>
+                  <a href={link}>{link}</a>
                 </li>
               ))}
             </ul>
           ) : (
-            <p>No social links added</p>
+            <div>No social links added</div>
           )}
+        </div>
+
+        {/* Suggested Users Section */}
+        <div className="profile-section">
+          <h3 className="section-title">Suggested Profiles</h3>
+          <div className="suggested-users-container">
+            {suggestedUsers.length > 0 ? (
+              suggestedUsers.map((user, index) => (
+                <div key={index} className="user-profile-suggestion">
+                  {/* Circular Profile Photo */}
+                  <img
+                    src={user.profileImageUrl}
+                    alt={`${user.name}'s profile`}
+                    className="suggestion-profile-photo"
+                  />
+                  {/* User Name */}
+                  <p className="suggestion-name">{user.name}</p>
+                  {/* User Email */}
+                  <p className="suggestion-email">{user.email}</p>
+                  {/* View Profile Button */}
+                  <div className="view-btn">
+                    <button
+                      className="view-profile-btn"
+                      onClick={() => {
+                        // Add functionality to navigate to the user's profile page
+                        alert(`Viewing profile of ${user.name}`);
+                      }}
+                    >
+                      View Profile
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No suggestions available.</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
