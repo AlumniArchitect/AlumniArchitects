@@ -237,16 +237,43 @@
 }
 
 /* Create Blog Form */
+/* Create Blog Section */
 .create-blog {
   background: white;
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
 }
 
-.textarea-field {
+.create-blog h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.textarea-field-title {
   width: 100%;
-  min-height: 150px;
+  padding: 1rem;
+  border: 2px solid #e5e5e5;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  transition: all 0.2s;
+}
+
+.textarea-field-title:focus {
+  outline: none;
+  border-color: #4338ca;
+  box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+}
+
+.textarea-field-content {
+  width: 100%;
+  min-height: 200px;
   padding: 1rem;
   border: 2px solid #e5e5e5;
   border-radius: 0.75rem;
@@ -255,20 +282,22 @@
   resize: none;
   margin-bottom: 1rem;
   transition: all 0.2s;
+
 }
 
-.textarea-field:focus {
+.textarea-field-content:focus {
   outline: none;
   border-color: #4338ca;
   box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
 }
 
 .button {
-  padding: 0.75rem 1.5rem;
+  width: 100%;
+  padding: 1rem;
   background-color: #4338ca;
   color: white;
   border: none;
-  border-radius: 0.375rem;
+  border-radius: 0.75rem;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -283,7 +312,6 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
-
 /* Role Badge */
 .role-badge {
   padding: 0.25rem 0.75rem;
