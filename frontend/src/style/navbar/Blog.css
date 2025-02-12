@@ -1,11 +1,9 @@
-/* Reset and base styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Blog UI Layout */
 .blog-ui {
   display: flex;
   min-height: calc(100vh - 4rem);
@@ -29,7 +27,6 @@
   margin: 0 auto;
 }
 
-/* Tab Buttons */
 .tab-button {
   width: 100%;
   padding: 1rem 1.5rem;
@@ -60,7 +57,7 @@
   transform: translateX(4px);
 }
 
-/* Blog List Section */
+
 .blog-list {
   max-width: 800px;
   margin: 0 auto;
@@ -87,7 +84,7 @@
   font-size: 1.125rem;
 }
 
-/* Blog Card */
+
 .blog-card {
   background: white;
   border-radius: 1rem;
@@ -171,7 +168,7 @@
   border-top: 1px solid #e5e5e5;
 }
 
-/* Blog Author Section */
+
 .blog-card-author {
   display: flex;
   align-items: center;
@@ -204,7 +201,7 @@
   color: #666;
 }
 
-/* Blog Stats */
+
 .blog-card-stats {
   display: flex;
   gap: 1rem;
@@ -236,8 +233,7 @@
   color: #dc2626;
 }
 
-/* Create Blog Form */
-/* Create Blog Section */
+
 .create-blog {
   background: white;
   padding: 2rem;
@@ -292,11 +288,14 @@
 }
 
 .button {
-  width: 100%;
+  position: relative;
+  left: 40%;
+  width: 20%;
   padding: 1rem;
   background-color: #4338ca;
   color: white;
   border: none;
+  margin: 0;
   border-radius: 0.75rem;
   font-size: 1rem;
   font-weight: 500;
@@ -311,6 +310,28 @@
 .button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+.blog-comment-form .textarea-field{
+  width: 100%;
+  min-height: 100px;
+  padding: 1rem;
+  border: 2px solid #e5e5e5;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  resize: none;
+  margin-bottom: 1rem;
+  transition: all 0.2s;
+}
+.blog-comment-form .textarea-field-content:focus {
+  outline: none;
+  border-color: #4338ca;
+  box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+}
+
+.blog-comment-form .button{
+  width: 25%;
 }
 /* Role Badge */
 .role-badge {
