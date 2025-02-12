@@ -1,6 +1,7 @@
 package com.alumniarchitect.service.blog;
 
 import com.alumniarchitect.entity.Blog;
+import com.alumniarchitect.entity.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public interface BlogService {
     Blog getBlogById(String id);
 
     boolean deleteBlog(String id);
+
+    void deleteBlogsOfUser(User user);
 }

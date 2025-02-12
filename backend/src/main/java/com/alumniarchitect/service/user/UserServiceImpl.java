@@ -2,6 +2,10 @@ package com.alumniarchitect.service.user;
 
 import com.alumniarchitect.entity.User;
 import com.alumniarchitect.repository.UserRepository;
+import com.alumniarchitect.service.blog.BlogService;
+import com.alumniarchitect.service.collageGroup.CollegeGroupService;
+import com.alumniarchitect.service.skills.SkillsService;
+import com.alumniarchitect.service.userProfile.UserProfileService;
 import com.alumniarchitect.utils.jwt.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +18,14 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserProfileService userProfileService;
+    @Autowired
+    private BlogService blogService;
+    @Autowired
+    private SkillsService skillsService;
+    @Autowired
+    private CollegeGroupService collegeGroupService;
 
     @Override
     public User saveUser(User user) {
@@ -52,6 +64,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteAccount(User user) {
         userRepository.delete(user);
+        userProfileService.delete(user);
+        blogService.deleteBlogsOfUser(user);
+        skillsService.deleteSkillsOfUser(user);
+        collegeGroupService.deleteUser(user);
     }
 
     @Override

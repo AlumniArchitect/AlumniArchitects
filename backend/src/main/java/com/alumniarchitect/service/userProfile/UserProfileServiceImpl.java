@@ -1,5 +1,6 @@
 package com.alumniarchitect.service.userProfile;
 
+import com.alumniarchitect.entity.User;
 import com.alumniarchitect.entity.UserProfile;
 import com.alumniarchitect.repository.UserProfileRepository;
 import com.alumniarchitect.service.user.UserService;
@@ -94,5 +95,10 @@ public class UserProfileServiceImpl implements UserProfileService {
         } catch (Exception e) {
             throw new RuntimeException("Image uploading failed. Error : " + e.getMessage());
         }
+    }
+
+    @Override
+    public void delete(User user) {
+        userProfileRepository.delete(userProfileRepository.findByEmail(user.getEmail()));
     }
 }
