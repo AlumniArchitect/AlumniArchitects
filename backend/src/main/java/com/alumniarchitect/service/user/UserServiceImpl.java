@@ -18,15 +18,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private BlogService blogService;
-
-    @Autowired
-    private SkillsService skillsService;
-
-    @Autowired
-    private CollegeGroupService collegeGroupService;
-
     @Override
     public User saveUser(User user) {
         return userRepository.save(user);
