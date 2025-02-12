@@ -84,6 +84,36 @@ public class EventsController {
         return new ResponseEntity<>(eventsList, HttpStatus.OK);
     }
 
+    @PutMapping("/registration/{id}")
+    public ResponseEntity<String> registration(@PathVariable String id, @RequestParam String email) {
+        if(eventsService.findById(id) == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Events events = eventsService.findById(id);
+        if(!events.getRegistered().contains(email)) {
+            events.getRegistered().add(email);
+            eventsService.save(events);
+        }
+
+        return new ResponseEntity<>("Registration successful", HttpStatus.OK);
+    }
+
+    @PutMapping("/un-registration/{id}")
+    public ResponseEntity<String> unRegistration(@PathVariable String id, @RequestParam String email) {
+        if(eventsService.findById(id) == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Events events = eventsService.findById(id);
+        if(events.getRegistered().contains(email)) {
+            events.getRegistered().remove(email);
+            eventsService.save(events);
+        }
+
+        return new ResponseEntity<>("Registration successful", HttpStatus.OK);
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteEvent(@PathVariable String id) {
         eventsService.delete(id);

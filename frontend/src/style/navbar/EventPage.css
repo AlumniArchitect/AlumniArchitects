@@ -198,6 +198,40 @@
   color: black;
 }
 
+.registered-button{
+  background-color: #ec6e4c;
+  color: black;
+}
+
+.modal-header{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.close-button{
+  height: 40px;
+  width: 80px;
+  background-color: #515050;
+  color: white;
+  text-align: center;
+  border: transparent;
+  border-radius: 10px;
+}
+
+.close-button:hover{
+  cursor: pointer;
+}
+
+.modal-body{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+}
+
 .delete-button {
   background-color: #dc3545;
   color: white;

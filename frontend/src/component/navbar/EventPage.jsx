@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
 import "../../style/navbar/EventPage.css";
 import Constant from "../../utils/Constant.js";
+import { useNavigate } from 'react-router-dom';
 
 export default function EventPage() {
   const [search, setSearch] = useState("");
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [showRegistered, setShowRegistered] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [registeredEvents, setRegisteredEvents] = useState([]);
   const [view, setView] = useState("all");
@@ -29,8 +31,11 @@ export default function EventPage() {
     category: "",
     format: "",
     imgUrl: "",
+    registered: []
   });
 
+  const [eventParticipants, setEventParticipants] = useState([]);
+  const navigate = useNavigate();
   const jwt = localStorage.getItem("jwt");
   const userEmail = localStorage.getItem("email");
   const URL = `${Constant.BASE_URL}/api/events`;
@@ -47,6 +52,13 @@ export default function EventPage() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
+
+      data.forEach(event => {
+        if (event.registered?.includes(userEmail)) {
+          setRegisteredEvents(prev => [...prev, event.id]);
+        }
+      });
+
       setEvents(data);
     } catch (error) {
       console.error("Error fetching events:", error);
@@ -117,18 +129,40 @@ export default function EventPage() {
 
   const handleRegister = async (eventId) => {
     try {
-      setRegisteredEvents([...registeredEvents, eventId]);
-      alert("Successfully registered for the event!");
+      const res = await fetch(`${URL}/registration/${eventId}?email=${userEmail}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${jwt}`
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error("something went wrong." + res.status);
+      }
+
+      setRegisteredEvents(prev => [...prev, eventId]);
     } catch (error) {
       console.error("Error registering for event:", error);
     }
   };
+
   const handleUnregister = async (eventId) => {
     try {
-      setRegisteredEvents(registeredEvents.filter((id) => id !== eventId));
-      alert("Successfully unregistered from the event!");
+      const res = await fetch(`${URL}/un-registration/${eventId}?email=${userEmail}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error("something went wrong." + res.status);
+      }
+
+      setRegisteredEvents(prev => prev.filter(id => id !== eventId));
     } catch (error) {
-      console.error("Error unregistering for event:", error);
+      console.error("Error un-registering for event:", error);
     }
   };
 
@@ -193,6 +227,15 @@ export default function EventPage() {
 
   const isRegistered = (eventId) => {
     return registeredEvents.includes(eventId);
+  };
+
+  const handleShowRegistered = (event) => {
+    setEventParticipants(event.registered);
+    setShowRegistered(true);
+  };
+
+  const handleCloseRegistered = () => {
+    setShowRegistered(false);
   };
 
   return (
@@ -264,7 +307,6 @@ export default function EventPage() {
               <option value="Offline">Offline</option>
             </select>
           </div>
-
           <div className="filter-group">
             <label>Date From:</label>
             <input
@@ -293,7 +335,7 @@ export default function EventPage() {
       <div className="events-list">
         {filteredEvents.map((event) => (
           <div key={event.id} className="event-card">
-            {event.imgUrl ?? (
+            {event.imgUrl && (
               <img src={event.imgUrl} alt={event.name} className="event-image" />
             )}
             <div className="event-details">
@@ -331,6 +373,12 @@ export default function EventPage() {
                       onClick={() => handleEditEvent(event)}
                     >
                       Edit
+                    </button>
+                    <button
+                      className="registered-button"
+                      onClick={() => handleShowRegistered(event)}
+                    >
+                      Registered Emails
                     </button>
                     <button
                       className="delete-button"
@@ -457,6 +505,32 @@ export default function EventPage() {
                 Cancel
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showRegistered && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-header">
+              <h2>Registered Participants</h2>
+              <button className="close-button" onClick={handleCloseRegistered}>
+                close
+              </button>
+            </div>
+            <div className="modal-body">
+              {eventParticipants.length === 0 ? (
+                <p>No participants registered for this event.</p>
+              ) : (
+                <ul className="registered-list">
+                  {eventParticipants.map((email, index) => (
+                    <li key={index} onClick={() => navigate('/profile', { state: { email } })} style={{cursor: 'pointer'}}>
+                      {email}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       )}

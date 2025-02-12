@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Document(collection = "events")
 @Data
 @AllArgsConstructor
@@ -23,4 +26,5 @@ public class Events {
     private String category;
     private String format;
     private String imgUrl;
+    private List<String> registered = new ArrayList<String>();
 }
