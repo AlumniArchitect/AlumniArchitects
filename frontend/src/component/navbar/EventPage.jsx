@@ -363,10 +363,29 @@ export default function EventPage() {
                 <input
                   type="datetime-local"
                   name="date"
-                  value={newEvent.date.toLocaleString().split(".")[0]}
-                  onChange={(e) =>
-                    setNewEvent({ ...newEvent, date: new Date(e.target.value) })
+                  value={
+                    newEvent.date
+                      ? new Date(
+                          newEvent.date.getTime() -
+                            newEvent.date.getTimezoneOffset() * 60000
+                        )
+                          .toISOString()
+                          .slice(0, 16)
+                      : ""
                   }
+                  onChange={(e) => {
+                    const selectedDate = e.target.value;
+                    setNewEvent({
+                      ...newEvent,
+                      date: selectedDate ? new Date(selectedDate) : null,
+                    });
+                  }}
+                  min={new Date(
+                    new Date().getTime() -
+                      new Date().getTimezoneOffset() * 60000
+                  )
+                    .toISOString()
+                    .slice(0, 16)} // Restrict selection to future dates/times
                   required
                 />
               </div>

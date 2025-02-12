@@ -75,7 +75,7 @@ const BlogUI = () => {
   const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop >=
-      document.documentElement.offsetHeight - 100 &&
+        document.documentElement.offsetHeight - 100 &&
       !loading
     ) {
       setPage((prevPage) => prevPage + 1);
@@ -278,7 +278,11 @@ const BlogUI = () => {
           <div className="blog-card-author">
             <div className="blog-card-author-avatar">
               {blog.profileImageUrl ? (
-                <img src={blog.profileImageUrl} alt="Author" className="blog-card-author-avatar" />
+                <img
+                  src={blog.profileImageUrl}
+                  alt="Author"
+                  className="blog-card-author-avatar"
+                />
               ) : (
                 <User className="w-5 h-5" />
               )}
@@ -343,7 +347,7 @@ const BlogUI = () => {
           </div>
         )}
       </div>
-    </article >
+    </article>
   );
 
   // Render a single blog card

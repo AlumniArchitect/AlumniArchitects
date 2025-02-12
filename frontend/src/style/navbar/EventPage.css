@@ -251,7 +251,7 @@
 
 .form-group textarea {
   min-height: 100px;
-  resize: vertical;
+  resize: none;
 }
 
 .form-actions {
