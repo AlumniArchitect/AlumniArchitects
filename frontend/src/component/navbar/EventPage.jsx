@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
 import "../../style/navbar/EventPage.css";
+import Constant from "../../utils/Constant.js";
 
 export default function EventPage() {
   const [search, setSearch] = useState("");
@@ -13,158 +14,167 @@ export default function EventPage() {
     category: "",
     type: "",
     format: "",
-    dateFrom: "",
-    dateTo: "",
-    sortBy: "date",
-    sortOrder: "asc",
-  });
-
-  // Add current user state (this would come from auth in a real app)
-  const [currentUser] = useState({
-    id: 1,
-    name: "Current User",
+    startDate: "",
+    endDate: "",
   });
 
   const [newEvent, setNewEvent] = useState({
-    title: "",
-    date: new Date(),
+    email: localStorage.getItem("email") || "",
+    name: "",
+    date: new Date().toISOString().split("T")[0],
     location: "",
     description: "",
-    type: "Technical",
-    format: "Offline",
-    link: "",
-    image: "",
-    maxParticipants: 0,
-    registrationOpen: true,
+    type: "",
+    category: "",
+    format: "",
+    imgUrl: "",
   });
 
-  // Load events from localStorage on component mount
+  const jwt = localStorage.getItem("jwt");
+  const userEmail = localStorage.getItem("email");
+  const URL = `${Constant.BASE_URL}/api/events`;
+
+  /** Fetches all events from the backend. */
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch(`${URL}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      setEvents(data);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+
   useEffect(() => {
-    const storedEvents = localStorage.getItem("events");
-    if (storedEvents) {
-      setEvents(JSON.parse(storedEvents));
-    }
-    const storedRegistrations = localStorage.getItem("registeredEvents");
-    if (storedRegistrations) {
-      setRegisteredEvents(JSON.parse(storedRegistrations));
-    }
+    fetchEvents();
   }, []);
 
-  // Save events to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem("events", JSON.stringify(events));
-  }, [events]);
-
-  // Save registrations to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem("registeredEvents", JSON.stringify(registeredEvents));
-  }, [registeredEvents]);
-
+  /** Handles changes to the filter values. */
   const handleFilterChange = (name, value) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSortChange = (sortBy) => {
-    setFilters((prev) => ({
-      ...prev,
-      sortBy,
-      sortOrder:
-        prev.sortBy === sortBy
-          ? prev.sortOrder === "asc"
-            ? "desc"
-            : "asc"
-          : "asc",
-    }));
-  };
+  /** Filters events based on selected criteria. */
+  const filterAndSortEvents = async () => {
+    try {
+      const headers = {
+        Authorization: `Bearer ${jwt}`,
+        "Content-Type": "application/json",
+      };
 
-  const filterAndSortEvents = (events) => {
-    return events
-      .filter((event) => {
-        const matchesSearch =
-          event.title.toLowerCase().includes(search.toLowerCase()) ||
-          event.description.toLowerCase().includes(search.toLowerCase());
-        const matchesCategory =
-          !filters.category || event.category === filters.category;
-        const matchesType = !filters.type || event.type === filters.type;
-        const matchesFormat =
-          !filters.format || event.format === filters.format;
-        const eventDate = new Date(event.date);
-        const matchesDateFrom =
-          !filters.dateFrom || eventDate >= new Date(filters.dateFrom);
-        const matchesDateTo =
-          !filters.dateTo || eventDate <= new Date(filters.dateTo);
-        return (
-          matchesSearch &&
-          matchesCategory &&
-          matchesType &&
-          matchesFormat &&
-          matchesDateFrom &&
-          matchesDateTo
-        );
-      })
-      .sort((a, b) => {
-        if (filters.sortBy === "date") {
-          const comparison = new Date(a.date) - new Date(b.date);
-          return filters.sortOrder === "asc" ? comparison : -comparison;
-        } else {
-          const comparison = a.title.localeCompare(b.title);
-          return filters.sortOrder === "asc" ? comparison : -comparison;
-        }
+      const response = await fetch(`${URL}/filter`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(filters),
       });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      setEvents(data);
+    } catch (error) {
+      console.error("Error filtering events:", error);
+    }
   };
 
-  const handleAddOrUpdateEvent = (e) => {
+  useEffect(() => {
+    filterAndSortEvents();
+  }, [filters]);
+
+  /** Adds a new event or updates an existing one. */
+  const handleAddOrUpdateEvent = async (e) => {
     e.preventDefault();
-    if (editingEvent) {
-      setEvents(
-        events.map((event) =>
-          event.id === editingEvent.id
-            ? { ...newEvent, id: editingEvent.id }
-            : event
-        )
-      );
-    } else {
-      const newEventWithId = {
-        ...newEvent,
-        id: Date.now(),
-        userId: currentUser.id,
-        createdAt: new Date().toLocaleString(),
+
+    try {
+      const headers = {
+        Authorization: `Bearer ${jwt}`,
+        "Content-Type": "application/json",
       };
-      setEvents([...events, newEventWithId]);
+
+      if (editingEvent) {
+        const response = await fetch(`${URL}/${editingEvent.id}`, {
+          method: "PUT",
+          headers: headers,
+          body: JSON.stringify(newEvent),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        setEvents(
+          events.map((event) => (event.id === editingEvent.id ? newEvent : event))
+        );
+      } else {
+        const response = await fetch(`${URL}`, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(newEvent),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        fetchEvents();
+      }
+
+      resetForm();
+      fetchEvents();
+    } catch (error) {
+      console.error("Error adding/updating event:", error);
     }
-    resetForm();
   };
 
-  const handleRegister = (eventId) => {
-    if (
-      !registeredEvents.some(
-        (reg) => reg.eventId === eventId && reg.userId === currentUser.id
-      )
-    ) {
-      const registration = {
-        id: Date.now(),
-        eventId,
-        userId: currentUser.id,
-        registeredAt: new Date().toLocaleString(),
-      };
-      setRegisteredEvents([...registeredEvents, registration]);
+  /** Registers the current user for an event. */
+  const handleRegister = async (eventId) => {
+    try {
+      setRegisteredEvents([...registeredEvents, eventId]);
       alert("Successfully registered for the event!");
-    } else {
-      alert("You are already registered for this event.");
+    } catch (error) {
+      console.error("Error registering for event:", error);
     }
   };
 
-  const handleUnregister = (registrationId) => {
-    setRegisteredEvents(
-      registeredEvents.filter((reg) => reg.id !== registrationId)
-    );
-    alert("You have successfully unregistered from the event.");
+  /** Unregisters the current user from an event. */
+  const handleUnregister = async (eventId) => {
+    try {
+      setRegisteredEvents(registeredEvents.filter((id) => id !== eventId));
+      alert("Successfully unregistered from the event!");
+    } catch (error) {
+      console.error("Error unregistering for event:", error);
+    }
   };
 
-  const handleDeleteEvent = (eventId) => {
-    setEvents(events.filter((event) => event.id !== eventId));
+  /** Deletes an event. */
+  const handleDeleteEvent = async (id) => {
+    try {
+      const headers = {
+        Authorization: `Bearer ${jwt}`,
+      };
+      const response = await fetch(`${URL}/delete/${id}`, {
+        method: "DELETE",
+        headers: headers,
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      setEvents(events.filter((event) => event.id !== id));
+      fetchEvents();
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    }
   };
 
+  /** Opens the edit form for an event. */
   const handleEditEvent = (event) => {
     setNewEvent(event);
     setEditingEvent(event);
@@ -172,55 +182,46 @@ export default function EventPage() {
     setView("manage");
   };
 
+  /** Handles input changes for the new event form. */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewEvent({ ...newEvent, [name]: value });
   };
 
+  /** Handles image upload for the new event form. */
   const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewEvent({ ...newEvent, image: reader.result });
-      };
-      reader.readAsDataURL(file);
+    const { files } = e.target;
+    if (files && files.length > 0) {
+      const imgUrl = URL.createObjectURL(files[0]);
+      setNewEvent({ ...newEvent, imgUrl });
     }
   };
 
+  /** Resets the new event form to its initial state. */
   const resetForm = () => {
     setNewEvent({
-      title: "",
-      date: new Date(),
+      email: userEmail || "",
+      name: "",
+      date: new Date().toISOString().split("T")[0],
       location: "",
       description: "",
-      type: "Technical",
-      format: "Offline",
-      link: "",
-      image: "",
-      maxParticipants: 0,
-      registrationOpen: true,
+      type: "",
+      category: "",
+      format: "",
+      imgUrl: "",
     });
     setEditingEvent(null);
     setShowForm(false);
   };
 
-  const filteredEvents = filterAndSortEvents(events);
-  const upcomingEvents = filteredEvents.filter(
-    (event) => new Date(event.date) >= new Date()
-  );
-  const pastEvents = filteredEvents.filter(
-    (event) => new Date(event.date) < new Date()
-  );
-
+  /** Checks if the current user is the creator of the event. */
   const isEventCreator = (event) => {
-    return event.userId === currentUser.id;
+    return event.email === userEmail;
   };
 
+  /** Checks if the current user is registered for the event. */
   const isRegistered = (eventId) => {
-    return registeredEvents.some(
-      (reg) => reg.eventId === eventId && reg.userId === currentUser.id
-    );
+    return registeredEvents.includes(eventId);
   };
 
   return (
@@ -298,8 +299,8 @@ export default function EventPage() {
             <label>Date From:</label>
             <input
               type="date"
-              value={filters.dateFrom}
-              onChange={(e) => handleFilterChange("dateFrom", e.target.value)}
+              value={filters.startDate}
+              onChange={(e) => handleFilterChange("startDate", e.target.value)}
             />
           </div>
 
@@ -307,33 +308,10 @@ export default function EventPage() {
             <label>Date To:</label>
             <input
               type="date"
-              value={filters.dateTo}
-              onChange={(e) => handleFilterChange("dateTo", e.target.value)}
+              value={filters.endDate}
+              onChange={(e) => handleFilterChange("endDate", e.target.value)}
             />
           </div>
-        </div>
-
-        <div className="sort-controls">
-          <button
-            className={`sort-button ${
-              filters.sortBy === "date" ? "active" : ""
-            }`}
-            onClick={() => handleSortChange("date")}
-          >
-            Sort by Date{" "}
-            {filters.sortBy === "date" &&
-              (filters.sortOrder === "asc" ? "↑" : "↓")}
-          </button>
-          <button
-            className={`sort-button ${
-              filters.sortBy === "title" ? "active" : ""
-            }`}
-            onClick={() => handleSortChange("title")}
-          >
-            Sort by Title{" "}
-            {filters.sortBy === "title" &&
-              (filters.sortOrder === "asc" ? "↑" : "↓")}
-          </button>
         </div>
       </div>
 
@@ -342,6 +320,60 @@ export default function EventPage() {
           Create New Event
         </button>
       )}
+
+      <div className="events-list">
+        {events.map((event) => (
+          <div key={event.id} className="event-card">
+            <img src={event.imgUrl} alt={event.name} className="event-image" />
+            <div className="event-details">
+              <h3>{event.name}</h3>
+              <p className="event-date">
+                {new Date(event.date).toLocaleDateString()} (
+                {formatDistanceToNow(new Date(event.date), { addSuffix: true })}
+                )
+              </p>
+              <p className="event-location">Location: {event.location}</p>
+              <p className="event-description">{event.description}</p>
+              <p className="event-type">Type: {event.type}</p>
+              <p className="event-format">Format: {event.format}</p>
+              <div className="event-actions">
+                {!isEventCreator(event) ? (
+                  isRegistered(event.id) ? (
+                    <button
+                      className="unregister-button"
+                      onClick={() => handleUnregister(event.id)}
+                    >
+                      Unregister
+                    </button>
+                  ) : (
+                    <button
+                      className="register-button"
+                      onClick={() => handleRegister(event.id)}
+                    >
+                      Register
+                    </button>
+                  )
+                ) : (
+                  <>
+                    <button
+                      className="edit-button"
+                      onClick={() => handleEditEvent(event)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="delete-button"
+                      onClick={() => handleDeleteEvent(event.id)}
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
 
       {showForm && (
         <div className="modal-overlay">
@@ -352,82 +384,64 @@ export default function EventPage() {
                 <label>Event Name</label>
                 <input
                   type="text"
-                  name="title"
-                  value={newEvent.title}
+                  name="name"
+                  value={newEvent.name}
                   onChange={handleInputChange}
                   required
                 />
               </div>
+
               <div className="form-group">
-                <label>Date & Time</label>
+                <label>Event Date</label>
                 <input
-                  type="datetime-local"
+                  type="date"
                   name="date"
-                  value={
-                    newEvent.date
-                      ? new Date(
-                          newEvent.date.getTime() -
-                            newEvent.date.getTimezoneOffset() * 60000
-                        )
-                          .toISOString()
-                          .slice(0, 16)
-                      : ""
-                  }
-                  onChange={(e) => {
-                    const selectedDate = e.target.value;
-                    setNewEvent({
-                      ...newEvent,
-                      date: selectedDate ? new Date(selectedDate) : null,
-                    });
-                  }}
-                  min={new Date(
-                    new Date().getTime() -
-                      new Date().getTimezoneOffset() * 60000
-                  )
-                    .toISOString()
-                    .slice(0, 16)} // Restrict selection to future dates/times
+                  value={newEvent.date}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
+
               <div className="form-group">
-                <label>Location</label>
+                <label>Event Location</label>
                 <input
                   type="text"
                   name="location"
                   value={newEvent.location}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
+
               <div className="form-group">
-                <label>Description</label>
+                <label>Event Description</label>
                 <textarea
                   name="description"
                   value={newEvent.description}
                   onChange={handleInputChange}
-                  required
-                ></textarea>
+                />
               </div>
+
               <div className="form-group">
-                <label>Type</label>
+                <label>Event Type</label>
                 <select
                   name="type"
                   value={newEvent.type}
                   onChange={handleInputChange}
-                  required
                 >
+                  <option value="">Select Type</option>
                   <option value="Technical">Technical</option>
                   <option value="Non-Technical">Non-Technical</option>
                 </select>
               </div>
+
               <div className="form-group">
-                <label>Category:</label>
+                <label>Event Category</label>
                 <select
                   name="category"
                   value={newEvent.category}
                   onChange={handleInputChange}
                 >
-                  <option value="">All Categories</option>
+                  <option value="">Select Category</option>
                   <option value="Reunion">Reunion</option>
                   <option value="Networking">Networking</option>
                   <option value="Career Fair">Career Fair</option>
@@ -435,219 +449,44 @@ export default function EventPage() {
                   <option value="Seminar">Seminar</option>
                 </select>
               </div>
+
               <div className="form-group">
-                <label>Format</label>
+                <label>Event Format</label>
                 <select
                   name="format"
                   value={newEvent.format}
                   onChange={handleInputChange}
-                  required
                 >
-                  <option value="Offline">Offline</option>
+                  <option value="">Select Format</option>
                   <option value="Online">Online</option>
+                  <option value="Offline">Offline</option>
                 </select>
               </div>
-              {newEvent.format === "Online" && (
-                <div className="form-group">
-                  <label>Event Link</label>
-                  <input
-                    type="url"
-                    name="link"
-                    value={newEvent.link}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-              )}
+
               <div className="form-group">
-                <label>Event Image (Optional)</label>
+                <label>Image URL</label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleImageUpload}
                 />
+                {newEvent.imgUrl && (
+                  <img
+                    src={newEvent.imgUrl}
+                    alt="Event Preview"
+                    style={{ maxWidth: "100px", marginTop: "10px" }}
+                  />
+                )}
               </div>
-              <div className="form-actions">
-                <button type="button" onClick={resetForm}>
-                  Cancel
-                </button>
-                <button type="submit">
-                  {editingEvent ? "Update Event" : "Create Event"}
-                </button>
-              </div>
+
+              <button type="submit">
+                {editingEvent ? "Update Event" : "Create Event"}
+              </button>
+              <button type="button" onClick={resetForm}>
+                Cancel
+              </button>
             </form>
           </div>
-        </div>
-      )}
-
-      {/* Upcoming Events Section */}
-      {upcomingEvents.length > 0 && (
-        <div>
-          <h2>Upcoming Events</h2>
-          <div className="events-grid">
-            {upcomingEvents.map((event) => (
-              <div key={event.id} className="event-card">
-                {event.image && (
-                  <img
-                    src={event.image}
-                    alt={event.title}
-                    className="event-image"
-                  />
-                )}
-                <h2>{event.title}</h2>
-                <p className="event-location">📍 {event.location}</p>
-                <p className="event-date">
-                  📅 {new Date(event.date).toLocaleString()}
-                </p>
-                <p className="event-description">Description: {event.description}</p>
-                <p className="event-category">category: {event.category}</p>
-                <p className="event-type">Type: {event.type}</p>
-                <p className="event-format">Format: {event.format}</p>
-                {event.format === "Online" && event.link && (
-                  <p className="event-link">
-                    🔗{" "}
-                    <a
-                      href={event.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Join Event
-                    </a>
-                  </p>
-                )}
-                <p className="event-time">
-                  {formatDistanceToNow(new Date(event.date), {
-                    addSuffix: true,
-                  })}
-                </p>
-                <div className="event-actions">
-                  {view === "manage" && isEventCreator(event) && (
-                    <>
-                      <button
-                        className="edit-button"
-                        onClick={() => handleEditEvent(event)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="delete-button"
-                        onClick={() => handleDeleteEvent(event.id)}
-                      >
-                        Delete
-                      </button>
-                    </>
-                  )}
-                  {view === "all" && (
-                    <>
-                      {!isRegistered(event.id) ? (
-                        <button
-                          className="register-button"
-                          onClick={() => handleRegister(event.id)}
-                          disabled={!event.registrationOpen}
-                        >
-                          {event.registrationOpen
-                            ? "Register Now"
-                            : "Registration Closed"}
-                        </button>
-                      ) : (
-                        <button
-                          className="unregister-button"
-                          onClick={() => {
-                            const registrationId = registeredEvents.find(
-                              (reg) =>
-                                reg.eventId === event.id &&
-                                reg.userId === currentUser.id
-                            ).id;
-                            handleUnregister(registrationId);
-                          }}
-                        >
-                          Unregister
-                        </button>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Missed Events Section */}
-      {pastEvents.length > 0 && (
-        <div>
-          <h2>Missed Events</h2>
-          <div className="events-grid">
-            {pastEvents.map((event) => (
-              <div key={event.id} className="event-card missed">
-                {event.image && (
-                  <img
-                    src={event.image}
-                    alt={event.title}
-                    className="event-image"
-                  />
-                )}
-                <h2>{event.title}</h2>
-                <p className="event-location">📍 {event.location}</p>
-                <p className="event-date">
-                  📅 {new Date(event.date).toLocaleString()}
-                </p>
-                <p className="event-description">{event.description}</p>
-                <p className="event-type">Type: {event.type}</p>
-                <p className="event-format">Format: {event.format}</p>
-                {event.format === "Online" && event.link && (
-                  <p className="event-link">
-                    🔗{" "}
-                    <a
-                      href={event.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View Event
-                    </a>
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Registered Events Section */}
-      {registeredEvents.length > 0 && (
-        <div className="registered-events">
-          <h2>Your Registered Events</h2>
-          {registeredEvents.map((registration) => {
-            const event = events.find((e) => e.id === registration.eventId);
-            if (!event) return null;
-            return (
-              <div key={registration.id} className="event-card registered">
-                {event.image && (
-                  <img
-                    src={event.image}
-                    alt={event.title}
-                    className="event-image"
-                  />
-                )}
-                <h2>{event.title}</h2>
-                <p className="event-location">📍 {event.location}</p>
-                <p className="event-date">
-                  📅 {new Date(event.date).toLocaleString()}
-                </p>
-                <p className="event-description">{event.description}</p>
-                <p className="registration-info">
-                  Registered on:{" "}
-                  {new Date(registration.registeredAt).toLocaleDateString()}
-                </p>
-                <button
-                  className="unregister-button"
-                  onClick={() => handleUnregister(registration.id)}
-                >
-                  Unregister
-                </button>
-              </div>
-            );
-          })}
         </div>
       )}
     </div>
