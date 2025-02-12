@@ -2,15 +2,7 @@ import { useState, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
 import "../../style/navbar/EventPage.css";
 
-<<<<<<< HEAD
-const eventsData = [
-  // Existing events data
-      ];
-
-export default function UpcomingEvents() {
-=======
 export default function EventPage() {
->>>>>>> 9aee65ff16676fbc4f54be2265bf019b85f827a4
   const [search, setSearch] = useState("");
   const [events, setEvents] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -39,13 +31,8 @@ export default function EventPage() {
     location: "",
     description: "",
     type: "Technical",
-<<<<<<< HEAD
-    format: "Offline", // Default format
-    link: "", // Link for online events
-=======
     format: "Offline",
     link: "",
->>>>>>> 9aee65ff16676fbc4f54be2265bf019b85f827a4
     image: "",
     maxParticipants: 0,
     registrationOpen: true,
