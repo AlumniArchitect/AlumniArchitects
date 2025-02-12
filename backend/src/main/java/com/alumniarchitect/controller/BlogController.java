@@ -25,6 +25,7 @@ public class BlogController {
 
         if (blog.getId() == null) {
             blogService.save(blog);
+
             return new ResponseEntity<>("created", HttpStatus.ACCEPTED);
         } else {
             Blog existingBlog = blogService.getBlogById(blog.getId());
@@ -34,6 +35,7 @@ public class BlogController {
             }
 
             existingBlog.setTitle(blog.getTitle());
+            existingBlog.setProfileImageUrl(blog.getProfileImageUrl());
             existingBlog.setContent(blog.getContent());
             existingBlog.setUpvote(blog.getUpvote());
             existingBlog.setComments(blog.getComments());
