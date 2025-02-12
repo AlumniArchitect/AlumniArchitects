@@ -1,7 +1,6 @@
 package com.alumniarchitect.controller;
 
 import com.alumniarchitect.entity.Events;
-import com.alumniarchitect.request.events.EventsRequest;
 import com.alumniarchitect.service.events.EventsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -90,16 +89,5 @@ public class EventsController {
         eventsService.delete(id);
 
         return new ResponseEntity<>("Event deleted", HttpStatus.OK);
-    }
-
-    @PostMapping("/filter")
-    public ResponseEntity<List<Events>> getEventsByFilter(@RequestBody EventsRequest eventsRequest) {
-        if(eventsRequest == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        List<Events> list = eventsService.filter(eventsRequest);
-
-        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }

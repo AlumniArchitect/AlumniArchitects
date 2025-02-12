@@ -1,7 +1,6 @@
 package com.alumniarchitect.service.events;
 
 import com.alumniarchitect.entity.Events;
-import com.alumniarchitect.request.events.EventsRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +18,4 @@ public interface EventsService {
     List<Events> findByCategory(String category);
     List<Events> findByEventType(String eventType);
     void delete(String id);
-
-    List<Events> filter(EventsRequest eventsRequest);
 }

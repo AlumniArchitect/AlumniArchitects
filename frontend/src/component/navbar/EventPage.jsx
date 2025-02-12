@@ -6,6 +6,7 @@ import Constant from "../../utils/Constant.js";
 export default function EventPage() {
   const [search, setSearch] = useState("");
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [registeredEvents, setRegisteredEvents] = useState([]);
@@ -34,7 +35,6 @@ export default function EventPage() {
   const userEmail = localStorage.getItem("email");
   const URL = `${Constant.BASE_URL}/api/events`;
 
-  /** Fetches all events from the backend. */
   const fetchEvents = async () => {
     try {
       const response = await fetch(`${URL}`, {
@@ -57,39 +57,40 @@ export default function EventPage() {
     fetchEvents();
   }, []);
 
-  /** Handles changes to the filter values. */
+  useEffect(() => {
+    if (view === "all") {
+      setFilteredEvents(events);
+    } else if (view === "manage") {
+      const myEvents = events.filter((event) => event.email === userEmail);
+      setFilteredEvents(myEvents);
+    }
+  }, [events, view, userEmail]);
+
   const handleFilterChange = (name, value) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  /** Filters events based on selected criteria. */
-  const filterAndSortEvents = async () => {
-    try {
-      const headers = {
-        Authorization: `Bearer ${jwt}`,
-        "Content-Type": "application/json",
-      };
-
-      const response = await fetch(`${URL}/filter`, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(filters),
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const data = await response.json();
-      setEvents(data);
-    } catch (error) {
-      console.error("Error filtering events:", error);
-    }
-  };
-
   useEffect(() => {
-    filterAndSortEvents();
-  }, [filters]);
+    let filtered = [...events];
 
-  /** Adds a new event or updates an existing one. */
+    if (filters.category) {
+      filtered = filtered.filter((event) => event.category === filters.category);
+    }
+    if (filters.type) {
+      filtered = filtered.filter((event) => event.type === filters.type);
+    }
+    if (filters.format) {
+      filtered = filtered.filter((event) => event.format === filters.format);
+    }
+    if (filters.startDate) {
+      filtered = filtered.filter((event) => event.date >= filters.startDate);
+    }
+    if (filters.endDate) {
+      filtered = filtered.filter((event) => event.date <= filters.endDate);
+    }
+    setFilteredEvents(filtered);
+  }, [filters, events]);
+
   const handleAddOrUpdateEvent = async (e) => {
     e.preventDefault();
 
@@ -123,7 +124,6 @@ export default function EventPage() {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-
         fetchEvents();
       }
 
@@ -134,7 +134,6 @@ export default function EventPage() {
     }
   };
 
-  /** Registers the current user for an event. */
   const handleRegister = async (eventId) => {
     try {
       setRegisteredEvents([...registeredEvents, eventId]);
@@ -143,8 +142,6 @@ export default function EventPage() {
       console.error("Error registering for event:", error);
     }
   };
-
-  /** Unregisters the current user from an event. */
   const handleUnregister = async (eventId) => {
     try {
       setRegisteredEvents(registeredEvents.filter((id) => id !== eventId));
@@ -154,7 +151,6 @@ export default function EventPage() {
     }
   };
 
-  /** Deletes an event. */
   const handleDeleteEvent = async (id) => {
     try {
       const headers = {
@@ -174,7 +170,6 @@ export default function EventPage() {
     }
   };
 
-  /** Opens the edit form for an event. */
   const handleEditEvent = (event) => {
     setNewEvent(event);
     setEditingEvent(event);
@@ -182,13 +177,11 @@ export default function EventPage() {
     setView("manage");
   };
 
-  /** Handles input changes for the new event form. */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewEvent({ ...newEvent, [name]: value });
   };
 
-  /** Handles image upload for the new event form. */
   const handleImageUpload = (e) => {
     const { files } = e.target;
     if (files && files.length > 0) {
@@ -197,7 +190,6 @@ export default function EventPage() {
     }
   };
 
-  /** Resets the new event form to its initial state. */
   const resetForm = () => {
     setNewEvent({
       email: userEmail || "",
@@ -214,12 +206,10 @@ export default function EventPage() {
     setShowForm(false);
   };
 
-  /** Checks if the current user is the creator of the event. */
   const isEventCreator = (event) => {
     return event.email === userEmail;
   };
 
-  /** Checks if the current user is registered for the event. */
   const isRegistered = (eventId) => {
     return registeredEvents.includes(eventId);
   };
@@ -282,7 +272,6 @@ export default function EventPage() {
               <option value="Non-Technical">Non-Technical</option>
             </select>
           </div>
-
           <div className="filter-group">
             <label>Format:</label>
             <select
@@ -303,7 +292,6 @@ export default function EventPage() {
               onChange={(e) => handleFilterChange("startDate", e.target.value)}
             />
           </div>
-
           <div className="filter-group">
             <label>Date To:</label>
             <input
@@ -322,9 +310,11 @@ export default function EventPage() {
       )}
 
       <div className="events-list">
-        {events.map((event) => (
+        {filteredEvents.map((event) => (
           <div key={event.id} className="event-card">
-            <img src={event.imgUrl} alt={event.name} className="event-image" />
+            {event.imgUrl ?? (
+              <img src={event.imgUrl} alt={event.name} className="event-image" />
+            )}
             <div className="event-details">
               <h3>{event.name}</h3>
               <p className="event-date">
@@ -474,15 +464,15 @@ export default function EventPage() {
                   <img
                     src={newEvent.imgUrl}
                     alt="Event Preview"
-                    style={{ maxWidth: "100px", marginTop: "10px" }}
+                    style={{ maxWidth: "200px" }}
                   />
                 )}
               </div>
 
-              <button type="submit">
+              <button type="submit" className="submit-button">
                 {editingEvent ? "Update Event" : "Create Event"}
               </button>
-              <button type="button" onClick={resetForm}>
+              <button type="button" className="cancel-button" onClick={resetForm}>
                 Cancel
               </button>
             </form>

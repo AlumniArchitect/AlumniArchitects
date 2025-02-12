@@ -2,13 +2,13 @@ package com.alumniarchitect.service.events;
 
 import com.alumniarchitect.entity.Events;
 import com.alumniarchitect.repository.EventsRepository;
-import com.alumniarchitect.request.events.EventsRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,9 +24,7 @@ public class EventsServiceImpl implements EventsService {
 
     @Override
     public Events findById(String id) {
-        Optional<Events> events = eventsRepository.findById(id);
-
-        return events.orElse(null);
+        return eventsRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -44,16 +42,45 @@ public class EventsServiceImpl implements EventsService {
     }
 
     @Override
-    public List<Events> findByDateBetween(String startDate, String endDate) {
+    public List<Events> findByDateBetween(String startDateStr, String endDateStr) {
         List<Events> eventsList = eventsRepository.findAll();
+        LocalDate startDate = null;
+        LocalDate endDate = null;
 
-        LocalDate start = LocalDate.parse(startDate);
-        LocalDate end = LocalDate.parse(endDate);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        if (startDateStr != null && !startDateStr.isEmpty()) {
+            try {
+                startDate = LocalDate.parse(startDateStr, formatter);
+            } catch (DateTimeParseException e) {
+                System.err.println("Error parsing startDate: " + startDateStr + " - " + e.getMessage());
+                return List.of();
+            }
+        }
+
+        if (endDateStr != null && !endDateStr.isEmpty()) {
+            try {
+                endDate = LocalDate.parse(endDateStr, formatter);
+            } catch (DateTimeParseException e) {
+                System.err.println("Error parsing endDate: " + endDateStr + " - " + e.getMessage());
+                return List.of();
+            }
+        }
+        LocalDate finalStartDate = startDate;
+        LocalDate finalEndDate = endDate;
 
         return eventsList.stream()
                 .filter(e -> {
                     LocalDate eventDate = LocalDate.parse(e.getDate());
-                    return !eventDate.isBefore(start) && !eventDate.isAfter(end);
+                    if (finalStartDate != null && finalEndDate != null) {
+                        return !eventDate.isBefore(finalStartDate) && !eventDate.isAfter(finalEndDate);
+                    } else if (finalStartDate != null) {
+                        return !eventDate.isBefore(finalStartDate);
+                    } else if (finalEndDate != null) {
+                        return !eventDate.isAfter(finalEndDate);
+                    } else {
+                        return true;
+                    }
                 })
                 .collect(Collectors.toList());
     }
@@ -93,16 +120,5 @@ public class EventsServiceImpl implements EventsService {
     @Override
     public void delete(String id) {
         eventsRepository.deleteById(id);
-    }
-
-    @Override
-    public List<Events> filter(EventsRequest eventsRequest) {
-        List<Events> list = findByDateBetween(eventsRequest.getStartDate(), eventsRequest.getEndDate());
-
-        return list.stream()
-                .filter(x -> x.getCategory().equals(eventsRequest.getCategory()))
-                .filter(x -> x.getType().equals(eventsRequest.getEventType()))
-                .filter(x -> x.getFormat().equals(eventsRequest.getFormat()))
-                .toList();
     }
 }
