@@ -16,5 +16,5 @@ public interface UserProfileService {
 
     Map uploadImage(MultipartFile file);
 
-    void delete(User user);
+    void delete(String email);
 }

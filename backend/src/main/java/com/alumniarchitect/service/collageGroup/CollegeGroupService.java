@@ -13,5 +13,5 @@ public interface CollegeGroupService {
 
     CollegeGroup findByCollegeName(String collageName);
 
-    void deleteUser(User user);
+    void deleteUser(String email);
 }

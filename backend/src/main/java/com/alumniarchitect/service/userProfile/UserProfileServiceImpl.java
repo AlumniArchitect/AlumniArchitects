@@ -1,6 +1,5 @@
 package com.alumniarchitect.service.userProfile;
 
-import com.alumniarchitect.entity.User;
 import com.alumniarchitect.entity.UserProfile;
 import com.alumniarchitect.repository.UserProfileRepository;
 import com.alumniarchitect.service.user.UserService;
@@ -20,6 +19,7 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Autowired
     private Cloudinary cloudinary;
+
     @Autowired
     private UserService userService;
 
@@ -98,7 +98,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public void delete(User user) {
-        userProfileRepository.delete(userProfileRepository.findByEmail(user.getEmail()));
+    public void delete(String email) {
+        userProfileRepository.delete(userProfileRepository.findByEmail(email));
     }
 }

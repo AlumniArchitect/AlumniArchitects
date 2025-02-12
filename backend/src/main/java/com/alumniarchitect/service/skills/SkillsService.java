@@ -11,5 +11,5 @@ public interface SkillsService {
     void addEmailToSkill(List<String> skills, String email);
     List<Skills> getAllSkills();
     Skills getSkillByName(String skill);
-    void deleteSkillsOfUser(User user);
+    void deleteSkillsOfUser(String email);
 }

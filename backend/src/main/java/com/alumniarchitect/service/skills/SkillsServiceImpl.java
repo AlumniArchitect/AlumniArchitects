@@ -56,11 +56,11 @@ public class SkillsServiceImpl implements SkillsService {
     }
 
     @Override
-    public void deleteSkillsOfUser(User user) {
+    public void deleteSkillsOfUser(String email) {
         List<Skills> skills = skillsRepository.findAll();
 
         for(Skills skill : skills) {
-            skill.getEmails().remove(user.getEmail());
+            skill.getEmails().remove(email);
             skillsRepository.save(skill);
         }
     }

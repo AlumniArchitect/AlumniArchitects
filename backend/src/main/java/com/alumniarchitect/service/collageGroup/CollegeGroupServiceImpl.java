@@ -46,11 +46,11 @@ public class CollegeGroupServiceImpl implements CollegeGroupService {
     }
 
     @Override
-    public void deleteUser(User user) {
-        String collegeName = EmailService.extractCollegeName(user.getEmail());
+    public void deleteUser(String email) {
+        String collegeName = EmailService.extractCollegeName(email);
         CollegeGroup group = collegeGroupRepository.findByCollegeName(collegeName);
 
-        group.getEmails().remove(user.getEmail());
+        group.getEmails().remove(email);
         collegeGroupRepository.save(group);
     }
 }

@@ -52,8 +52,8 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public void deleteBlogsOfUser(User user) {
-        List<Blog> blogs = blogRepository.findByEmail(user.getEmail());
+    public void deleteBlogsOfUser(String email) {
+        List<Blog> blogs = blogRepository.findByEmail(email);
 
         if (blogs == null || blogs.isEmpty()) {
             return;

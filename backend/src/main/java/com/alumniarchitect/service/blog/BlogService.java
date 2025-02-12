@@ -18,5 +18,5 @@ public interface BlogService {
 
     boolean deleteBlog(String id);
 
-    void deleteBlogsOfUser(User user);
+    void deleteBlogsOfUser(String email);
 }
