@@ -10,7 +10,7 @@ import {
 import { format } from "date-fns";
 import "../../style/navbar/Blog.css";
 import Constant from "../../utils/Constant.js";
- 
+
 const BlogUI = () => {
   const [myBlogs, setMyBlogs] = useState([]);
   const [allBlogs, setAllBlogs] = useState([]);
@@ -20,32 +20,33 @@ const BlogUI = () => {
   const [activeBlogId, setActiveBlogId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
- 
+
   const email = localStorage.getItem("email");
   const token = localStorage.getItem("jwt");
- 
- 
-  const fetchAllBlogs = useCallback(async (page = 1) => {
-    setLoading(true);
-    try {
-      const url = `${Constant.BASE_URL}/api/suggest/blog/${email}/${page}`;
-      const response = await fetch(url, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
- 
-      if (!response.ok) throw new Error("Failed to fetch blogs");
-      const data = await response.json();
-      if (!Array.isArray(data)) return;
- 
-      setAllBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
-    } catch (error) {
-      console.error("Error fetching all blogs:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [email, token]);
- 
- 
+
+  const fetchAllBlogs = useCallback(
+    async (page = 1) => {
+      setLoading(true);
+      try {
+        const url = `${Constant.BASE_URL}/api/suggest/blog/${email}/${page}`;
+        const response = await fetch(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch blogs");
+        const data = await response.json();
+        if (!Array.isArray(data)) return;
+
+        setAllBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
+      } catch (error) {
+        console.error("Error fetching all blogs:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [email, token]
+  );
+
   const fetchMyBlogs = useCallback(async () => {
     setLoading(true);
     try {
@@ -53,11 +54,11 @@ const BlogUI = () => {
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
- 
+
       if (!response.ok) throw new Error("Failed to fetch my blogs");
       const data = await response.json();
       if (!Array.isArray(data)) return;
- 
+
       setMyBlogs(data);
     } catch (error) {
       console.error("Error fetching my blogs:", error);
@@ -65,34 +66,33 @@ const BlogUI = () => {
       setLoading(false);
     }
   }, [email, token]);
- 
 
   useEffect(() => {
     if (activeTab === "view") fetchAllBlogs(page);
     if (activeTab === "my-blogs") fetchMyBlogs();
   }, [fetchAllBlogs, fetchMyBlogs, activeTab, page]);
- 
+
   const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop >=
-      document.documentElement.offsetHeight - 100 &&
+        document.documentElement.offsetHeight - 100 &&
       !loading
     ) {
       setPage((prevPage) => prevPage + 1);
     }
   }, [loading]);
- 
+
   // Add scroll event listener
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
- 
+
   // Handle creating a new blog
   const handleCreateBlog = async (e) => {
     e.preventDefault();
     if (!newBlog.title.trim() || !newBlog.content.trim()) return;
- 
+
     const blog = {
       email: email,
       author: localStorage.getItem("fullName"),
@@ -101,7 +101,7 @@ const BlogUI = () => {
       upvote: 0,
       comments: [],
     };
- 
+
     try {
       const response = await fetch(`${Constant.BASE_URL}/api/blog`, {
         method: "POST",
@@ -122,45 +122,48 @@ const BlogUI = () => {
       console.error("Failed to create blog:", error);
     }
   };
- 
-  const fetchBlogs = useCallback(async (page = 1) => {
-    setLoading(true);
-    try {
-      const url =
-        activeTab === "my-blogs"
-          ? `${Constant.BASE_URL}/api/blog?email=${email}&page=${page}`
-          : `${Constant.BASE_URL}/api/suggest/blog/${email}/${page}`;
- 
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
- 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || "Failed to fetch blogs");
+
+  const fetchBlogs = useCallback(
+    async (page = 1) => {
+      setLoading(true);
+      try {
+        const url =
+          activeTab === "my-blogs"
+            ? `${Constant.BASE_URL}/api/blog?email=${email}&page=${page}`
+            : `${Constant.BASE_URL}/api/suggest/blog/${email}/${page}`;
+
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || "Failed to fetch blogs");
+        }
+
+        const data = await response.json();
+
+        if (!Array.isArray(data)) {
+          console.error("Unexpected data format:", data);
+          return;
+        }
+
+        if (activeTab === "my-blogs") {
+          setMyBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
+        } else {
+          setAllBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
+        }
+      } catch (error) {
+        console.error("Failed to fetch blogs:", error);
+      } finally {
+        setLoading(false);
       }
- 
-      const data = await response.json();
- 
-      if (!Array.isArray(data)) {
-        console.error("Unexpected data format:", data);
-        return;
-      }
- 
-      if (activeTab === "my-blogs") {
-        setMyBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
-      } else {
-        setAllBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
-      }
-    } catch (error) {
-      console.error("Failed to fetch blogs:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [activeTab, email, token]);
- 
+    },
+    [activeTab, email, token]
+  );
+
   // Handle liking a blog
   const handleLike = async (blogId) => {
     try {
@@ -187,11 +190,11 @@ const BlogUI = () => {
       console.error("Failed to upvote blog:", error);
     }
   };
- 
+
   // handel comment blog
   const handleComment = async (blogId) => {
     if (!comment.trim()) return;
- 
+
     try {
       const response = await fetch(
         `${Constant.BASE_URL}/api/blog/${blogId}/comment`,
@@ -220,19 +223,16 @@ const BlogUI = () => {
       console.error("Failed to post comment:", error);
     }
   };
- 
+
   // handle delete blog
   const handleDeleteBlog = async (blogId) => {
     try {
-      const response = await fetch(
-        `${Constant.BASE_URL}/api/blog/${blogId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${Constant.BASE_URL}/api/blog/${blogId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.ok) {
         if (activeTab === "my-blogs") {
           setMyBlogs((prev) => prev.filter((blog) => blog.id !== blogId));
@@ -244,7 +244,7 @@ const BlogUI = () => {
       console.error("Failed to delete blog:", error);
     }
   };
- 
+
   // Render sidebar
   const renderSidebar = () => (
     <div className="sidebar">
@@ -271,49 +271,49 @@ const BlogUI = () => {
       </button>
     </div>
   );
- 
+
   // Render create blog form
- const renderCreateBlog = () => (
-  <div className="create-blog">
-    {/* Heading */}
-    <h2 className="text-2xl font-bold mb-4">Create a New Blog Post</h2>
-    <form onSubmit={handleCreateBlog}>
-      {/* Title Input */}
-      <input
-        type="text"
-        value={newBlog.title}
-        onChange={(e) =>
-          setNewBlog((prev) => ({ ...prev, title: e.target.value }))
-        }
-        placeholder="Title"
-        className="textarea-field-title"
-        required
-      />
-      {/* Content Textarea */}
-      <textarea
-        value={newBlog.content}
-        onChange={(e) =>
-          setNewBlog((prev) => ({ ...prev, content: e.target.value }))
-        }
-        placeholder="Write your blog post here..."
-        className="textarea-field-content"
-        required
-      ></textarea>
-      {/* Publish Button */}
-      <button type="submit" className="button">
-        Publish Blog
-      </button>
-    </form>
-  </div>
-);
- 
+  const renderCreateBlog = () => (
+    <div className="create-blog">
+      {/* Heading */}
+      <h2 className="text-2xl font-bold mb-4">Create a New Blog Post</h2>
+      <form onSubmit={handleCreateBlog}>
+        {/* Title Input */}
+        <input
+          type="text"
+          value={newBlog.title}
+          onChange={(e) =>
+            setNewBlog((prev) => ({ ...prev, title: e.target.value }))
+          }
+          placeholder="Title"
+          className="textarea-field-title"
+          required
+        />
+        {/* Content Textarea */}
+        <textarea
+          value={newBlog.content}
+          onChange={(e) =>
+            setNewBlog((prev) => ({ ...prev, content: e.target.value }))
+          }
+          placeholder="Write your blog post here..."
+          className="textarea-field-content"
+          required
+        ></textarea>
+        {/* Publish Button */}
+        <button type="submit" className="button">
+          Publish Blog
+        </button>
+      </form>
+    </div>
+  );
+
   // render blog card
   const renderBlogCard = (blog) => (
     <article key={blog.id} className="blog-card">
       <div className="blog-card-content">
         <h2 className="blog-card-title">{blog.title}</h2>
         <p className="blog-card-excerpt">{blog.content}</p>
- 
+
         <div className="blog-card-footer">
           <div className="blog-card-author">
             <div className="blog-card-author-avatar">
@@ -324,7 +324,7 @@ const BlogUI = () => {
               <span className="blog-card-author-role">Author</span>
             </div>
           </div>
- 
+
           <div className="blog-card-stats">
             <button
               onClick={() => handleLike(blog.id)}
@@ -352,7 +352,7 @@ const BlogUI = () => {
             )}
           </div>
         </div>
- 
+
         {activeBlogId === blog.id && (
           <div className="blog-card-comments">
             {blog.comments.map((comment) => (
@@ -373,10 +373,7 @@ const BlogUI = () => {
                 placeholder="Write a comment..."
                 className="textarea-field"
               />
-              <button
-                onClick={() => handleComment(blog.id)}
-                className="button"
-              >
+              <button onClick={() => handleComment(blog.id)} className="button">
                 Post Comment
               </button>
             </div>
@@ -385,11 +382,11 @@ const BlogUI = () => {
       </div>
     </article>
   );
- 
+
   // Render a single blog card
   const renderBlogs = () => {
     const blogs = activeTab === "my-blogs" ? myBlogs : allBlogs;
- 
+
     return (
       <div className="blog-list">
         <div className="blog-list-header">
@@ -410,7 +407,7 @@ const BlogUI = () => {
       </div>
     );
   };
- 
+
   return (
     <div className="blog-ui">
       {renderSidebar()}
@@ -420,5 +417,5 @@ const BlogUI = () => {
     </div>
   );
 };
- 
+
 export default BlogUI;

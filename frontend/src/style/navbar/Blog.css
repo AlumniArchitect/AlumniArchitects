@@ -292,15 +292,20 @@
 }
 
 .button {
-  width: 100%;
+  position: relative;
+  left: 40%;
+  width: 20%;
   padding: 1rem;
   background-color: #4338ca;
   color: white;
   border: none;
+  margin: 0;
   border-radius: 0.75rem;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
+  /* display: flex; */
+  /* align-items: center; */
   transition: background-color 0.2s;
 }
 
@@ -311,6 +316,17 @@
 .button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+.blog-comment-form .textarea-field{
+  resize: none;
+  width: 100%;
+ 
+
+}
+
+.blog-comment-form .button{
+  width: 25%;
 }
 /* Role Badge */
 .role-badge {
