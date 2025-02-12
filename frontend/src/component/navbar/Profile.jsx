@@ -24,6 +24,17 @@ const UserProfileSuggestion = ({ user }) => {
       />
       <p className="suggestion-name">{user.name}</p>
       <p className="suggestion-email">{user.email}</p>
+      <div className="view-btn">
+        <button
+          className="view-profile-btn"
+          onClick={() => {
+            // Add functionality to navigate to the user's profile page
+            alert(`Viewing profile of ${user.name}`);
+          }}
+        >
+          View Profile
+        </button>
+      </div>
     </div>
   );
 };
@@ -42,7 +53,11 @@ const ProfilePage = () => {
     skills: [],
     resumeUrl: localStorage.getItem("resumeUrl") || null,
     profileImageUrl: localStorage.getItem("profileImageUrl") || defaultProfileImage,
-    socialLinks: [],
+    socialLinks: {
+      github: "",
+      linkedin: "",
+      instagram: "",
+    },
   });
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [error, setError] = useState("");
@@ -231,6 +246,19 @@ const ProfilePage = () => {
       showError(err.message);
     }
   };
+    const toggleEdit = () => {
+        setIsEditing(!isEditing);
+    };
+
+    const handleSocialLinkChange = (platform, value) => {
+        setUser(prevUser => ({
+            ...prevUser,
+            socialLinks: {
+                ...prevUser.socialLinks,
+                [platform]: value
+            }
+        }));
+    };
 
   return (
     <div className="profile-container">
@@ -255,6 +283,7 @@ const ProfilePage = () => {
           <input
             className="input-field"
             value={userProfile.name}
+            placeholder="Full Name"  // Added placeholder
             onChange={(e) => setUserProfile({ ...userProfile, name: e.target.value })}
           />
         ) : (
@@ -269,6 +298,7 @@ const ProfilePage = () => {
           <input
             className="input-field"
             value={user.mobileNumber}
+            placeholder="+91-xxxxxxxxxx" // Added placeholder
             onChange={(e) => setUser({ ...user, mobileNumber: e.target.value })}
           />
         ) : (
@@ -280,6 +310,7 @@ const ProfilePage = () => {
           <input
             className="input-field"
             value={user.resumeUrl}
+            placeholder="Resume URL" // Added placeholder
             onChange={(e) => setUser({ ...user, resumeUrl: e.target.value })}
           />
         ) : (
@@ -291,7 +322,7 @@ const ProfilePage = () => {
         {/* Save and Edit Button */}
         <button
           className="edit-btn"
-          onClick={isEditing ? handleSave : () => setIsEditing(true)}
+          onClick={isEditing ? handleSave : toggleEdit}
         >
           {isEditing ? "Save" : "Edit"}
         </button>
@@ -308,21 +339,25 @@ const ProfilePage = () => {
                 <input
                   className="input-field"
                   value={edu.type}
+                  placeholder="Degree"
                   onChange={(e) => handleEducationChange(index, "type", e.target.value)}
                 />
                 <input
                   className="input-field"
                   value={edu.name}
+                  placeholder="Institution Name"
                   onChange={(e) => handleEducationChange(index, "name", e.target.value)}
                 />
                 <input
                   className="input-field"
                   value={edu.year}
+                  placeholder="Year"
                   onChange={(e) => handleEducationChange(index, "year", e.target.value)}
                 />
                 <input
                   className="input-field"
                   value={edu.cgpa}
+                  placeholder="CGPA"
                   onChange={(e) => handleEducationChange(index, "cgpa", e.target.value)}
                 />
                 <button
@@ -354,6 +389,7 @@ const ProfilePage = () => {
             <input
               className="input-field"
               value={user.skills.join(",")}
+              placeholder="Skills (comma-separated)"
               onChange={(e) =>
                 setUser({ ...user, skills: e.target.value.split(",").map((s) => s.trim().toUpperCase()) })
               }
@@ -375,23 +411,44 @@ const ProfilePage = () => {
         <div className="profile-section">
           <h3 className="section-title">Social Links</h3>
           {isEditing ? (
-            <input
-              className="input-field"
-              value={user.socialLinks.join(",")}
-              onChange={(e) =>
-                setUser({ ...user, socialLinks: e.target.value.split(",").map((s) => s.trim()) })
-              }
-            />
-          ) : user.socialLinks?.length > 0 ? (
-            <ul className="social-links">
-              {user.socialLinks.map((link, index) => (
-                <li key={index}>
-                  <a href={link}>{link}</a>
-                </li>
-              ))}
-            </ul>
+            <div>
+              <input
+                className="input-field"
+                placeholder="GitHub Link"
+                value={user.socialLinks.github || ""}
+                onChange={(e) => handleSocialLinkChange("github", e.target.value)}
+              />
+              <input
+                className="input-field"
+                placeholder="LinkedIn Link"
+                value={user.socialLinks.linkedin || ""}
+                onChange={(e) => handleSocialLinkChange("linkedin", e.target.value)}
+              />
+              <input
+                className="input-field"
+                placeholder="Instagram Link"
+                value={user.socialLinks.instagram || ""}
+                onChange={(e) => handleSocialLinkChange("instagram", e.target.value)}
+              />
+            </div>
           ) : (
-            <div>No social links added</div>
+            <ul className="social-links">
+              {user.socialLinks.github && (
+                <li>
+                  <a href={user.socialLinks.github}>GitHub</a>
+                </li>
+              )}
+              {user.socialLinks.linkedin && (
+                <li>
+                  <a href={user.socialLinks.linkedin}>LinkedIn</a>
+                </li>
+              )}
+              {user.socialLinks.instagram && (
+                <li>
+                  <a href={user.socialLinks.instagram}>Instagram</a>
+                </li>
+              )}
+            </ul>
           )}
         </div>
 
@@ -401,30 +458,7 @@ const ProfilePage = () => {
           <div className="suggested-users-container">
             {suggestedUsers.length > 0 ? (
               suggestedUsers.map((user, index) => (
-                <div key={index} className="user-profile-suggestion">
-                  {/* Circular Profile Photo */}
-                  <img
-                    src={user.profileImageUrl}
-                    alt={`${user.name}'s profile`}
-                    className="suggestion-profile-photo"
-                  />
-                  {/* User Name */}
-                  <p className="suggestion-name">{user.name}</p>
-                  {/* User Email */}
-                  <p className="suggestion-email">{user.email}</p>
-                  {/* View Profile Button */}
-                  <div className="view-btn">
-                    <button
-                      className="view-profile-btn"
-                      onClick={() => {
-                        // Add functionality to navigate to the user's profile page
-                        alert(`Viewing profile of ${user.name}`);
-                      }}
-                    >
-                      View Profile
-                    </button>
-                  </div>
-                </div>
+                <UserProfileSuggestion key={index} user={user} />
               ))
             ) : (
               <p>No suggestions available.</p>
