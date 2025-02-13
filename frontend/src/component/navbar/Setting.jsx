@@ -20,7 +20,7 @@ export default function Setting() {
     {
       question: "How do I update my profile?",
       answer:
-        "To update your profile, go to the 'Profile' section and click on 'Edit Profile'. Make the necessary changes and save them.",
+        "To update your profile, go to the 'Profile' section and click on 'Edit'. Make the necessary changes and save them.",
     },
     {
       question: "How can I register for an event?",
@@ -41,12 +41,12 @@ export default function Setting() {
     {
       question: " How do I register on the Alumni Portal?",
       answer:
-        "To register, click on the Sign Up or Register button on the homepage. Fill out the registration form with your details, including your name, email address, graduation year, and program of study. After submitting the form, you may need to verify your email address to complete the registration.",
+        "To register, click on the Sign Up or Register button on the homepage. Fill out the registration form with your details. After submitting the form, you may need to verify your email address by OTP to complete the registration.",
     },
     {
       question: "  How can I find and connect with other alumni?",
       answer:
-        "The Alumni Portal offers a directory or search function where you can find other alumni. You can search by name, graduation year, program of study, location, company, or other relevant criteria. Once you find alumni you'd like to connect with, you can send them a message through the portal or connect with them on professional networking platforms like LinkedIn.",
+        "The Alumni Portal offers a directory or search function where you can find other alumni. You can search by name. Once you find alumni you'd like to connect with, you can send them a message through the portal or connect with them on professional networking platforms like LinkedIn.",
     },
     {
       question: " How do I join alumni events and activities?",
@@ -134,8 +134,9 @@ export default function Setting() {
             href="https://mail.google.com/mail/?view=cm&fs=1&to=alumniarchitect@gmail.com&su=Bug Report&body=Describe the issue here..."
             target="_blank"
             rel="noopener noreferrer"
+            className="mail-link"
           >
-            Click here to report a bug via email.
+            <Mail size={18}/> &nbsp;Click here to report a bug via email.
           </a>
         </div>
       </>
