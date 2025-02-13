@@ -27,6 +27,8 @@ const ProfileCompletionMessage = () => {
         }
 
         const data = await res.json();
+        
+        console.log(data)
         setIsProfileComplete(data);
 
       } catch (error) {
