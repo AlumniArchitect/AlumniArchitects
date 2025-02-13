@@ -1,5 +1,6 @@
 package com.alumniarchitect.config;
 
+import com.alumniarchitect.service.cloudinary.CloudinaryService;
 import com.cloudinary.Cloudinary;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,5 +40,10 @@ public class BeanConfig {
         }
 
         return cloudinary;
+    }
+
+    @Bean
+    public CloudinaryService cloudinaryService(Cloudinary cloudinary) {
+        return new CloudinaryService(cloudinary);
     }
 }
