@@ -2,31 +2,55 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
 import "../../style/HomePage/ProfileCompletion.css";
+import Constant from "../../utils/Constant.js";
 
 const ProfileCompletionMessage = () => {
   const navigate = useNavigate();
-  const [profileProgress, setProfileProgress] = useState(
-    localStorage.getItem("profileProgress") || 0
-  );
-  const [showProfileMessage, setShowProfileMessage] = useState(true);
+  const email = localStorage.getItem("email");
+  const URL = Constant.BASE_URL;
+  const jwt = localStorage.getItem("jwt");
+  const [isProfileComplete, setIsProfileComplete] = useState(null);
 
   useEffect(() => {
-    if (profileProgress < "100") {
-      setShowProfileMessage(true);
+    const fetchIsProfileComplete = async () => {
+      try {
+        const res = await fetch(`${URL}/api/userProfile/is-profile-complete/${email}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${jwt}`
+          }
+        });
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error("Error: " + errorText);
+        }
+
+        const data = await res.json();
+        setIsProfileComplete(data);
+
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (isProfileComplete === null) {
+      fetchIsProfileComplete();
     }
-  }, [profileProgress]);
+
+  }, [email, isProfileComplete]);
 
   const handleMessageClick = () => {
-    navigate("/profile");
+    navigate("/profile", { state: { email } });
   };
 
   const handleCancelClick = () => {
-    setShowProfileMessage(false);
+    setIsProfileComplete(false);
   };
 
   return (
     <>
-      {profileProgress < "100" && showProfileMessage && (
+      {isProfileComplete === false && (
         <div className="incomplete-profile-message">
           <span onClick={handleMessageClick} style={{ cursor: "pointer" }}>
             You have not completed your profile.
