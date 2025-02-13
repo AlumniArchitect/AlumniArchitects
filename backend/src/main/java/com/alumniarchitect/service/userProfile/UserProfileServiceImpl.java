@@ -83,7 +83,6 @@ public class UserProfileServiceImpl implements UserProfileService {
                 StringUtils.hasText(userProfile.getBio()) &&
                 userProfile.getSocialLinks() != null && !userProfile.getSocialLinks().isEmpty() &&
                 userProfile.getSkills() != null && !userProfile.getSkills().isEmpty() &&
-                StringUtils.hasText(userProfile.getLocation()) &&
                 StringUtils.hasText(userProfile.getMobileNumber()) &&
                 userProfile.getEducation() != null && !userProfile.getEducation().isEmpty();
     }
