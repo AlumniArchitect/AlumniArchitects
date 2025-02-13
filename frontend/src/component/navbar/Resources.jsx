@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { UploadCloud, Download, Plus, Edit, Trash, X } from "lucide-react";
+import defaultProfileImage from "../../assets/userLogo.png";
+import Constant from "../../utils/Constant";
 import "../../style/navbar/Resources.css";
-
-const username = "Akash";
-const photo = "https://th.bing.com/th/id/OIG3.80EN2JPNx7kp5VqoB5kz";
 
 const semesterOptions = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const branchOptions = [
-  "Information Technology",
-  "Computer Science",
+  "IT",
+  "CSE",
   "CSD",
   "FPT",
   "AIDS",
@@ -17,7 +16,7 @@ const branchOptions = [
 export default function Resource() {
   const [resources, setResources] = useState([]);
   const [title, setTitle] = useState("");
-  const [info, setInfo] = useState("");
+  const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
   const [semester, setSemester] = useState("");
   const [branch, setBranch] = useState("");
@@ -27,75 +26,119 @@ export default function Resource() {
   const [searchQuery, setSearchQuery] = useState("");
   const [semesterFilter, setSemesterFilter] = useState("");
   const [branchFilter, setBranchFilter] = useState("");
+  const email = localStorage.getItem("email");
+  const jwt = localStorage.getItem("jwt");
+
+  useEffect(() => {
+    fetchResources();
+  }, []);
+
+  const fetchResources = async () => {
+    try {
+      const response = await fetch(`${Constant.BASE_URL}/api/resources`,{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        }
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch resources");
+
+      const data = await response.json();
+      console.log("Fetched resources:", data);
+
+      setResources(data);
+    } catch (error) {
+      console.error("Error fetching resources:", error);
+    }
+  };
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
-  const handlePostResource = () => {
-    if (title && info && file) {
-      const newResource = { title, info, file, semester, branch };
-      setResources([...resources, newResource]);
-      setTitle("");
-      setInfo("");
-      setFile(null);
-      setSemester("");
-      setBranch("");
-      setShowForm(false);
+  const handlePostResource = async () => {
+    if (title && description && file && semester && branch) {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await fetch(
+          `${Constant.BASE_URL}/api/resources?email=${email}&title=${title}&description=${description}&sem=${semester}&branch=${branch}`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${jwt}`,
+          },
+          body: formData
+        });
+
+        if (!response.ok) throw new Error("Failed to post resource");
+        const newResource = await response.json();
+        setResources([...resources, newResource]);
+        handleCancel();
+      } catch (error) {
+        console.error("Error posting resource:", error);
+      }
     }
   };
 
+
   const handleDownload = (resource) => {
-    const url = URL.createObjectURL(resource.file);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = resource.file.name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    window.open(resource.resourceUrl, "_blank");
   };
 
-  const handleEditResource = (index) => {
-    const resource = resources[index];
+  const handleEditResource = (resource) => {
     setTitle(resource.title);
-    setInfo(resource.info);
-    setFile(resource.file);
-    setSemester(resource.semester);
+    setDescription(resource.description);
+    setSemester(resource.sem);
     setBranch(resource.branch);
-    setEditingResource(index);
+    setEditingResource(resource.id);
     setShowForm(true);
   };
 
-  const handleUpdateResource = () => {
-    if (title && info && file && editingResource !== null) {
-      const updatedResources = [...resources];
-      updatedResources[editingResource] = {
-        title,
-        info,
-        file,
-        semester,
-        branch,
-      };
-      setResources(updatedResources);
-      setTitle("");
-      setInfo("");
-      setFile(null);
-      setSemester("");
-      setBranch("");
-      setEditingResource(null);
-      setShowForm(false);
+  const handleUpdateResource = async () => {
+    if (title && description && semester && branch && editingResource) {
+      try {
+        const response = await fetch(`${Constant.BASE_URL}/resources/${editingResource}/${email}/${title}/${description}/${semester}/${branch}`, {
+          method: "PUT",
+          headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${jwt}`,
+          },
+          body: JSON.stringify({ file: file ? file.name : null })
+        });
+
+        if (!response.ok) throw new Error("Failed to update resource");
+        const updatedResource = await response.json();
+        setResources(resources.map(r => r.id === editingResource ? updatedResource : r));
+        handleCancel();
+      } catch (error) {
+        console.error("Error updating resource:", error);
+      }
     }
   };
 
-  const handleDeleteResource = (index) => {
-    const updatedResources = resources.filter((_, i) => i !== index);
-    setResources(updatedResources);
+  const handleDeleteResource = async (id) => {
+    try {
+      const response = await fetch(`${Constant.BASE_URL}/api/resources/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${jwt}`,
+        }
+      });
+      if (!response.ok) throw new Error("Failed to delete resource");
+      const result = await response.json();
+      
+      setResources(resources.filter(r => r.id !== id));
+    } catch (error) {
+      console.error("Error deleting resource:", error);
+    }
   };
 
   const handleCancel = () => {
     setTitle("");
-    setInfo("");
+    setDescription("");
     setFile(null);
     setSemester("");
     setBranch("");
@@ -103,12 +146,34 @@ export default function Resource() {
     setShowForm(false);
   };
 
+  const handleFilter = async () => {
+    try {
+      let url = `${Constant.BASE_URL}/api/resources`;
+      if (branchFilter) url += `/by-branch?branch=${branchFilter}`;
+      else if (semesterFilter) url += `/by-sem?sem=${semesterFilter}`;
+
+      const response = await fetch(url, {
+        headers: {
+          "Authorization": `Bearer ${jwt}`,
+        }
+      });
+      if (!response.ok) throw new Error("Failed to filter resources");
+      const data = await response.json();
+      setResources(data);
+    } catch (error) {
+      console.error("Error filtering resources:", error);
+    }
+  };
+
+
+  useEffect(() => {
+    handleFilter();
+  }, [branchFilter, semesterFilter]);
+
   const filteredResources = resources.filter(
     (resource) =>
-      (resource.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        resource.info.toLowerCase().includes(searchQuery.toLowerCase())) &&
-      (semesterFilter === "" || resource.semester === semesterFilter) &&
-      (branchFilter === "" || resource.branch === branchFilter)
+      resource.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      resource.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -125,16 +190,10 @@ export default function Resource() {
           />
         </div>
         <div className="resource-header-buttons">
-          <button
-            onClick={() => setShowMyResources(false)}
-            className="resource-header-button"
-          >
+          <button onClick={() => setShowMyResources(false)} className="resource-header-button">
             All Resources
           </button>
-          <button
-            onClick={() => setShowMyResources(true)}
-            className="resource-header-button"
-          >
+          <button onClick={() => setShowMyResources(true)} className="resource-header-button">
             My Resources
           </button>
         </div>
@@ -142,10 +201,7 @@ export default function Resource() {
       <div className="resource-main-page">
         {showMyResources && (
           <div className="my-resources-section">
-            <button
-              onClick={() => setShowForm(!showForm)}
-              className="add-resource-button"
-            >
+            <button onClick={() => setShowForm(!showForm)} className="add-resource-button">
               <Plus size={18} /> Add Resource
             </button>
             {showForm && (
@@ -160,9 +216,9 @@ export default function Resource() {
                       className="form-input"
                     />
                     <textarea
-                      placeholder="Enter resource information"
-                      value={info}
-                      onChange={(e) => setInfo(e.target.value)}
+                      placeholder="Enter resource description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
                       className="form-textarea"
                     />
                     <select
@@ -172,9 +228,7 @@ export default function Resource() {
                     >
                       <option value="">Select Semester</option>
                       {semesterOptions.map((sem) => (
-                        <option key={sem} value={sem}>
-                          Semester {sem}
-                        </option>
+                        <option key={sem} value={sem}>Semester {sem}</option>
                       ))}
                     </select>
                     <select
@@ -184,9 +238,7 @@ export default function Resource() {
                     >
                       <option value="">Select Branch</option>
                       {branchOptions.map((b) => (
-                        <option key={b} value={b}>
-                          {b}
-                        </option>
+                        <option key={b} value={b}>{b}</option>
                       ))}
                     </select>
                     <input
@@ -195,33 +247,21 @@ export default function Resource() {
                       className="form-input"
                     />
                     <div className="form-buttons">
-                      {editingResource !== null ? (
+                      {editingResource ? (
                         <>
-                          <button
-                            onClick={handleUpdateResource}
-                            className="form-button"
-                          >
+                          <button onClick={handleUpdateResource} className="form-button">
                             <Edit size={18} /> Update Resource
                           </button>
-                          <button
-                            onClick={handleCancel}
-                            className="form-button cancel-button"
-                          >
+                          <button onClick={handleCancel} className="form-button cancel-button">
                             <X size={18} /> Cancel
                           </button>
                         </>
                       ) : (
                         <>
-                          <button
-                            onClick={handlePostResource}
-                            className="form-button"
-                          >
+                          <button onClick={handlePostResource} className="form-button">
                             <UploadCloud size={18} /> Post Resource
                           </button>
-                          <button
-                            onClick={handleCancel}
-                            className="form-button cancel-button"
-                          >
+                          <button onClick={handleCancel} className="form-button cancel-button">
                             <X size={18} /> Cancel
                           </button>
                         </>
@@ -241,9 +281,7 @@ export default function Resource() {
           >
             <option value="">All Semesters</option>
             {semesterOptions.map((sem) => (
-              <option key={sem} value={sem}>
-                Semester {sem}
-              </option>
+              <option key={sem} value={sem}>Semester {sem}</option>
             ))}
           </select>
           <select
@@ -253,52 +291,39 @@ export default function Resource() {
           >
             <option value="">All Branches</option>
             {branchOptions.map((branch) => (
-              <option key={branch} value={branch}>
-                {branch}
-              </option>
+              <option key={branch} value={branch}>{branch}</option>
             ))}
           </select>
         </div>
         <div className="resource-list">
-          {filteredResources.map((resource, index) => (
-            <div key={index} className="resource-card">
+          {filteredResources.map((resource) => (
+            <div key={resource.id} className="resource-card">
               <div className="card-content">
-                <div className="usere-id">
+                <div className="user-id">
                   <img
-                    src={photo}
-                    alt="image not found"
+                    src={resource.profileImgUrl || defaultProfileImage}
+                    alt="Profile"
                     className="resource-photo"
                   />
-                  <h2>{username}</h2>
+                  <h2>{resource.fullName}</h2>
                 </div>
                 <h4>
-                  Sem:{resource.semester}
+                  Sem: {resource.sem}
                   <br />
-                  Branch:{resource.branch}
+                  Branch: {resource.branch}
                 </h4>
-                <h5>
-                  <u>{resource.title}</u>
-                </h5>
-                <p>{resource.info}</p>
+                <h5><u>{resource.title}</u></h5>
+                <p>{resource.description}</p>
                 <div className="card-buttons">
-                  <button
-                    onClick={() => handleDownload(resource)}
-                    className="card-button"
-                  >
+                  <button onClick={() => handleDownload(resource)} className="card-button">
                     <Download size={18} /> Download
                   </button>
                   {showMyResources && (
                     <>
-                      <button
-                        onClick={() => handleEditResource(index)}
-                        className="card-button"
-                      >
+                      <button onClick={() => handleEditResource(resource)} className="card-button">
                         <Edit size={18} /> Edit
                       </button>
-                      <button
-                        onClick={() => handleDeleteResource(index)}
-                        className="card-button delete-button"
-                      >
+                      <button onClick={() => handleDeleteResource(resource.id)} className="card-button delete-button">
                         <Trash size={18} /> Delete
                       </button>
                     </>
