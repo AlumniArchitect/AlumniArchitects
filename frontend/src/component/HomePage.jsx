@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "./navbar/Navbar";
 import { useNavigate } from "react-router-dom";
+import Footer from "./footer/Footer";
 
 export default function Homepage() {
     const navigate = useNavigate();
@@ -44,6 +45,7 @@ export default function Homepage() {
             {error && <div className="error-message">{error}</div>}
             <div id="homepage">
                 <Navbar />
+                <Footer />
             </div>
         </>
     );
