@@ -228,7 +228,7 @@ export default function Navbar() {
               <li>Option 1</li>
               <li onClick={handleEventClick}>Event</li>
               <li onClick={handleBlogClick}>Blog</li>
-              <li onClick={handleResourceClick}>Resource Library</li>
+              <li onClick={handleResourceClick}>Resource</li>
               <li>Option 5</li>
               <li>Option 6</li>
               <hr />
