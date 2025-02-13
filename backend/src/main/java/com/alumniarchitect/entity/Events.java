@@ -26,5 +26,5 @@ public class Events {
     private String category;
     private String format;
     private String imgUrl;
-    private List<String> registered = new ArrayList<String>();
+    private List<String> registered = new ArrayList<>();
 }

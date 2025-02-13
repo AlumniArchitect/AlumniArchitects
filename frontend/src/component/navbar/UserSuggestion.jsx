@@ -27,8 +27,6 @@ const UserSuggestion = ({ email }) => {
                 });
                 const data = await response.json();
 
-                console.log("API Response:", data);
-
                 if (Array.isArray(data)) {
                     setProfiles((prevProfiles) => [...prevProfiles, ...data]);
                 } else if (data.message) {

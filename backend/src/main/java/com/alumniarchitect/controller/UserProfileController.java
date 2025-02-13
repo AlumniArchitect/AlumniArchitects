@@ -68,7 +68,7 @@ public class UserProfileController {
             userProfile.setEmail(email);
         }
 
-        Map data = this.userProfileService.uploadImage(file);
+        Map data = userProfileService.uploadImage(file);
         userProfile.setProfileImageUrl(data.get("secure_url").toString());
         userProfileService.createOrUpdateUserProfile(userProfile);
 

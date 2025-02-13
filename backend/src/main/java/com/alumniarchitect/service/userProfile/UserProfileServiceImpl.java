@@ -68,7 +68,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         if (StringUtils.hasText(userProfile.getMobileNumber())) {
             existingProfile.setMobileNumber(userProfile.getMobileNumber());
         }
-        if (userProfile.getEducation() != null && !userProfile.getEducation().isEmpty()) {
+        if (userProfile.getEducation() != null) {
             existingProfile.setEducation(userProfile.getEducation());
         }
 
@@ -91,7 +91,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public Map uploadImage(MultipartFile file) {
         try {
-            return this.cloudinary.uploader().upload(file.getBytes(), Map.of());
+            return cloudinary.uploader().upload(file.getBytes(), Map.of());
         } catch (Exception e) {
             throw new RuntimeException("Image uploading failed. Error : " + e.getMessage());
         }

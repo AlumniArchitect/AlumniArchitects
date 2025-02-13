@@ -29,10 +29,10 @@ const ProfilePage = () => {
     fullName: localStorage.getItem("fullName") || "N/A",
     mobileNumber: "+91",
     location: "",
-    education: [],
+    education: [], // Initialize as an empty array
     skills: [],
-    resumeUrl: localStorage.getItem("resumeUrl") || null,
-    profileImageUrl: localStorage.getItem("profileImageUrl") || defaultProfileImage,
+    resumeUrl: null,
+    profileImageUrl: defaultProfileImage,
     socialLinks: [],
   });
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
@@ -74,6 +74,10 @@ const ProfilePage = () => {
   };
 
   const handleRemoveEducation = (index) => {
+    if (!Array.isArray(user.education)) {
+      setUser({ ...user, education: [] }); // Ensure education is an array
+      return;
+    }
     const updatedEducation = user.education.filter((_, i) => i !== index);
     setUser({ ...user, education: updatedEducation });
   };
@@ -81,7 +85,6 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        console.log(email);
         const res = await fetch(`${Constant.BASE_URL}/api/userProfile/${email}`, {
           method: "GET",
           headers: {
@@ -95,6 +98,7 @@ const ProfilePage = () => {
             ...prevUser,
             ...data.userProfile,
             fullName: data.userProfile.fullName || "N/A",
+            education: data.userProfile.education || [], // Ensure education is an array
           }));
           setUserProfile((prev) => ({
             ...prev,
@@ -120,31 +124,39 @@ const ProfilePage = () => {
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
+
     if (!file) {
       showError("Please provide a file");
       return;
     }
+
+    if (!file.type.startsWith('image/')) {
+      showError("Please upload an image file");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("image", file);
-    try {
-      const response = await fetch(`${Constant.BASE_URL}/api/userProfile/uploadProfileImage/${email}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-        body: formData,
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to upload image");
-      }
-      const data = await response.json();
-      const imageUrl = data;
-      setUser((prevUser) => ({ ...prevUser, profileImageUrl: imageUrl }));
-      localStorage.setItem("profileImageUrl", imageUrl);
-    } catch (error) {
-      showError("Error uploading image: " + error.message);
+
+    const response = await fetch(`${Constant.BASE_URL}/api/userProfile/uploadProfileImage/${email}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to upload image");
     }
+
+    const data = await response.json();
+    const imageUrl = data;
+    console.log(imageUrl);
+
+    setUser((prevUser) => ({ ...prevUser, profileImageUrl: imageUrl }));
+    localStorage.setItem("profileImageUrl", imageUrl);
   };
 
   const handleSave = async () => {
