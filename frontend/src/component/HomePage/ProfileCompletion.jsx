@@ -40,14 +40,14 @@ const ProfileCompletionMessage = () => {
       fetchIsProfileComplete();
     }
 
-  }, [email, isProfileComplete]);
+  }, [email]);
 
   const handleMessageClick = () => {
     navigate("/profile", { state: { email } });
   };
 
   const handleCancelClick = () => {
-    setIsProfileComplete(false);
+    setIsProfileComplete(true);
   };
 
   return (
