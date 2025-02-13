@@ -40,6 +40,26 @@ const ProfilePage = () => {
   const userEmail = localStorage.getItem("email");
   const jwt = localStorage.getItem("jwt");
 
+  const calculateProfileProgress = () => {
+    let completedFields = 0;
+    const totalFields = 6; 
+ 
+    if (user.fullName && user.fullName !== "N/A") completedFields++;
+    if (user.mobileNumber && user.mobileNumber !== "+91") completedFields++;
+    if (user.education && user.education.length > 0) completedFields++;
+    if (user.skills && user.skills.length > 0) completedFields++;
+    if (user.resumeUrl) completedFields++;
+    if (user.socialLinks && user.socialLinks.length > 0) completedFields++;
+ 
+    return Math.round((completedFields / totalFields) * 100); 
+  };
+ 
+  const profileProgress = calculateProfileProgress();
+ 
+  useEffect(() => {
+    localStorage.setItem("profileProgress", profileProgress);
+  }, [profileProgress]);
+
   const handleEducationChange = (index, field, value) => {
     const updatedEducation = [...user.education];
     updatedEducation[index] = { ...updatedEducation[index], [field]: value };
