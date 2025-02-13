@@ -58,6 +58,10 @@ export default function Navbar() {
     navigate("/event");
   };
 
+  const handleResourceClick = () => {
+    navigate("/resource");
+  };
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -224,7 +228,7 @@ export default function Navbar() {
               <li>Option 1</li>
               <li onClick={handleEventClick}>Event</li>
               <li onClick={handleBlogClick}>Blog</li>
-              <li>Option 4</li>
+              <li onClick={handleResourceClick}>Resource Library</li>
               <li>Option 5</li>
               <li>Option 6</li>
               <hr />

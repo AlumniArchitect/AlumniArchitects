@@ -23,7 +23,7 @@ const Footer = () => {
         <footer className="footer">
             <div className="footer-container">
                 <div className="footer-section">
-                    <h2 className="footer-title">AlumniArchite</h2>
+                    <h2 className="footer-title">AlumniArchitect</h2>
                     <p className="footer-text">
                         Connecting alumni worldwide, fostering professional growth, and building lasting relationships.
                     </p>

@@ -62,7 +62,8 @@ body {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 1280px;
+    /* max-width: 1280px; */
+    max-width: 100%;
 }
 
 .container-1 {
