@@ -1,4 +1,4 @@
-package com.alumniarchitect.controller;
+package com.alumniarchitect.controller.algo;
 
 import com.alumniarchitect.entity.*;
 import com.alumniarchitect.service.blog.BlogService;

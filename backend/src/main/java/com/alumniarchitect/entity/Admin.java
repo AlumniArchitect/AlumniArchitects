@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Document(collection = "admin")
@@ -22,7 +23,9 @@ public class Admin {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String fullName;
-    private List<String> moderators;
-    private List<String> unverifiedAlumni;
+    private String collegeName;
+    private List<String> moderators = new ArrayList<>();
+    private HashMap<String, String> unverifiedAlumni = new HashMap<>();
     private List<User> users = new ArrayList<>();
+    private List<String> portalImages = new ArrayList<>();
 }

@@ -1,4 +1,4 @@
-package com.alumniarchitect.controller;
+package com.alumniarchitect.controller.user;
 
 import com.alumniarchitect.entity.UserProfile;
 import com.alumniarchitect.response.api.UserProfileResponse;
@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/userProfile")
@@ -68,11 +66,11 @@ public class UserProfileController {
             userProfile.setEmail(email);
         }
 
-        Map data = userProfileService.uploadImage(file);
-        userProfile.setProfileImageUrl(data.get("secure_url").toString());
+        String img = userProfileService.uploadImage(file);
+        userProfile.setProfileImageUrl(img);
         userProfileService.createOrUpdateUserProfile(userProfile);
 
-        return new ResponseEntity<>(data.get("secure_url").toString(), HttpStatus.OK);
+        return new ResponseEntity<>(img, HttpStatus.OK);
     }
 
     @GetMapping("/getProfileImage/{email}")
