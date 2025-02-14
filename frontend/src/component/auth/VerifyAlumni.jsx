@@ -58,6 +58,7 @@ const VerifyIdProof = () => {
           type="file"
           accept="image/*"
           onChange={handleImageChange}
+          className="Image"
           required
         />
         <button onClick={handleUploadImage} disabled={loading}>

@@ -5,12 +5,24 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: calc(100vh - 40px);
+}
+
+h2 {
+    margin-bottom: 20px;
 }
 
 .form-group {
+    width: 100%;
     margin-bottom: 15px;
 }
-
+.form-group .Image{
+    margin-top: 100px;
+}
 .success-message {
     color: green;
     margin-top: 10px;
@@ -19,4 +31,25 @@
 .error-message {
     color: red;
     margin-top: 10px;
+}
+
+input[type="file"] {
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:disabled {
+    background-color: #ccc;
 }

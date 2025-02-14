@@ -1,4 +1,4 @@
-package com.alumniarchitect.controller;
+package com.alumniarchitect.controller.user;
 
 import com.alumniarchitect.entity.User;
 import com.alumniarchitect.response.api.UserResponse;
