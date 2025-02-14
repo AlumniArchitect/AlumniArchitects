@@ -309,11 +309,12 @@ export default function Resource() {
                 </div>
                 <h4>
                   Sem: {resource.sem}
-                  <br />
+                </h4>
+                <h4>
                   Branch: {resource.branch}
                 </h4>
                 <h5><u>{resource.title}</u></h5>
-                <p>{resource.description}</p>
+                <p className="description">{resource.description}</p>
                 <div className="card-buttons">
                   <button onClick={() => handleDownload(resource)} className="card-button">
                     <Download size={18} /> Download
