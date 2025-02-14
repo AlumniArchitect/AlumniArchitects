@@ -276,8 +276,6 @@ export default function Setting() {
     if (email) deleteAccount();
   };
 
-  console.log("Selected Option:", selectedOption); // Debugging: Check the value
-
   return (
     <div className="settings-container">
       {error && <div className="setting-message">{error}</div>}

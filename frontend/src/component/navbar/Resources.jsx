@@ -35,7 +35,7 @@ export default function Resource() {
 
   const fetchResources = async () => {
     try {
-      const response = await fetch(`${Constant.BASE_URL}/api/resources`,{
+      const response = await fetch(`${Constant.BASE_URL}/api/resources`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -129,7 +129,7 @@ export default function Resource() {
       });
       if (!response.ok) throw new Error("Failed to delete resource");
       const result = await response.json();
-      
+
       setResources(resources.filter(r => r.id !== id));
     } catch (error) {
       console.error("Error deleting resource:", error);
@@ -297,41 +297,72 @@ export default function Resource() {
         </div>
         <div className="resource-list">
           {filteredResources.map((resource) => (
-            <div key={resource.id} className="resource-card">
-              <div className="card-content">
-                <div className="user-id">
-                  <img
-                    src={resource.profileImgUrl || defaultProfileImage}
-                    alt="Profile"
-                    className="resource-photo"
-                  />
-                  <h2>{resource.fullName}</h2>
-                </div>
-                <h4>
-                  Sem: {resource.sem}
-                </h4>
-                <h4>
-                  Branch: {resource.branch}
-                </h4>
-                <h5><u>{resource.title}</u></h5>
-                <p className="description">{resource.description}</p>
-                <div className="card-buttons">
-                  <button onClick={() => handleDownload(resource)} className="card-button">
-                    <Download size={18} /> Download
-                  </button>
-                  {showMyResources && (
-                    <>
-                      <button onClick={() => handleEditResource(resource)} className="card-button">
-                        <Edit size={18} /> Edit
+            (showMyResources
+              ? (resource.email === email
+                ? <div key={resource.id} className="resource-card">
+                  <div className="card-content">
+                    <div className="user-id">
+                      <img
+                        src={resource.profileImgUrl || defaultProfileImage}
+                        alt="Profile"
+                        className="resource-photo"
+                      />
+                      <h2>{resource.fullName}</h2>
+                    </div>
+                    <h4>
+                      Sem: {resource.sem}
+                      <br />
+                      Branch: {resource.branch}
+                    </h4>
+                    <h5><u>{resource.title}</u></h5>
+                    <p>{resource.description}</p>
+                    <div className="card-buttons">
+                      <button onClick={() => handleDownload(resource)} className="card-button">
+                        <Download size={18} /> Download
                       </button>
-                      <button onClick={() => handleDeleteResource(resource.id)} className="card-button delete-button">
-                        <Trash size={18} /> Delete
-                      </button>
-                    </>
-                  )}
+                      {showMyResources && (
+                        <>
+                          <button onClick={() => handleEditResource(resource)} className="card-button">
+                            <Edit size={18} /> Edit
+                          </button>
+                          <button onClick={() => handleDeleteResource(resource.id)} className="card-button delete-button">
+                            <Trash size={18} /> Delete
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+                : null
+              )
+              : (resource.email !== email
+                ? <div key={resource.id} className="resource-card">
+                  <div className="card-content">
+                    <div className="user-id">
+                      <img
+                        src={resource.profileImgUrl || defaultProfileImage}
+                        alt="Profile"
+                        className="resource-photo"
+                      />
+                      <h2>{resource.fullName}</h2>
+                    </div>
+                    <h4>
+                      Sem: {resource.sem}
+                      <br />
+                      Branch: {resource.branch}
+                    </h4>
+                    <h5><u>{resource.title}</u></h5>
+                    <p>{resource.description}</p>
+                    <div className="card-buttons">
+                      <button onClick={() => handleDownload(resource)} className="card-button">
+                        <Download size={18} /> Download
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                : null
+              )
+            )
           ))}
         </div>
       </div>
