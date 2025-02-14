@@ -200,7 +200,20 @@ public class AuthController {
         return new ResponseEntity<>(new AuthResponse(null, true, "User verification sent."), HttpStatus.OK);
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/admin/signin")
+    public ResponseEntity<Boolean> adminSignin(@RequestBody() AuthRequest authRequest, HttpServletRequest request) {
+        Admin admin = adminService.findAdminByEmail(authRequest.getEmail());
+
+        if(admin == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        boolean val = passwordEncoder.matches(authRequest.getPassword(), admin.getPassword());
+
+       return new ResponseEntity<>(val, HttpStatus.OK);
+    }
+
+    @PostMapping("/user/signin")
     public ResponseEntity<AuthResponse> signin(@RequestBody(required = false) AuthRequest authRequest, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
 
@@ -209,35 +222,18 @@ public class AuthController {
         }
 
         User user = userService.findByEmail(authRequest.getEmail());
-        Admin admin = adminService.findAdminByEmail(authRequest.getEmail());
 
-        if (user == null) {
-            boolean val = passwordEncoder.matches(authRequest.getPassword(), admin.getPassword());
+        boolean val = passwordEncoder.matches(authRequest.getPassword(), user.getPassword());
 
-            if(val) {
-                Authentication auth = authenticate(admin.getEmail(), authRequest.getPassword());
-                SecurityContextHolder.getContext().setAuthentication(auth);
-
-                String jwt = JwtProvider.generateToken(auth);
-
-                return new ResponseEntity<>(new AuthResponse(jwt, true, "admin"), HttpStatus.OK);
-            }
+        if(!val) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        if (admin == null) {
-            boolean val = passwordEncoder.matches(authRequest.getPassword(), user.getPassword());
+        Authentication auth = authenticate(user.getEmail(), authRequest.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
 
-            if(val) {
-                Authentication auth = authenticate(user.getEmail(), authRequest.getPassword());
-                SecurityContextHolder.getContext().setAuthentication(auth);
-
-                String jwt = JwtProvider.generateToken(auth);
-
-                return new ResponseEntity<>(new AuthResponse(jwt, true, "user"), HttpStatus.OK);
-            }
-        }
-
-        return new ResponseEntity<>(new AuthResponse(null, true, "User not authenticated"), HttpStatus.UNAUTHORIZED);
+        String jwt = JwtProvider.generateToken(auth);
+        return new ResponseEntity<>(new AuthResponse(jwt, true, "user"), HttpStatus.OK);
     }
 
     private Authentication authenticate(String email, String password) {

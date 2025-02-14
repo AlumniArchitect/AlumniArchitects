@@ -4,14 +4,12 @@ import Constant from "../../utils/Constant";
 import "../../style/auth/SignIn.css";
 
 export default function Signin() {
-  const URL = `${Constant.BASE_URL}/auth/signin`;
   const navigate = useNavigate();
-  const [signinInfo, setSigninInfo] = useState({
-    email: "",
-    password: "",
-  });
+  const [signinInfo, setSigninInfo] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [role, setRole] = useState("user");
+  const jwt = localStorage.getItem("jwt") || null;
 
   const showError = (message) => {
     setError(message);
@@ -20,11 +18,9 @@ export default function Signin() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const jwt = localStorage.getItem("jwt") || null;
-
-      if (jwt) {
+      if (jwt && role === "user") {
         try {
-          const res = await fetch(URL, {
+          const res = await fetch(`${Constant.BASE_URL}/auth/user/signin`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -34,21 +30,20 @@ export default function Signin() {
 
           const result = await res.json();
 
-          if (result.status && result.jwt) {
-            if(result.message === "admin") navigate("/admin");
-            if(result.message === "user") navigate("/homepage");
+          if (result.status) {
+            navigate("/homepage");
           } else {
             showError("Invalid JWT token. Please log in again.");
             localStorage.removeItem("jwt");
           }
         } catch (error) {
-          showError("Error validating JWT:", error);
+          showError("Error validating JWT: " + error);
         }
       }
     };
 
     fetchData();
-  }, [URL, navigate]);
+  }, [role]);
 
   const handleSignin = async (e) => {
     e.preventDefault();
@@ -59,42 +54,36 @@ export default function Signin() {
     }
 
     setLoading(true);
-
     try {
-      const res = await fetch(URL, {
+      const res = await fetch(`${Constant.BASE_URL}/auth/${role}/signin`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(signinInfo),
       });
 
-      const result = await res.json();
-
-      if (result.status) {
-
-        localStorage.setItem("email", signinInfo.email);
-        localStorage.setItem("jwt", result.jwt);
-        
-        if(result.message === "admin") navigate("/admin");
-        if(result.message === "user") navigate("/homepage");
-
+      if (role === "admin") {
+        const result = await res.json();
+        if (result) {
+          localStorage.setItem("email", signinInfo.email);
+          navigate("/admin");
+        } else {
+          showError("Invalid admin credentials.");
+        }
       } else {
-        showError("Error : " + result.message);
+        const result = await res.json();
+        if (result.status) {
+          localStorage.setItem("email", signinInfo.email);
+          localStorage.setItem("jwt", result.jwt);
+          navigate("/homepage");
+        } else {
+          showError("Error : " + result.message);
+        }
       }
     } catch (error) {
-      showError(`Error: ${error.message || "Some error occured."}`);
+      showError(`Error: ${error.message || "Some error occurred."}`);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setSigninInfo({
-      ...signinInfo,
-      [name]: value,
-    });
   };
 
   return (
@@ -109,7 +98,7 @@ export default function Signin() {
               name="email"
               placeholder="Email"
               value={signinInfo.email}
-              onChange={handleChange}
+              onChange={(e) => setSigninInfo({ ...signinInfo, email: e.target.value })}
               required
             />
           </div>
@@ -119,9 +108,15 @@ export default function Signin() {
               name="password"
               placeholder="Password"
               value={signinInfo.password}
-              onChange={handleChange}
+              onChange={(e) => setSigninInfo({ ...signinInfo, password: e.target.value })}
               required
             />
+          </div>
+          <div className="form-group">
+            <select value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
           </div>
           <div className="form-group">
             <button type="submit" disabled={loading}>
