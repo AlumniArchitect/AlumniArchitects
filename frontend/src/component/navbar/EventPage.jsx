@@ -252,18 +252,18 @@ export default function EventPage() {
   }
 
   return (
-    <div className="container">
-      <div className="header">
+    <div className="event-container">
+      <div className="event-header">
         <h1>Alumni Events</h1>
-        <div className="view-controls">
+        <div className="event-view-controls">
           <button
-            className={`view-button ${view === "all" ? "active" : ""}`}
+            className={`event-view-button ${view === "all" ? "active" : ""}`}
             onClick={() => setView("all")}
           >
             All Events
           </button>
           <button
-            className={`view-button ${view === "manage" ? "active" : ""}`}
+            className={`event-view-button ${view === "manage" ? "active" : ""}`}
             onClick={() => setView("manage")}
           >
             My Events
@@ -271,19 +271,19 @@ export default function EventPage() {
         </div>
       </div>
 
-      <div className="search-container">
+      <div className="event-search-container">
         <input
           type="text"
           placeholder="Search events..."
           value={search}
           onChange={handleSearch}
-          className="search-box"
+          className="event-search-box"
         />
       </div>
 
-      <div className="filters-section">
-        <div className="filter-controls">
-          <div className="filter-group">
+      <div className="event-filters-section">
+        <div className="event-filter-controls">
+          <div className="event-filter-group">
             <label>Category:</label>
             <select
               value={filters.category}
@@ -298,7 +298,7 @@ export default function EventPage() {
             </select>
           </div>
 
-          <div className="filter-group">
+          <div className="event-filter-group">
             <label>Type:</label>
             <select
               value={filters.type}
@@ -309,7 +309,7 @@ export default function EventPage() {
               <option value="Non-Technical">Non-Technical</option>
             </select>
           </div>
-          <div className="filter-group">
+          <div className="event-filter-group">
             <label>Format:</label>
             <select
               value={filters.format}
@@ -320,7 +320,7 @@ export default function EventPage() {
               <option value="Offline">Offline</option>
             </select>
           </div>
-          <div className="filter-group">
+          <div className="event-filter-group">
             <label>Date From:</label>
             <input
               type="date"
@@ -328,7 +328,7 @@ export default function EventPage() {
               onChange={(e) => handleFilterChange("startDate", e.target.value)}
             />
           </div>
-          <div className="filter-group">
+          <div className="event-filter-group">
             <label>Date To:</label>
             <input
               type="date"
@@ -340,7 +340,7 @@ export default function EventPage() {
       </div>
 
       {view === "manage" && (
-        <button className="create-button" onClick={() => setShowForm(true)}>
+        <button className="event-create-button" onClick={() => setShowForm(true)}>
           Create New Event
         </button>
       )}
@@ -366,14 +366,14 @@ export default function EventPage() {
                 {!isEventCreator(event) ? (
                   isRegistered(event.id) ? (
                     <button
-                      className="unregister-button"
+                      className="event-unregister-button"
                       onClick={() => handleUnregister(event.id)}
                     >
                       Unregister
                     </button>
                   ) : (
                     <button
-                      className="register-button"
+                      className="event-register-button"
                       onClick={() => handleRegister(event.id)}
                     >
                       Register
@@ -382,19 +382,19 @@ export default function EventPage() {
                 ) : (
                   <>
                     <button
-                      className="edit-button"
+                      className="event-edit-button"
                       onClick={() => handleEditEvent(event)}
                     >
                       Edit
                     </button>
                     <button
-                      className="registered-button"
+                      className="event-registered-button"
                       onClick={() => handleShowRegistered(event)}
                     >
                       Registered Emails
                     </button>
                     <button
-                      className="delete-button"
+                      className="event-delete-button"
                       onClick={() => handleDeleteEvent(event.id)}
                     >
                       Delete
@@ -408,11 +408,11 @@ export default function EventPage() {
       </div>
 
       {showForm && (
-        <div className="modal-overlay">
-          <div className="modal">
+        <div className="event-modal-overlay">
+          <div className="event-modal">
             <h2>{editingEvent ? "Edit Event" : "Create New Event"}</h2>
             <form onSubmit={handleAddOrUpdateEvent}>
-              <div className="form-group">
+              <div className="event-form-group">
                 <label>Event Name</label>
                 <input
                   type="text"
@@ -423,7 +423,7 @@ export default function EventPage() {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="event-form-group">
                 <label>Event Date</label>
                 <input
                   type="date"
@@ -434,7 +434,7 @@ export default function EventPage() {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="event-form-group">
                 <label>Event Location</label>
                 <input
                   type="text"
@@ -444,7 +444,7 @@ export default function EventPage() {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="event-form-group">
                 <label>Event Description</label>
                 <textarea
                   name="description"
@@ -453,7 +453,7 @@ export default function EventPage() {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="event-form-group">
                 <label>Event Type</label>
                 <select
                   name="type"
@@ -466,7 +466,7 @@ export default function EventPage() {
                 </select>
               </div>
 
-              <div className="form-group">
+              <div className="event-form-group">
                 <label>Event Category</label>
                 <select
                   name="category"
@@ -482,7 +482,7 @@ export default function EventPage() {
                 </select>
               </div>
 
-              <div className="form-group">
+              <div className="event-form-group">
                 <label>Event Format</label>
                 <select
                   name="format"
@@ -495,7 +495,7 @@ export default function EventPage() {
                 </select>
               </div>
 
-              <div className="form-group">
+              <div className="event-form-group">
                 <label>Image URL</label>
                 <input
                   type="file"
@@ -511,10 +511,10 @@ export default function EventPage() {
                 )}
               </div>
 
-              <button type="submit" className="btn submit-button">
+              <button type="submit" className="event-btn event-submit-button">
                 {editingEvent ? "Update Event" : "Create Event"}
               </button>
-              <button type="button" className="btn cancel-button" onClick={resetForm}>
+              <button type="button" className="event-btn event-cancel-button" onClick={resetForm}>
                 Cancel
               </button>
             </form>
@@ -523,19 +523,19 @@ export default function EventPage() {
       )}
 
       {showRegistered && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div className="modal-header">
+        <div className="event-modal-overlay">
+          <div className="event-modal">
+            <div className="event-modal-header">
               <h2>Registered Participants</h2>
-              <button className="close-button" onClick={handleCloseRegistered}>
+              <button className="event-close-button" onClick={handleCloseRegistered}>
                 close
               </button>
             </div>
-            <div className="modal-body">
+            <div className="event-modal-body">
               {eventParticipants.length === 0 ? (
                 <p>No participants registered for this event.</p>
               ) : (
-                <ul className="registered-list">
+                <ul className="event-registered-list">
                   {eventParticipants.map((email, index) => (
                     <li key={index} onClick={() => navigate('/profile', { state: { email } })} style={{cursor: 'pointer'}}>
                       {email}

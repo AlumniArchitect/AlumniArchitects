@@ -16,19 +16,19 @@ h2 {
     margin-bottom: 20px;
 }
 
-.form-group {
+.verifyalumni-form-group {
     width: 100%;
     margin-bottom: 15px;
 }
-.form-group .Image{
+.verifyalumni-form-group .Image{
     margin-top: 100px;
 }
-.success-message {
+.verifyalumni-success-message {
     color: green;
     margin-top: 10px;
 }
 
-.error-message {
+.verifyalumni-error-message {
     color: red;
     margin-top: 10px;
 }
@@ -37,7 +37,7 @@ input[type="file"] {
     margin-bottom: 10px;
 }
 
-button {
+.verifyalumni-button {
     padding: 10px 15px;
     background-color: #007bff;
     color: white;
@@ -46,10 +46,10 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+.verifyalumni-button:hover {
     background-color: #0056b3;
 }
 
-button:disabled {
+.verifyalumni-button:disabled {
     background-color: #ccc;
 }

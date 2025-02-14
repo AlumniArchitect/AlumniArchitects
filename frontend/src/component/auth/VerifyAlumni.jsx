@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Constant from "../../utils/Constant"; // Adjust the import based on your project structure
-import "../../style/auth/VerifyAlumni.css"; // Add your CSS file for styling
+import Constant from "../../utils/Constant"; 
+import "../../style/auth/VerifyAlumni.css"; 
 
 const VerifyIdProof = () => {
   const [image, setImage] = useState(null);
@@ -19,15 +19,14 @@ const VerifyIdProof = () => {
     }
 
     setLoading(true);
-    setMessage(""); // Reset message before upload
-    setError(""); // Reset error before upload
+    setMessage(""); 
+    setError(""); 
 
     try {
       const formData = new FormData();
       formData.append("image", image);
 
-      const URL = `${Constant.BASE_URL}/auth/upload-id-proof`; // Adjust the URL based on your backend API
-
+      const URL = `${Constant.BASE_URL}/auth/upload-id-proof`; 
       const res = await fetch(URL, {
         method: "POST",
         body: formData,
@@ -37,7 +36,7 @@ const VerifyIdProof = () => {
 
       if (result.status) {
         setMessage("Your request has been sent to the admin for approval.");
-        // Optionally, clear the image state
+       
         setImage(null);
       } else {
         setError(result.message || "Error uploading image.");
@@ -53,7 +52,7 @@ const VerifyIdProof = () => {
   return (
     <div className="verify-id-proof-container">
       <h2>Verify Your ID Proof</h2>
-      <div className="form-group">
+      <div className="verifyalumni-form-group">
         <input
           type="file"
           accept="image/*"
@@ -65,8 +64,8 @@ const VerifyIdProof = () => {
           {loading ? "Uploading..." : "Upload ID Proof"}
         </button>
       </div>
-      {message && <div className="success-message">{message}</div>}
-      {error && <div className="error-message">{error}</div>}
+      {message && <div className="verifyalumni-success-message">{message}</div>}
+      {error && <div className="verifyalumni-error-message">{error}</div>}
     </div>
   );
 };
