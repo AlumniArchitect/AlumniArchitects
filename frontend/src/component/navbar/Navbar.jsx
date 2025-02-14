@@ -180,7 +180,7 @@ export default function Navbar() {
           <FaExclamationCircle className="icon" /> {error}
         </div>
       )}
-      <div className="navbar">
+      <div className="nav-navbar">
         <div className="navbar-section" onClick={toggleMenu}>
           <div className="p-img">
             <img
