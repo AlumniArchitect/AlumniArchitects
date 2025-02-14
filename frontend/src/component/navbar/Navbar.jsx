@@ -225,12 +225,9 @@ export default function Navbar() {
               <li onClick={handleProfileClick}>
                 <FaUserCircle /> &nbsp; Profile
               </li>
-              <li>Option 1</li>
               <li onClick={handleEventClick}>Event</li>
               <li onClick={handleBlogClick}>Blog</li>
               <li onClick={handleResourceClick}>Resource Library</li>
-              <li>Option 5</li>
-              <li>Option 6</li>
               <hr />
               <li onClick={handleSettingClick}>
                 <FaCog /> &nbsp; Settings
