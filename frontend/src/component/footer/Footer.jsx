@@ -7,16 +7,16 @@ const Footer = () => {
 
     const navigate = useNavigate();
 
-    const handeleEvents = () => {
+    const handleEvents = () => {
         navigate("/event");
     };
-    const handeleAboutUs = () => {
+    const handleAboutUs = () => {
         navigate("/");
     };
-    const handeleResources = () => {
+    const handleResources = () => {
         navigate("/resource");
     };
-    const handeleBlogs = ()=>{
+    const handleBlogs = ()=>{
         navigate("/blog")
     }
 
@@ -34,10 +34,10 @@ const Footer = () => {
                 <div className="footer-section">
                     <h3 className="footer-heading">Quick Links</h3>
                     <ul className="footer-links">
-                        <li onClick={handeleAboutUs}>About Us</li>
-                        <li onClick={handeleEvents}>Events</li>
-                        <li onClick={handeleResources}>Resources</li>
-                        <li onClick={handeleBlogs}>Blogs</li>
+                        <li onClick={handleAboutUs}>About Us</li>
+                        <li onClick={handleEvents}>Events</li>
+                        <li onClick={handleResources}>Resources</li>
+                        <li onClick={handleBlogs}>Blogs</li>
                         <li>Contact:  <u>alumniarchitect@gmail.com</u></li>
                     </ul>
                 </div>
