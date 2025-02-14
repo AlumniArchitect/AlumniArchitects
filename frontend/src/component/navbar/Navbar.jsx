@@ -5,13 +5,12 @@ import {
   FaUserCircle,
   FaCog,
   FaSignOutAlt,
-  FaExclamationCircle
+  FaExclamationCircle,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "../../style/navbar/Navbar.css";
 import Constant from "../../utils/Constant.js";
 import defaultProfileImage from "../../assets/userLogo.png";
-
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -20,10 +19,14 @@ export default function Navbar() {
     profileImageUrl: defaultProfileImage,
   });
   const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isTyping, setIsTyping] = useState(false);
   const navigate = useNavigate();
   const email = localStorage.getItem("email");
   const jwt = localStorage.getItem("jwt");
   const menuRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
 
   const showError = (message) => {
     setError(message);
@@ -40,23 +43,27 @@ export default function Navbar() {
   };
 
   const handleProfileClick = () => {
-    navigate("/profile"); 
+    navigate("/profile", { state: { email } });
   };
 
   const handleSettingClick = () => {
-    navigate("/setting"); 
+    navigate("/setting");
   };
 
   const handleBlogClick = () => {
-    navigate("/blog"); 
+    navigate("/blog");
   };
 
   const handleEventClick = () => {
-    navigate("/event"); 
+    navigate("/event");
+  };
+
+  const handleResourceClick = () => {
+    navigate("/resource");
   };
 
   useEffect(() => {
-    const fetchUserName = async () => {
+    const fetchUserProfile = async () => {
       try {
         const res = await fetch(`${Constant.BASE_URL}/api/user/${email}`, {
           method: "GET",
@@ -64,9 +71,7 @@ export default function Navbar() {
             Authorization: `Bearer ${jwt}`,
           },
         });
-
         if (!res.ok) throw new Error("Failed to fetch user profile");
-
         const data = await res.json();
         if (data.status) {
           localStorage.setItem("fullName", data.user.fullName);
@@ -81,22 +86,22 @@ export default function Navbar() {
 
     const fetchUserProfileImage = async () => {
       try {
-        const res = await fetch(`${Constant.BASE_URL}/api/userProfile/${email}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        });
-
+        const res = await fetch(
+          `${Constant.BASE_URL}/api/userProfile/${email}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          }
+        );
         if (!res.ok) throw new Error("Failed to fetch user profile image");
-
         const data = await res.json();
         if (data.status && data.userProfile.profileImageUrl) {
           setUserProfile((prev) => ({
             ...prev,
             profileImageUrl: data.userProfile.profileImageUrl,
           }));
-          
           localStorage.setItem("profileImageUrl", data.userProfile.profileImageUrl);
         } else {
           showError("User image not found");
@@ -107,7 +112,7 @@ export default function Navbar() {
     };
 
     if (email) {
-      fetchUserName();
+      fetchUserProfile();
       fetchUserProfileImage();
     }
 
@@ -118,15 +123,60 @@ export default function Navbar() {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [email, jwt]);
 
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    setSearchQuery(value);
+    setIsTyping(true);
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      if (value.trim()) {
+        fetchSearchResults(value);
+      } else {
+        setSearchResults([]);
+      }
+      setIsTyping(false);
+    }, 700);
+  };
+
+  const fetchSearchResults = async (query) => {
+    try {
+      const res = await fetch(
+        `${Constant.BASE_URL}/api/suggest/user?query=${query}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      if (!res.ok) throw new Error("Failed to fetch search results");
+      const data = await res.json();
+      const usersArray = Object.entries(data).map(([email, fullName]) => ({ email, fullName }));
+
+      setSearchResults(usersArray);
+    } catch (error) {
+      showError("Error fetching search results: " + error.message);
+    }
+  };
+
+  const handleOpenProfile = (email) => {
+    navigate("/profile", { state: { email } });
+  };
+
   return (
     <nav>
-      {error && <div className="error-message"><FaExclamationCircle className="icon" /> {error}</div>}
+      {error && (
+        <div className="error-message">
+          <FaExclamationCircle className="icon" /> {error}
+        </div>
+      )}
       <div className="navbar">
         <div className="navbar-section" onClick={toggleMenu}>
           <div className="p-img">
@@ -137,16 +187,29 @@ export default function Navbar() {
           </div>
           <div className="p-name">{userProfile.name || "USERNAME"}</div>
         </div>
-
         <div className="search-bar">
           <FaSearch className="search-icon" />
-          <input type="text" placeholder="Search..." />
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+          {searchResults.length > 0 && (
+            <div className="search-results-container">
+              <div className="search-results">
+                {searchResults.map((user, index) => (
+                  <div key={index} className="search-result-item" onClick={() => handleOpenProfile(user.email)}>
+                    {user.fullName}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-
         <div className="nav-icons">
           <FaEnvelope className="icon" />
         </div>
-
         {menuOpen && (
           <div ref={menuRef} className="dropdown-menu">
             <div className="dropdown-profile">
@@ -165,7 +228,7 @@ export default function Navbar() {
               <li>Option 1</li>
               <li onClick={handleEventClick}>Event</li>
               <li onClick={handleBlogClick}>Blog</li>
-              <li>Option 4</li>
+              <li onClick={handleResourceClick}>Resource Library</li>
               <li>Option 5</li>
               <li>Option 6</li>
               <hr />

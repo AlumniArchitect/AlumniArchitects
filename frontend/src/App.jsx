@@ -10,6 +10,7 @@ import Setting from './component/navbar/Setting.jsx';
 import BlogUI from './component/navbar/Blog.jsx';
 import SplashScreen from './component/SplashScreen.jsx';
 import EventsPage from './component/navbar/EventPage.jsx';
+import Resource from './component/navbar/Resources.jsx';
 
 const App = () => {
   return (
@@ -18,7 +19,7 @@ const App = () => {
       <Route path="/" element={<Navigate to='/splash-screen' />} />
       <Route path="*" element={<Navigate to='/splash-screen' />} />
       <Route path="/splash-screen" element={<SplashScreen />} />
-      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/profile" element={<ProfilePage email={localStorage.getItem("email")}/>} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/verify-otp" element={<OtpVerification />} />
       <Route path="/signin" element={<Signin />} />
@@ -27,6 +28,7 @@ const App = () => {
       <Route path="/setting" element={<Setting />} />
       <Route path="/blog" element={<BlogUI />} />
       <Route path="/event" element={<EventsPage />} />
+      <Route path="/resource" element={<Resource />} />
     </Routes>
      </>
   );

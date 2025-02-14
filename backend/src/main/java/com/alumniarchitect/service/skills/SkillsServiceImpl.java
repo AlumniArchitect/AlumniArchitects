@@ -1,6 +1,7 @@
 package com.alumniarchitect.service.skills;
 
 import com.alumniarchitect.entity.Skills;
+import com.alumniarchitect.entity.User;
 import com.alumniarchitect.repository.SkillsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,5 +53,15 @@ public class SkillsServiceImpl implements SkillsService {
     @Override
     public Skills getSkillByName(String skill) {
         return skillsRepository.findByName(skill);
+    }
+
+    @Override
+    public void deleteSkillsOfUser(String email) {
+        List<Skills> skills = skillsRepository.findAll();
+
+        for(Skills skill : skills) {
+            skill.getEmails().remove(email);
+            skillsRepository.save(skill);
+        }
     }
 }

@@ -6,22 +6,19 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-import java.util.Map;
-
-@Document(collection = "blog")
+@Document(collection = "resources")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Blog {
-
+public class Resource {
     @Id
     private String id;
     private String email;
-    private String author;
-    private String profileImageUrl;
+    private String fullName;
     private String title;
-    private String content;
-    private int upvote = 0;
-    private List<Map<String, String>> comments;
+    private String description;
+    private String profileImgUrl;
+    private String sem;
+    private String branch;
+    private String resourceUrl;
 }

@@ -1,0 +1,14 @@
+.incomplete-profile-message {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+
+.cancel-icon {
+    cursor: pointer;
+}

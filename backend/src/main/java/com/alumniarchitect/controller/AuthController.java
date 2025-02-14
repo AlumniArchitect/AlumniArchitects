@@ -4,10 +4,13 @@ import com.alumniarchitect.entity.User;
 import com.alumniarchitect.request.auth.AuthRequest;
 import com.alumniarchitect.request.verificaton.VerifyOtpRequest;
 import com.alumniarchitect.response.auth.AuthResponse;
+import com.alumniarchitect.service.blog.BlogService;
 import com.alumniarchitect.service.collageGroup.CollegeGroupService;
+import com.alumniarchitect.service.skills.SkillsService;
 import com.alumniarchitect.service.user.CustomUserDetailService;
 import com.alumniarchitect.service.email.EmailService;
 import com.alumniarchitect.service.user.UserService;
+import com.alumniarchitect.service.userProfile.UserProfileService;
 import com.alumniarchitect.utils.jwt.JwtProvider;
 import com.alumniarchitect.utils.otp.OTPUtils;
 import jakarta.mail.MessagingException;
@@ -45,6 +48,15 @@ public class AuthController {
     private CollegeGroupService collegeGroupService;
 
     private final Map<String, String> otpStorage = new HashMap<>();
+
+    @Autowired
+    private UserProfileService userProfileService;
+
+    @Autowired
+    private BlogService blogService;
+
+    @Autowired
+    private SkillsService skillsService;
 
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> signup(@RequestBody User user) throws Exception {
@@ -191,6 +203,10 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AuthResponse(null, false, "User not found"));
         }
 
+        blogService.deleteBlogsOfUser(email);
+        skillsService.deleteSkillsOfUser(email);
+        collegeGroupService.deleteUser(email);
+        userProfileService.delete(email);
         userService.deleteAccount(savedUser);
 
         return ResponseEntity.ok(new AuthResponse(null, true, "Account deleted successfully"));

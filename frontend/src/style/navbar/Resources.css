@@ -1,0 +1,305 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.resource-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.resource-card-content{
+    padding: 40px;
+}
+
+/* Header Styles */
+.resource-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.resource-header h1 {
+  font-size: 2.5rem;
+  color: #333;
+}
+
+.resource-header-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.resource-header-button {
+  padding: 10px 20px;
+  background-color: #007bff !important;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.resource-header-button:hover {
+  background-color: #002bff !important;
+  color: white;
+}
+
+/* Search Bar */
+.resource-search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 20px;
+  width: 40%;
+  position: relative;
+  height: 40px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Resource List */
+.resource-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.resource-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.resource-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.resource-card h2 {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.resource-photo {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 100%;
+}
+
+/* Form Styles */
+.resource-form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  transition: border-color 0.3s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.form-textarea {
+  min-height: 100px;
+  resize: none;
+}
+
+/* Button Styles */
+.add-resource-button,
+.form-button,
+.card-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.add-resource-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.form-button {
+  background-color: #007bff;
+  color: white;
+  height: 45px;
+  width: 171px;
+}
+
+.usere-id {
+  display: flex;
+  gap: 10px;
+}
+
+.usere-id h2 {
+  margin-top: 5px;
+}
+
+.card-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.card-content h5 {
+  font-size: 1.5rem;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Modal Styles */
+.resource-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.resource-modal {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.resource-filters {
+  display: flex;
+  column-gap: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .resource-list {
+    grid-template-columns: 1fr;
+  }
+
+  .resource-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .resource-header-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.card-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  column-gap: 44.82%;
+}
+
+.cancel-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s ease;
+  height: 45px;
+  width: 100px;
+}
+
+.cancel-button:hover {
+  background-color: #c0392b;
+}
+
+/* New styles for select elements */
+.filter-input,
+select.form-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  transition: border-color 0.3s ease;
+  background-color: white;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7em top 50%;
+  background-size: 0.65em auto;
+}
+
+.filter-input:focus,
+select.form-input:focus {
+  outline: none;
+  border-color: #007bff;
+}

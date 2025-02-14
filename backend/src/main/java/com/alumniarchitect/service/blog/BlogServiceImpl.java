@@ -1,6 +1,7 @@
 package com.alumniarchitect.service.blog;
 
 import com.alumniarchitect.entity.Blog;
+import com.alumniarchitect.entity.User;
 import com.alumniarchitect.repository.BlogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,5 +49,18 @@ public class BlogServiceImpl implements BlogService {
 
         blogRepository.deleteById(id);
         return true;
+    }
+
+    @Override
+    public void deleteBlogsOfUser(String email) {
+        List<Blog> blogs = blogRepository.findByEmail(email);
+
+        if (blogs == null || blogs.isEmpty()) {
+            return;
+        }else {
+            while(!blogs.isEmpty()){
+                blogRepository.deleteById(blogs.get(0).getId());
+            }
+        }
     }
 }

@@ -1,0 +1,75 @@
+.user-suggestion-container {
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.scroll-btn {
+  background-color: #f3f3f3;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  font-size: 18px;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.scroll-btn:hover {
+  background-color: #ddd;
+}
+
+.profile-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
+  gap: 30px;
+  padding-bottom: 10px;
+  scrollbar-width: none;
+}
+
+.profile-card {
+  flex: 0 0 auto;
+  width: 180px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.profile-card:hover {
+  cursor: pointer;
+}
+
+.profile-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+
+.profile-name {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.profile-email {
+  font-size: 12px;
+  color: rgb(63, 63, 63);
+}
+
+.loading-text {
+  text-align: center;
+  font-size: 14px;
+  color: gray;
+  margin-top: 10px;
+}

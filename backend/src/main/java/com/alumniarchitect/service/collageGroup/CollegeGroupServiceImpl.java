@@ -1,6 +1,7 @@
 package com.alumniarchitect.service.collageGroup;
 
 import com.alumniarchitect.entity.CollegeGroup;
+import com.alumniarchitect.entity.User;
 import com.alumniarchitect.repository.CollegeGroupRepository;
 import com.alumniarchitect.service.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +43,14 @@ public class CollegeGroupServiceImpl implements CollegeGroupService {
     @Override
     public CollegeGroup findByCollegeName(String collageName) {
         return collegeGroupRepository.findByCollegeName(collageName);
+    }
+
+    @Override
+    public void deleteUser(String email) {
+        String collegeName = EmailService.extractCollegeName(email);
+        CollegeGroup group = collegeGroupRepository.findByCollegeName(collegeName);
+
+        group.getEmails().remove(email);
+        collegeGroupRepository.save(group);
     }
 }

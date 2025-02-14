@@ -1,6 +1,31 @@
-#homepage{
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
+#homepage {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.error-message {
+  color: red; /* Style for error messages */
+}
+
+.incomplete-profile-message {
+  display: flex; /* Flexbox for alignment */
+  justify-content: space-between; /* Space between text and icon */
+  align-items: center; /* Center vertically */
+  background-color: #f8d7da; /* Light red background */
+  color: #721c24; /* Dark red text */
+  padding: 10px; /* Padding around the message */
+  border-radius: 5px; /* Rounded corners */
+  margin-top: 15px; /* Space above the message */
+}
+
+.cancel-icon {
+  cursor: pointer; /* Pointer cursor for cancel icon */
+}
+
+.completion-message {
+  margin-top: 10px;
+  color: green;
+  font-weight: bold;
 }

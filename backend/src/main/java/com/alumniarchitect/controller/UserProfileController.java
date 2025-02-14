@@ -68,7 +68,7 @@ public class UserProfileController {
             userProfile.setEmail(email);
         }
 
-        Map data = this.userProfileService.uploadImage(file);
+        Map data = userProfileService.uploadImage(file);
         userProfile.setProfileImageUrl(data.get("secure_url").toString());
         userProfileService.createOrUpdateUserProfile(userProfile);
 
@@ -83,5 +83,16 @@ public class UserProfileController {
 
         UserProfile userProfile = userProfileService.findByEmail(email);
         return new ResponseEntity<>(userProfile.getProfileImageUrl(), HttpStatus.OK);
+    }
+
+    @GetMapping("/is-profile-complete/{email}")
+    public ResponseEntity<Boolean> isProfileComplete(@PathVariable String email) {
+        if(userProfileService.findByEmail(email) == null) {
+            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+        }
+
+        UserProfile userProfile = userProfileService.findByEmail(email);
+
+        return new ResponseEntity<>(userProfile.isComplete(), HttpStatus.OK);
     }
 }

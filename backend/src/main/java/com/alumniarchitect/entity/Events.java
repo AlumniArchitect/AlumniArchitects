@@ -6,22 +6,25 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-@Document(collection = "blog")
+@Document(collection = "events")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Blog {
+public class Events {
 
     @Id
     private String id;
     private String email;
-    private String author;
-    private String profileImageUrl;
-    private String title;
-    private String content;
-    private int upvote = 0;
-    private List<Map<String, String>> comments;
+    private String name;
+    private String date;
+    private String location;
+    private String description;
+    private String type;
+    private String category;
+    private String format;
+    private String imgUrl;
+    private List<String> registered = new ArrayList<>();
 }

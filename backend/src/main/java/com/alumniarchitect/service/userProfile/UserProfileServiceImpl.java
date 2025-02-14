@@ -2,6 +2,7 @@ package com.alumniarchitect.service.userProfile;
 
 import com.alumniarchitect.entity.UserProfile;
 import com.alumniarchitect.repository.UserProfileRepository;
+import com.alumniarchitect.service.user.UserService;
 import com.cloudinary.Cloudinary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,9 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Autowired
     private Cloudinary cloudinary;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public UserProfile findByEmail(String email) {
@@ -36,9 +40,13 @@ public class UserProfileServiceImpl implements UserProfileService {
 
         if (existingProfile == null) {
             existingProfile = new UserProfile();
+            userProfile.setFullName(userService.findByEmail(email).getFullName());
             existingProfile.setEmail(email);
         }
 
+        if(StringUtils.hasText(userProfile.getFullName())){
+            existingProfile.setFullName(userProfile.getFullName());
+        }
         if (StringUtils.hasText(userProfile.getProfileImageUrl())) {
             existingProfile.setProfileImageUrl(userProfile.getProfileImageUrl());
         }
@@ -60,7 +68,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         if (StringUtils.hasText(userProfile.getMobileNumber())) {
             existingProfile.setMobileNumber(userProfile.getMobileNumber());
         }
-        if (userProfile.getEducation() != null && !userProfile.getEducation().isEmpty()) {
+        if (userProfile.getEducation() != null) {
             existingProfile.setEducation(userProfile.getEducation());
         }
 
@@ -69,13 +77,12 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     private boolean isProfileComplete(UserProfile userProfile) {
-        return StringUtils.hasText(userProfile.getEmail()) &&
-                StringUtils.hasText(userProfile.getProfileImageUrl()) &&
+        return StringUtils.hasText(userProfile.getProfileImageUrl()) &&
                 StringUtils.hasText(userProfile.getResumeUrl()) &&
-                StringUtils.hasText(userProfile.getBio()) &&
+//                StringUtils.hasText(userProfile.getBio()) &&
                 userProfile.getSocialLinks() != null && !userProfile.getSocialLinks().isEmpty() &&
                 userProfile.getSkills() != null && !userProfile.getSkills().isEmpty() &&
-                StringUtils.hasText(userProfile.getLocation()) &&
+//                StringUtils.hasText(userProfile.getLocation()) &&
                 StringUtils.hasText(userProfile.getMobileNumber()) &&
                 userProfile.getEducation() != null && !userProfile.getEducation().isEmpty();
     }
@@ -83,9 +90,14 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public Map uploadImage(MultipartFile file) {
         try {
-            return this.cloudinary.uploader().upload(file.getBytes(), Map.of());
+            return cloudinary.uploader().upload(file.getBytes(), Map.of());
         } catch (Exception e) {
             throw new RuntimeException("Image uploading failed. Error : " + e.getMessage());
         }
+    }
+
+    @Override
+    public void delete(String email) {
+        userProfileRepository.delete(userProfileRepository.findByEmail(email));
     }
 }

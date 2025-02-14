@@ -1,5 +1,6 @@
 package com.alumniarchitect.service.userProfile;
 
+import com.alumniarchitect.entity.User;
 import com.alumniarchitect.entity.UserProfile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,4 +15,6 @@ public interface UserProfileService {
     UserProfile createOrUpdateUserProfile(UserProfile userProfile);
 
     Map uploadImage(MultipartFile file);
+
+    void delete(String email);
 }

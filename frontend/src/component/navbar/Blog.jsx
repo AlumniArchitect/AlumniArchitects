@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import "../../style/navbar/Blog.css";
+
 import {
   PenSquare,
   BookOpen,
@@ -8,6 +8,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { format } from "date-fns";
+import "../../style/navbar/Blog.css";
 import Constant from "../../utils/Constant.js";
 
 const BlogUI = () => {
@@ -23,7 +24,6 @@ const BlogUI = () => {
   const email = localStorage.getItem("email");
   const token = localStorage.getItem("jwt");
 
-  // Fetch All Blogs
   const fetchAllBlogs = useCallback(
     async (page = 1) => {
       setLoading(true);
@@ -47,7 +47,6 @@ const BlogUI = () => {
     [email, token]
   );
 
-  // Fetch My Blogs
   const fetchMyBlogs = useCallback(async () => {
     setLoading(true);
     try {
@@ -68,13 +67,11 @@ const BlogUI = () => {
     }
   }, [email, token]);
 
-  // Fetch blogs when the tab changes
   useEffect(() => {
     if (activeTab === "view") fetchAllBlogs(page);
     if (activeTab === "my-blogs") fetchMyBlogs();
   }, [fetchAllBlogs, fetchMyBlogs, activeTab, page]);
 
-  // Load more blogs when the user scrolls to the bottom
   const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop >=
@@ -99,6 +96,7 @@ const BlogUI = () => {
     const blog = {
       email: email,
       author: localStorage.getItem("fullName"),
+      profileImageUrl: localStorage.getItem("profileImageUrl"),
       title: newBlog.title,
       content: newBlog.content,
       upvote: 0,
@@ -125,47 +123,6 @@ const BlogUI = () => {
       console.error("Failed to create blog:", error);
     }
   };
-
-  const fetchBlogs = useCallback(
-    async (page = 1) => {
-      setLoading(true);
-      try {
-        const url =
-          activeTab === "my-blogs"
-            ? `${Constant.BASE_URL}/api/blog?email=${email}&page=${page}`
-            : `${Constant.BASE_URL}/api/suggest/blog/${email}/${page}`;
-
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || "Failed to fetch blogs");
-        }
-
-        const data = await response.json();
-
-        if (!Array.isArray(data)) {
-          console.error("Unexpected data format:", data);
-          return;
-        }
-
-        if (activeTab === "my-blogs") {
-          setMyBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
-        } else {
-          setAllBlogs((prev) => (page === 1 ? data : [...prev, ...data]));
-        }
-      } catch (error) {
-        console.error("Failed to fetch blogs:", error);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [activeTab, email, token]
-  );
 
   // Handle liking a blog
   const handleLike = async (blogId) => {
@@ -278,8 +235,10 @@ const BlogUI = () => {
   // Render create blog form
   const renderCreateBlog = () => (
     <div className="create-blog">
+      {/* Heading */}
       <h2 className="text-2xl font-bold mb-4">Create a New Blog Post</h2>
       <form onSubmit={handleCreateBlog}>
+        {/* Title Input */}
         <input
           type="text"
           value={newBlog.title}
@@ -290,6 +249,7 @@ const BlogUI = () => {
           className="textarea-field-title"
           required
         />
+        {/* Content Textarea */}
         <textarea
           value={newBlog.content}
           onChange={(e) =>
@@ -298,7 +258,8 @@ const BlogUI = () => {
           placeholder="Write your blog post here..."
           className="textarea-field-content"
           required
-        />
+        ></textarea>
+        {/* Publish Button */}
         <button type="submit" className="button">
           Publish Blog
         </button>
@@ -316,14 +277,21 @@ const BlogUI = () => {
         <div className="blog-card-footer">
           <div className="blog-card-author">
             <div className="blog-card-author-avatar">
-              <User className="w-5 h-5" />
+              {blog.profileImageUrl ? (
+                <img
+                  src={blog.profileImageUrl}
+                  alt="Author"
+                  className="blog-card-author-avatar"
+                />
+              ) : (
+                <User className="w-5 h-5" />
+              )}
             </div>
             <div className="blog-card-author-info">
               <span className="blog-card-author-name">{blog.author}</span>
               <span className="blog-card-author-role">Author</span>
             </div>
           </div>
-
           <div className="blog-card-stats">
             <button
               onClick={() => handleLike(blog.id)}

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Constant from "../../utils/Constant";
 import defaultProfileImage from "../../assets/userLogo.png";
 import "../../style/navbar/Profile.css";
+import { useLocation } from "react-router-dom";
+import UserSuggestion from "./UserSuggestion";
 
 const EducationCard = ({ education }) => {
   return (
@@ -15,24 +17,48 @@ const EducationCard = ({ education }) => {
 };
 
 const ProfilePage = () => {
+  const location = useLocation();
+  const email = location.state?.email || "No email found";
   const [isEditing, setIsEditing] = useState(false);
   const [userProfile, setUserProfile] = useState({
     name: "",
     profileImageUrl: defaultProfileImage,
   });
   const [user, setUser] = useState({
-    email: localStorage.getItem("email") || null,
+    email: email || null,
+    fullName: localStorage.getItem("fullName") || "N/A",
     mobileNumber: "+91",
     location: "",
-    education: [],
+    education: [], // Initialize as an empty array
     skills: [],
-    resumeUrl: localStorage.getItem("resumeUrl") || null,
-    profileImageUrl: localStorage.getItem("profileImageUrl") || defaultProfileImage,
+    resumeUrl: null,
+    profileImageUrl: defaultProfileImage,
     socialLinks: [],
   });
   const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   const [error, setError] = useState("");
+  const userEmail = localStorage.getItem("email");
   const jwt = localStorage.getItem("jwt");
+
+  const calculateProfileProgress = () => {
+    let completedFields = 0;
+    const totalFields = 6; 
+ 
+    if (user.fullName && user.fullName !== "N/A") completedFields++;
+    if (user.mobileNumber && user.mobileNumber !== "+91") completedFields++;
+    if (user.education && user.education.length > 0) completedFields++;
+    if (user.skills && user.skills.length > 0) completedFields++;
+    if (user.resumeUrl) completedFields++;
+    if (user.socialLinks && user.socialLinks.length > 0) completedFields++;
+ 
+    return Math.round((completedFields / totalFields) * 100); 
+  };
+ 
+  const profileProgress = calculateProfileProgress();
+ 
+  useEffect(() => {
+    localStorage.setItem("profileProgress", profileProgress);
+  }, [profileProgress]);
 
   const handleEducationChange = (index, field, value) => {
     const updatedEducation = [...user.education];
@@ -48,28 +74,36 @@ const ProfilePage = () => {
   };
 
   const handleRemoveEducation = (index) => {
+    if (!Array.isArray(user.education)) {
+      setUser({ ...user, education: [] }); // Ensure education is an array
+      return;
+    }
     const updatedEducation = user.education.filter((_, i) => i !== index);
     setUser({ ...user, education: updatedEducation });
   };
 
   useEffect(() => {
-    const email = localStorage.getItem("email");
-
     const fetchUserProfile = async () => {
       try {
-        const res = await fetch(`${Constant.BASE_URL}/api/userProfile/${user.email}`, {
+        const res = await fetch(`${Constant.BASE_URL}/api/userProfile/${email}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
         });
-
         if (!res.ok) throw new Error("Failed to fetch user profile");
-
         const data = await res.json();
-
         if (data.status) {
-          setUser((prevUser) => ({ ...prevUser, ...data.userProfile }));
+          setUser((prevUser) => ({
+            ...prevUser,
+            ...data.userProfile,
+            fullName: data.userProfile.fullName || "N/A",
+            education: data.userProfile.education || [], // Ensure education is an array
+          }));
+          setUserProfile((prev) => ({
+            ...prev,
+            name: data.userProfile.fullName || "N/A",
+          }));
         } else {
           showError(data.message);
         }
@@ -78,33 +112,10 @@ const ProfilePage = () => {
       }
     };
 
-    const fetchUserName = async () => {
-      try {
-        const res = await fetch(`${Constant.BASE_URL}/api/user/${email}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        });
-
-        if (!res.ok) throw new Error("Failed to fetch user profile");
-
-        const data = await res.json();
-        if (data.status) {
-          setUserProfile((prev) => ({ ...prev, name: data.user.fullName }));
-        } else {
-          showError("User name not found");
-        }
-      } catch (error) {
-        showError("Error fetching user name: " + error.message);
-      }
-    };
-
-    if (email && jwt) {
-      fetchUserName();
+    if (jwt) {
       fetchUserProfile();
     }
-  }, [user.email, jwt]);
+  }, [email, jwt]);
 
   const showError = (message) => {
     setError(message);
@@ -113,49 +124,57 @@ const ProfilePage = () => {
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
+
     if (!file) {
       showError("Please provide a file");
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      showError("Please upload an image file");
       return;
     }
 
     const formData = new FormData();
     formData.append("image", file);
 
-    try {
-      const response = await fetch(`${Constant.BASE_URL}/api/userProfile/uploadProfileImage/${user.email}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-        body: formData,
-      });
+    const response = await fetch(`${Constant.BASE_URL}/api/userProfile/uploadProfileImage/${email}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: formData,
+    });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to upload image");
-      }
-
-      const data = await response.json();
-      const imageUrl = data;
-
-      setUser((prevUser) => ({ ...prevUser, profileImageUrl: imageUrl }));
-      localStorage.setItem("profileImageUrl", imageUrl);
-
-    } catch (error) {
-      showError("Error uploading image: " + error.message);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to upload image");
     }
+
+    const data = await response.json();
+    const imageUrl = data;
+    console.log(imageUrl);
+
+    setUser((prevUser) => ({ ...prevUser, profileImageUrl: imageUrl }));
+    localStorage.setItem("profileImageUrl", imageUrl);
   };
 
   const handleSave = async () => {
     try {
+      const updatedUser = {
+        ...user,
+        fullName: userProfile.name || user.fullName,
+      };
+
       const res = await fetch(`${Constant.BASE_URL}/api/userProfile`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${jwt}`,
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify(updatedUser),
       });
+
       const data = await res.json();
       if (data.status) {
         alert("Profile updated successfully!");
@@ -170,12 +189,13 @@ const ProfilePage = () => {
 
   return (
     <div className={`profile-container ${isEditing ? "editing-mode" : ""}`}>
-      {/* error */}
+      {/* Error Message */}
       {error && <div className="error-message">{error}</div>}
 
+      {/* Sidebar */}
       <div className="profile-sidebar">
         <div className="profile-content">
-          {/* profile photo */}
+          {/* Profile Photo */}
           <div
             className="profile-photo"
             onClick={() => setShowPhotoOptions(true)}
@@ -192,7 +212,7 @@ const ProfilePage = () => {
             </label>
           )}
 
-          {/* user name */}
+          {/* User Name */}
           {isEditing ? (
             <input
               className="input-field"
@@ -204,10 +224,10 @@ const ProfilePage = () => {
             <h2 className="profile-name">{userProfile.name || "No name found"}</h2>
           )}
 
-          {/* email */}
+          {/* Email */}
           <p className="profile-email">{user.email || "No email found"}</p>
 
-          {/* mobile */}
+          {/* Mobile Number */}
           {isEditing ? (
             <input
               className="input-field"
@@ -219,7 +239,7 @@ const ProfilePage = () => {
             <p className="profile-info">{user.mobileNumber}</p>
           )}
 
-          {/* resume */}
+          {/* Resume URL */}
           {isEditing ? (
             <input
               className="input-field"
@@ -229,22 +249,25 @@ const ProfilePage = () => {
             />
           ) : (
             <div className="profile-info">
-              <a href={user.resumeUrl || "#"} target="_blank" rel="noopener noreferrer">Resume</a>
+              <a href={user.resumeUrl || "#"} target="_blank" rel="noopener noreferrer">
+                Resume
+              </a>
             </div>
           )}
 
-          {/* save and edit button */}
-          <button className="edit-btn" onClick={isEditing ? handleSave : () => setIsEditing(true)}>
-            {isEditing ? "Save" : "Edit"}
-          </button>
+          {/* Save/Edit Button */}
+          {userEmail === email && (
+            <button className="edit-btn" onClick={isEditing ? handleSave : () => setIsEditing(true)}>
+              {isEditing ? "Save" : "Edit"}
+            </button>
+          )}
         </div>
-
-        {/* Education, Skill, Link */}
       </div>
-      <div className="profile-main">
-        <div className="profile-section">
 
-          {/* education */}
+      {/* Main Content */}
+      <div className="profile-main">
+        {/* Education Section */}
+        <div className="profile-section">
           <h3 className="section-title">Education</h3>
           {isEditing ? (
             <div>
@@ -294,14 +317,19 @@ const ProfilePage = () => {
           )}
         </div>
 
-        {/* skills */}
+        {/* Skills Section */}
         <div className="profile-section">
           <h3 className="section-title">Skills</h3>
           {isEditing ? (
             <input
               className="input-field"
               value={user.skills?.join(", ") || ""}
-              onChange={(e) => setUser({ ...user, skills: e.target.value.split(",").map((s) => s.trim().toUpperCase()) })}
+              onChange={(e) =>
+                setUser({
+                  ...user,
+                  skills: e.target.value.split(",").map((s) => s.trim().toUpperCase()),
+                })
+              }
             />
           ) : user.skills?.length > 0 ? (
             <div className="skills-container">
@@ -316,7 +344,7 @@ const ProfilePage = () => {
           )}
         </div>
 
-        {/* links */}
+        {/* Social Links Section */}
         <div className="profile-section">
           <h3 className="section-title">Social Links</h3>
           {isEditing ? (
@@ -324,7 +352,12 @@ const ProfilePage = () => {
               className="input-field"
               placeholder="Enter social links (comma separated)"
               value={user.socialLinks?.join(", ") || ""}
-              onChange={(e) => setUser({ ...user, socialLinks: e.target.value.split(",").map((s) => s.trim()) })}
+              onChange={(e) =>
+                setUser({
+                  ...user,
+                  socialLinks: e.target.value.split(",").map((s) => s.trim()),
+                })
+              }
             />
           ) : user.socialLinks?.length > 0 ? (
             <ul className="social-links">
@@ -340,6 +373,9 @@ const ProfilePage = () => {
             <p>No social links added</p>
           )}
         </div>
+
+        {/* User Suggestions */}
+        <UserSuggestion email={email} />
       </div>
     </div>
   );
