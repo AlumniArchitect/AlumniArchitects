@@ -101,10 +101,6 @@ public class AuthController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-//        if (EmailService.isValidCollegeEmail(admin.getEmail()) && Character.isDigit(admin.getEmail().charAt(0))) {
-//            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
-//        }
-
         String otp = OTPUtils.generateOTP();
         otpStorage.put(admin.getEmail(), otp);
 
@@ -201,16 +197,26 @@ public class AuthController {
     }
 
     @PostMapping("/admin/signin")
-    public ResponseEntity<Boolean> adminSignin(@RequestBody() AuthRequest authRequest, HttpServletRequest request) {
+    public ResponseEntity<AuthResponse> adminSignin(@RequestBody() AuthRequest authRequest) {
         Admin admin = adminService.findAdminByEmail(authRequest.getEmail());
 
         if(admin == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AuthResponse(null, false, "Admin not found"));
         }
 
         boolean val = passwordEncoder.matches(authRequest.getPassword(), admin.getPassword());
 
-       return new ResponseEntity<>(val, HttpStatus.OK);
+        if(!val) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AuthResponse(null, false, "Invalid credentials"));
+        }
+
+        Authentication auth = authenticate(admin.getEmail(), authRequest.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        String jwt = JwtProvider.generateToken(auth);
+        return ResponseEntity.ok(new AuthResponse(jwt, true, "Admin authenticated successfully"));
     }
 
     @PostMapping("/user/signin")
@@ -222,18 +228,23 @@ public class AuthController {
         }
 
         User user = userService.findByEmail(authRequest.getEmail());
+        if(user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AuthResponse(null, false, "User not found"));
+        }
 
         boolean val = passwordEncoder.matches(authRequest.getPassword(), user.getPassword());
 
         if(!val) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AuthResponse(null, false, "Invalid credentials"));
         }
 
         Authentication auth = authenticate(user.getEmail(), authRequest.getPassword());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         String jwt = JwtProvider.generateToken(auth);
-        return new ResponseEntity<>(new AuthResponse(jwt, true, "user"), HttpStatus.OK);
+        return ResponseEntity.ok(new AuthResponse(jwt, true, "User authenticated successfully"));
     }
 
     private Authentication authenticate(String email, String password) {
