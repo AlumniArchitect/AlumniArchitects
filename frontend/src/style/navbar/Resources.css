@@ -12,8 +12,11 @@ body {
   margin: 0 auto;
   padding: 20px;
 }
-.resource-card-content{
-    padding: 40px;
+.card-content{
+    padding: 10px;
+}
+.card-content h4{
+  padding: 5px;
 }
 
 /* Header Styles */
@@ -159,6 +162,7 @@ body {
 .add-resource-button {
   background-color: #28a745;
   color: white;
+  margin-bottom: 10px;
 }
 
 .form-button {
@@ -168,13 +172,14 @@ body {
   width: 171px;
 }
 
-.usere-id {
+.user-id {
   display: flex;
   gap: 10px;
 }
 
-.usere-id h2 {
+.user-id h2 {
   margin-top: 5px;
+  font-size: 20px;
 }
 
 .card-button {
@@ -193,11 +198,13 @@ body {
 
 .card-content h5 {
   font-size: 1.5rem;
+  padding:5px;
 }
 
 .delete-button {
   background-color: #dc3545;
   color: white;
+  
 }
 
 /* Modal Styles */
@@ -227,6 +234,10 @@ body {
 .resource-filters {
   display: flex;
   column-gap: 10px;
+}
+
+.card-content .description{
+  padding: 5px ;
 }
 
 /* Responsive Design */

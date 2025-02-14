@@ -14,6 +14,7 @@ export default function EventPage() {
   const [registeredEvents, setRegisteredEvents] = useState([]);
   const [view, setView] = useState("all");
   const [filters, setFilters] = useState({
+    search: "",
     category: "",
     type: "",
     format: "",
@@ -82,6 +83,13 @@ export default function EventPage() {
       filtered = filtered.filter((event) => event.email !== userEmail);
     }
 
+    if(filters.search) {
+      console.log("In search");
+      
+      filtered = filtered.filter((event) => event.description.toLowerCase().includes(search.toLowerCase()));
+      filtered = filtered.filter((event) => event.name.toLowerCase().includes(search.toLowerCase()));
+    }
+
     if (filters.category) {
       filtered = filtered.filter((event) => event.category === filters.category);
     }
@@ -99,7 +107,7 @@ export default function EventPage() {
     }
 
     setFilteredEvents(filtered);
-  }, [events, view, filters, userEmail]);
+  }, [events, view, filters, userEmail, search]);
 
   const handleAddOrUpdateEvent = async (e) => {
     e.preventDefault();
@@ -238,6 +246,11 @@ export default function EventPage() {
     setShowRegistered(false);
   };
 
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+    handleFilterChange("search", search)
+  }
+
   return (
     <div className="container">
       <div className="header">
@@ -263,7 +276,7 @@ export default function EventPage() {
           type="text"
           placeholder="Search events..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={handleSearch}
           className="search-box"
         />
       </div>

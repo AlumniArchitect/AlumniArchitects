@@ -337,6 +337,10 @@ body {
   font-size: var(--font-size-normal);
 }
 
+.remove-btn{
+  margin-bottom: 10px;
+}
+
 .add-btn:hover,
 .remove-btn:hover {
   background-color: #0056b3;
