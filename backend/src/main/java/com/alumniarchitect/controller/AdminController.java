@@ -1,9 +1,12 @@
 package com.alumniarchitect.controller;
 
 import com.alumniarchitect.entity.Admin;
+import com.alumniarchitect.entity.UnverifiedUser;
 import com.alumniarchitect.service.admin.AdminService;
 import com.alumniarchitect.service.cloudinary.CloudinaryService;
 import com.alumniarchitect.service.email.EmailService;
+import com.alumniarchitect.service.unverifiedUser.UnverifiedUserService;
+import com.alumniarchitect.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,10 @@ public class AdminController {
 
     @Autowired
     private CloudinaryService cloudinaryService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UnverifiedUserService unverifiedUserService;
 
     @PostMapping
     public ResponseEntity<Boolean> addAdmin(@RequestBody Admin admin) {
@@ -80,6 +87,24 @@ public class AdminController {
     @PutMapping("/{adminEmail}/moderators")
     public void updateModerators(@PathVariable String adminEmail, @RequestBody List<String> moderators) {
         adminService.updateModerators(adminEmail, moderators);
+    }
+
+    @PostMapping("{adminEmail}/verified/{alumniEmail")
+    public ResponseEntity<Boolean> verified(@PathVariable String adminEmail, @PathVariable String alumniEmail) {
+        Admin admin = adminService.findAdminByEmail(adminEmail);
+
+        if (admin == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        UnverifiedUser unverifiedUser = unverifiedUserService.findByEmail(alumniEmail);
+        userService.saveUser(unverifiedUser.getUser());
+
+        unverifiedUserService.deleteUnverifiedUser(unverifiedUser);
+        admin.getUnverifiedAlumni().remove(alumniEmail);
+        adminService.addAdmin(admin);
+
+        return new ResponseEntity<>(true, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{adminEmail}/unverified-alumni/{userEmail}")

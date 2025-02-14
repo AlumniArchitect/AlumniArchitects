@@ -1,5 +1,6 @@
 package com.alumniarchitect.controller;
 
+import com.alumniarchitect.entity.UnverifiedUser;
 import com.alumniarchitect.entity.User;
 import com.alumniarchitect.enums.USER_TYPE;
 import com.alumniarchitect.request.auth.AuthRequest;
@@ -8,6 +9,7 @@ import com.alumniarchitect.response.auth.AuthResponse;
 import com.alumniarchitect.service.blog.BlogService;
 import com.alumniarchitect.service.collageGroup.CollegeGroupService;
 import com.alumniarchitect.service.skills.SkillsService;
+import com.alumniarchitect.service.unverifiedUser.UnverifiedUserService;
 import com.alumniarchitect.service.user.CustomUserDetailService;
 import com.alumniarchitect.service.email.EmailService;
 import com.alumniarchitect.service.user.UserService;
@@ -58,6 +60,8 @@ public class AuthController {
 
     @Autowired
     private SkillsService skillsService;
+    @Autowired
+    private UnverifiedUserService unverifiedUserService;
 
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> signup(@RequestBody User user) throws Exception {
@@ -126,14 +130,16 @@ public class AuthController {
     private ResponseEntity<AuthResponse> handleUserVerification(User user, String email) {
         if(user.getType().equals(USER_TYPE.STUDENT)) {
             user.setVerified(true);
+            userService.saveUser(user);
+
+            Authentication auth = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
+            String jwt = JwtProvider.generateToken(auth);
+
+            return ResponseEntity.ok(new AuthResponse(jwt, true, "Registration successful"));
         }
-        userService.saveUser(user);
         otpStorage.remove(email);
-
-        Authentication auth = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        String jwt = JwtProvider.generateToken(auth);
 
         try {
             collegeGroupService.groupEmail(email);
@@ -141,7 +147,16 @@ public class AuthController {
             return ResponseEntity.internalServerError().body(new AuthResponse(null, false, e.getMessage()));
         }
 
-        return ResponseEntity.ok(new AuthResponse(jwt, true, "Registration successful"));
+        try{
+            if(unverifiedUserService.findByEmail(email) != null) {
+                return new ResponseEntity<>(new AuthResponse(null, false, "Verification is in process"), HttpStatus.BAD_REQUEST);
+            }
+            unverifiedUserService.addUnverifiedUser(new UnverifiedUser(email, user));
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().body(new AuthResponse(null, false, e.getMessage()));
+        }
+
+        return new ResponseEntity<>(new AuthResponse(null, true, "User verification sent."), HttpStatus.OK);
     }
 
     @PostMapping("/signin")
