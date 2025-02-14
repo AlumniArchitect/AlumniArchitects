@@ -2,14 +2,12 @@ package com.alumniarchitect.service.userProfile;
 
 import com.alumniarchitect.entity.UserProfile;
 import com.alumniarchitect.repository.UserProfileRepository;
+import com.alumniarchitect.service.cloudinary.CloudinaryService;
 import com.alumniarchitect.service.user.UserService;
-import com.cloudinary.Cloudinary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Map;
 
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
@@ -18,7 +16,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     private UserProfileRepository userProfileRepository;
 
     @Autowired
-    private Cloudinary cloudinary;
+    private CloudinaryService cloudinaryService;
 
     @Autowired
     private UserService userService;
@@ -81,9 +79,9 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public Map uploadImage(MultipartFile file) {
+    public String uploadImage(MultipartFile file) {
         try {
-            return cloudinary.uploader().upload(file.getBytes(), Map.of());
+            return cloudinaryService.uploadImg(file);
         } catch (Exception e) {
             throw new RuntimeException("Image uploading failed. Error : " + e.getMessage());
         }

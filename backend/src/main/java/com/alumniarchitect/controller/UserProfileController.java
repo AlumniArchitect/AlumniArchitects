@@ -68,11 +68,11 @@ public class UserProfileController {
             userProfile.setEmail(email);
         }
 
-        Map data = userProfileService.uploadImage(file);
-        userProfile.setProfileImageUrl(data.get("secure_url").toString());
+        String img = userProfileService.uploadImage(file);
+        userProfile.setProfileImageUrl(img);
         userProfileService.createOrUpdateUserProfile(userProfile);
 
-        return new ResponseEntity<>(data.get("secure_url").toString(), HttpStatus.OK);
+        return new ResponseEntity<>(img, HttpStatus.OK);
     }
 
     @GetMapping("/getProfileImage/{email}")
