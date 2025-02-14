@@ -1,9 +1,10 @@
 package com.alumniarchitect.controller.algo;
 
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Re
+@RequestMapping("api/analytics")
 public class Analytics {
 
 
