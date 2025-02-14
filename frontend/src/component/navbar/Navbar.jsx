@@ -6,7 +6,10 @@ import {
   FaCog,
   FaSignOutAlt,
   FaExclamationCircle,
+  FaBloggerB,
 } from "react-icons/fa";
+import { RiCalendarEventFill } from "react-icons/ri";
+import { IoLibrary } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import "../../style/navbar/Navbar.css";
 import Constant from "../../utils/Constant.js";
@@ -225,12 +228,12 @@ export default function Navbar() {
               <li onClick={handleProfileClick}>
                 <FaUserCircle /> &nbsp; Profile
               </li>
-              <li>Option 1</li>
-              <li onClick={handleEventClick}>Event</li>
-              <li onClick={handleBlogClick}>Blog</li>
-              <li onClick={handleResourceClick}>Resource Library</li>
-              <li>Option 5</li>
-              <li>Option 6</li>
+              <li onClick={handleEventClick}>
+              <RiCalendarEventFill />  &nbsp; Event</li>
+              <li onClick={handleBlogClick}>
+              <FaBloggerB /> &nbsp; Blog</li>
+              <li onClick={handleResourceClick}>
+              <IoLibrary /> &nbsp; Resource Library</li>
               <hr />
               <li onClick={handleSettingClick}>
                 <FaCog /> &nbsp; Settings
