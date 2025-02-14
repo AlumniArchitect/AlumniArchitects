@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-
+import { useNavigate } from "react-router-dom";
 import {
   PenSquare,
   BookOpen,
@@ -20,9 +20,16 @@ const BlogUI = () => {
   const [activeBlogId, setActiveBlogId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const navigate = useNavigate();
 
   const email = localStorage.getItem("email");
   const token = localStorage.getItem("jwt");
+
+  useEffect(() => {
+    if (localStorage.getItem("jwt") == null) {
+      navigate("/signin");
+    }
+  }, [navigate]);
 
   const fetchAllBlogs = useCallback(
     async (page = 1) => {
@@ -75,7 +82,7 @@ const BlogUI = () => {
   const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight - 100 &&
+      document.documentElement.offsetHeight - 100 &&
       !loading
     ) {
       setPage((prevPage) => prevPage + 1);

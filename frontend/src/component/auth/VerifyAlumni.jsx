@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Constant from "../../utils/Constant"; 
-import "../../style/auth/VerifyAlumni.css"; 
+import Constant from "../../utils/Constant";
+import "../../style/auth/VerifyAlumni.css";
 
 const VerifyIdProof = () => {
   const [image, setImage] = useState(null);
@@ -19,26 +19,40 @@ const VerifyIdProof = () => {
     }
 
     setLoading(true);
-    setMessage(""); 
-    setError(""); 
+    setMessage("");
+    setError("");
 
     try {
       const formData = new FormData();
-      formData.append("image", image);
+      formData.append("file", image);
 
-      const URL = `${Constant.BASE_URL}/api/adminauth/upload-id-proof`; 
+      const jwt = localStorage.getItem("jwt");
+      if (!jwt) {
+        setError("You are not authenticated. Please log in.");
+        return;
+      }
+
+      const email = localStorage.getItem("email");
+      if (!email) {
+        setError("Email not found. Please log in again.");
+        return;
+      }
+
+      const URL = `${Constant.BASE_URL}/upload-verification-img/${email}`;
+
       const res = await fetch(URL, {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
         body: formData,
       });
 
-      const result = await res.json();
-
-      if (result.status) {
-        setMessage("Your request has been sent to the admin for approval.");
-       
+      if (res.ok) {
+        setMessage("Your ID proof has been uploaded successfully. Admin will verify it shortly.");
         setImage(null);
       } else {
+        const result = await res.json();
         setError(result.message || "Error uploading image.");
       }
     } catch (e) {
