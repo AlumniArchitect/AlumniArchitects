@@ -1,4 +1,4 @@
-package com.alumniarchitect.controller;
+package com.alumniarchitect.controller.user;
 
 import com.alumniarchitect.entity.UnverifiedUser;
 import com.alumniarchitect.entity.User;

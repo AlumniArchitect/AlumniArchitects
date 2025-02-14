@@ -1,4 +1,4 @@
-package com.alumniarchitect.controller;
+package com.alumniarchitect.controller.user;
 
 import com.alumniarchitect.entity.UserProfile;
 import com.alumniarchitect.response.api.UserProfileResponse;
@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/userProfile")

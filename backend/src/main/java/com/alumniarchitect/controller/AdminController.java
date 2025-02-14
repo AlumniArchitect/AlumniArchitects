@@ -89,7 +89,7 @@ public class AdminController {
         adminService.updateModerators(adminEmail, moderators);
     }
 
-    @PostMapping("{adminEmail}/verified/{alumniEmail")
+    @PostMapping("{adminEmail}/verified/{alumniEmail}")
     public ResponseEntity<Boolean> verified(@PathVariable String adminEmail, @PathVariable String alumniEmail) {
         Admin admin = adminService.findAdminByEmail(adminEmail);
 
