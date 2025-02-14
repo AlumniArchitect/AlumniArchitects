@@ -12,6 +12,7 @@ import SplashScreen from './component/SplashScreen.jsx';
 import EventsPage from './component/navbar/EventPage.jsx';
 import Resource from './component/navbar/Resources.jsx';
 import VerifyIdProof from './component/auth/VerifyAlumni.jsx';
+import AdminPanel from './component/Admin/AdminPanel.jsx';
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
       <Route path="/event" element={<EventsPage />} />
       <Route path="/resource" element={<Resource />} />
       <Route path='/verifyalumni' element={<VerifyIdProof/>} />
+      <Route path='/adminpanel' element={<AdminPanel />} />
     </Routes>
      </>
   );

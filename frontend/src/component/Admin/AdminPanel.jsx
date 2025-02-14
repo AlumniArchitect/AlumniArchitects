@@ -1,6 +1,8 @@
 import "../../style/Admin/AdminPanel.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import ImageSlider from "../HomePage/ImageSlider";
+import Chart from "react-apexcharts";
 
 const AdminPanel = () => {
   const [homepageImages, setHomepageImages] = useState([]);
@@ -8,7 +10,6 @@ const AdminPanel = () => {
   const [alumni, setAlumni] = useState([]);
   const [students, setStudents] = useState([]);
   const [events, setEvents] = useState([]);
-
   const navigate = useNavigate();
 
   // Generic fetch function to avoid code duplication
@@ -31,95 +32,127 @@ const AdminPanel = () => {
     fetchData("/api/events", setEvents);
   }, []);
 
-  const handleImageUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  // Mock data for charts
+  const studentData = [
+    { year: 2018, count: 50 },
+    { year: 2019, count: 70 },
+    { year: 2020, count: 100 },
+    { year: 2021, count: 120 },
+    { year: 2022, count: 150 },
+  ];
 
-    const formData = new FormData();
-    formData.append("image", file);
+  const alumniData = [
+    { year: 2018, count: 30 },
+    { year: 2019, count: 40 },
+    { year: 2020, count: 60 },
+    { year: 2021, count: 80 },
+    { year: 2022, count: 100 },
+  ];
 
-    try {
-      const response = await fetch("/api/upload-image", {
-        method: "POST",
-        body: formData,
-      });
+   const totalStudents = 100;
+   const totalAlumni = 50;
 
-      if (!response.ok) throw new Error("Failed to upload image");
+   // Chart options for Histogram
+   const histogramOptions = {
+     chart: {
+       type: 'bar',
+       height: '400',
+     },
+     xaxis: {
+       categories: studentData.map(data => data.year),
+     },
+     plotOptions: {
+       bar: {
+         horizontal: false,
+         endingShape: 'rounded',
+         columnWidth: '70%',
+       }
+     },
+     dataLabels: {
+       enabled: true,
+     }
+   };
 
-      const newImage = await response.json();
-      setHomepageImages((prevImages) => [...prevImages, newImage]);
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    }
-  };
+   // Series data for Histogram
+   const histogramSeries = [{
+     name: 'Students',
+     data: studentData.map(data => data.count),
+   },
+   {
+     name: 'Alumni',
+     data: alumniData.map(data => data.count),
+   }];
 
-  return (
-    <div className="admin-panel">
-      <h1>Admin Panel</h1>
-      <div className="sections">
-        {/* Homepage Customization */}
-        <div className="section">
-          <h2>Homepage Images</h2>
-          <input type="file" onChange={handleImageUpload} />
-          <div className="image-grid">
-            {homepageImages.map((image, index) => (
-              <img key={index} src={image.url} alt={`Homepage Image ${index}`} />
-            ))}
-          </div>
-        </div>
+   // Series data for Pie Chart
+   const pieChartSeries = [totalStudents, totalAlumni];
 
-        {/* Moderator Management */}
-        <div className="section">
-          <h2>Moderators</h2>
-          <button onClick={() => navigate("/add-moderator")}>
-            Add Moderator
-          </button>
-          <div className="moderator-list">
-            {moderators.map((moderator, index) => (
-              <div key={index}>{moderator.name}</div>
-            ))}
-          </div>
-        </div>
+   // Chart options for Pie Chart
+   const pieChartOptions = {
+       chart: {
+           type: 'donut',
+       },
+       labels: ['Students', 'Alumni'],
+       dataLabels: {
+           enabled: true,
+           formatter: (val, opts) => {
+               return opts.w.globals.series[opts.seriesIndex]; // Show absolute numbers
+           }
+       },
+       plotOptions: {
+           pie: {
+               donut: {
+                   size: '60%', // Adjust size as needed
+               }
+           }
+       },
+   };
 
-        {/* User Management */}
-        <div className="section">
-          <h2>Alumni</h2>
-          <div className="user-list">
-            {alumni.map((alumnus, index) => (
-              <div key={index}>{alumnus.name}</div>
-            ))}
-          </div>
-        </div>
-        <div className="section">
-          <h2>Students</h2>
-          <div className="user-list">
-            {students.map((student, index) => (
-              <div key={index}>{student.name}</div>
-            ))}
-          </div>
-        </div>
+   return (
+     <div className="admin-panel">
+       {/* Navbar */}
+       <nav className="navbar">
+         <div className="navbar-title">Admin Panel</div>
+         <div className="navbar-links">
+           <button onClick={() => navigate("/event")}>Add Event</button>
+           <button onClick={() => navigate("/view-students")}>
+             View All Student Details
+           </button>
+           <button onClick={() => navigate("/view-alumni-requests")}>
+             View Alumni Requests
+           </button>
+         </div>
+       </nav>
 
-        {/* Event Management */}
-        <div className="section">
-          <h2>Events</h2>
-          <button onClick={() => navigate("/create-event")}>Create Event</button>
-          <div className="event-list">
-            {events.map((event, index) => (
-              <div key={index}>{event.name}</div>
-            ))}
-          </div>
-        </div>
+       {/* Carousel Section */}
+       <section className="carousel-section">
+         <h2>Featured Content</h2>
+         <ImageSlider url={"https://picsum.photos/v2/list"} page={'1'} limit={"10"} />
+       </section>
 
-        {/* Payment Gateway */}
-        <div className="section">
-          <h2>Payment Gateway</h2>
-          <button onClick={() => navigate("/payment-settings")}>
-            Configure Payment
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+       {/* Statistics Section */}
+       <section className="statistics-section">
+         <div className="histogram-container">
+           <h3>Yearly Growth</h3>
+           <Chart options={histogramOptions} series={histogramSeries} type="bar" height={400} />
+         </div>
+
+         <div className="piechart-container">
+           <h3>Total Users</h3>
+           <Chart options={pieChartOptions} series={pieChartSeries} type="donut" height={350} />
+           <div className="piechart-legend">
+             <div>
+               <span className="legend-dot" style={{ backgroundColor: "#007bff" }}></span>
+               Students: {totalStudents}
+             </div>
+             <div>
+               <span className="legend-dot" style={{ backgroundColor: "#28a745" }}></span>
+               Alumni: {totalAlumni}
+             </div>
+           </div>
+         </div>
+       </section>
+     </div>
+   );
 };
 
 export default AdminPanel;
