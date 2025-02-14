@@ -1,6 +1,7 @@
 package com.alumniarchitect.service.user;
 
 import com.alumniarchitect.entity.User;
+import com.alumniarchitect.enums.USER_TYPE;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,6 +13,8 @@ public interface UserService {
     User findByEmail(String email);
 
     void deleteAccount(User savedUser);
+
+    List<User> findUserByType(USER_TYPE type);
 
     List<User> findAll();
 

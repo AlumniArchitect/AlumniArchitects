@@ -1,6 +1,7 @@
 package com.alumniarchitect.controller;
 
 import com.alumniarchitect.entity.User;
+import com.alumniarchitect.enums.USER_TYPE;
 import com.alumniarchitect.request.auth.AuthRequest;
 import com.alumniarchitect.request.verificaton.VerifyOtpRequest;
 import com.alumniarchitect.response.auth.AuthResponse;
@@ -65,7 +66,7 @@ public class AuthController {
                     .body(new AuthResponse(null, false, "Email is already in use"));
         }
 
-        if(!EmailService.isValidCollegeEmail(user.getEmail())) {
+        if(user.getType().equals(USER_TYPE.STUDENT) && !EmailService.isValidCollegeEmail(user.getEmail())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new AuthResponse(null, false, "Provided email is invalid"));
         }
@@ -123,7 +124,9 @@ public class AuthController {
     }
 
     private ResponseEntity<AuthResponse> handleUserVerification(User user, String email) {
-        user.setVerified(true);
+        if(user.getType().equals(USER_TYPE.STUDENT)) {
+            user.setVerified(true);
+        }
         userService.saveUser(user);
         otpStorage.remove(email);
 
