@@ -77,13 +77,12 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     private boolean isProfileComplete(UserProfile userProfile) {
-        return StringUtils.hasText(userProfile.getEmail()) &&
-                StringUtils.hasText(userProfile.getProfileImageUrl()) &&
+        return StringUtils.hasText(userProfile.getProfileImageUrl()) &&
                 StringUtils.hasText(userProfile.getResumeUrl()) &&
-                StringUtils.hasText(userProfile.getBio()) &&
+//                StringUtils.hasText(userProfile.getBio()) &&
                 userProfile.getSocialLinks() != null && !userProfile.getSocialLinks().isEmpty() &&
                 userProfile.getSkills() != null && !userProfile.getSkills().isEmpty() &&
-                StringUtils.hasText(userProfile.getLocation()) &&
+//                StringUtils.hasText(userProfile.getLocation()) &&
                 StringUtils.hasText(userProfile.getMobileNumber()) &&
                 userProfile.getEducation() != null && !userProfile.getEducation().isEmpty();
     }

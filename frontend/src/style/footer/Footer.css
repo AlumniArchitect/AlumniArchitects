@@ -49,8 +49,9 @@
   transition: color 0.3s;
 }
 
-.footer-links a:hover {
+.footer-links li:hover {
   color: white;
+  cursor: pointer;
 }
 
 .footer-socials {
