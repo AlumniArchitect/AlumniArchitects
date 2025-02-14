@@ -1,76 +1,124 @@
-// AdminPanel.js
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-import Dashboard from './Dashboard';
-import HomepageManagement from './HomepageManagement';
-import UserManagement from './UserManagement';
-import EventOrganization from './EventOrganization';
-import PaymentGatewayDetails from './PaymentGatewayDetails';
-import Constant from '../../utils/Constant'; // Adjust the path as needed
-import './AdminPanel.css'; // Import your CSS file for styling
+import "../../style/Admin/AdminPanel.css";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AdminPanel = () => {
-  const [admin, setAdmin] = useState(null);
-  const jwt = localStorage.getItem('jwt'); // Retrieve JWT token
-  const adminEmail = localStorage.getItem('email');
+  const [homepageImages, setHomepageImages] = useState([]);
+  const [moderators, setModerators] = useState([]);
+  const [alumni, setAlumni] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [events, setEvents] = useState([]);
+
+  const navigate = useNavigate();
+
+  // Generic fetch function to avoid code duplication
+  const fetchData = async (url, setter) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`Failed to fetch data from ${url}`);
+      const data = await response.json();
+      setter(data);
+    } catch (error) {
+      console.error(`Error fetching data:`, error);
+    }
+  };
 
   useEffect(() => {
-    const fetchAdminData = async () => {
-      try {
-        const response = await fetch(`${Constant.BASE_URL}/api/admin/by-email?email=${adminEmail}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${jwt}`, // Include JWT token in the header
-          },
-        });
+    fetchData("/api/homepage-images", setHomepageImages);
+    fetchData("/api/moderators", setModerators);
+    fetchData("/api/alumni", setAlumni);
+    fetchData("/api/students", setStudents);
+    fetchData("/api/events", setEvents);
+  }, []);
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch admin data: ${response.status}`);
-        }
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-        const adminData = await response.json();
-        setAdmin(adminData);
-      } catch (error) {
-        console.error('Error fetching admin data:', error);
-        // Handle error (e.g., display an error message)
-      }
-    };
+    const formData = new FormData();
+    formData.append("image", file);
 
-    fetchAdminData();
-  }, [jwt]);
+    try {
+      const response = await fetch("/api/upload-image", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Failed to upload image");
+
+      const newImage = await response.json();
+      setHomepageImages((prevImages) => [...prevImages, newImage]);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
 
   return (
-    <Router>
-      <div className="admin-panel">
-        <aside className="sidebar">
-          <h2>Admin Panel</h2>
-          <nav>
-            <ul>
-              <li><Link to="/dashboard">Dashboard</Link></li>
-              <li><Link to="/homepage">Homepage Management</Link></li>
-              <li><Link to="/users">User Management</Link></li>
-              <li><Link to="/events">Event Organization</Link></li>
-              <li><Link to="/payments">Payment Gateway Details</Link></li>
-            </ul>
-          </nav>
-        </aside>
+    <div className="admin-panel">
+      <h1>Admin Panel</h1>
+      <div className="sections">
+        {/* Homepage Customization */}
+        <div className="section">
+          <h2>Homepage Images</h2>
+          <input type="file" onChange={handleImageUpload} />
+          <div className="image-grid">
+            {homepageImages.map((image, index) => (
+              <img key={index} src={image.url} alt={`Homepage Image ${index}`} />
+            ))}
+          </div>
+        </div>
 
-        <main className="main-content">
-          <Switch>
-            <Route path="/dashboard">
-              <Dashboard admin={admin} />
-            </Route>
-            <Route path="/homepage" component={HomepageManagement} />
-            <Route path="/users">
-              <UserManagement admin={admin} jwt={jwt} />
-            </Route>
-            <Route path="/events" component={EventOrganization} />
-            <Route path="/payments" component={PaymentGatewayDetails} />
-          </Switch>
-        </main>
+        {/* Moderator Management */}
+        <div className="section">
+          <h2>Moderators</h2>
+          <button onClick={() => navigate("/add-moderator")}>
+            Add Moderator
+          </button>
+          <div className="moderator-list">
+            {moderators.map((moderator, index) => (
+              <div key={index}>{moderator.name}</div>
+            ))}
+          </div>
+        </div>
+
+        {/* User Management */}
+        <div className="section">
+          <h2>Alumni</h2>
+          <div className="user-list">
+            {alumni.map((alumnus, index) => (
+              <div key={index}>{alumnus.name}</div>
+            ))}
+          </div>
+        </div>
+        <div className="section">
+          <h2>Students</h2>
+          <div className="user-list">
+            {students.map((student, index) => (
+              <div key={index}>{student.name}</div>
+            ))}
+          </div>
+        </div>
+
+        {/* Event Management */}
+        <div className="section">
+          <h2>Events</h2>
+          <button onClick={() => navigate("/create-event")}>Create Event</button>
+          <div className="event-list">
+            {events.map((event, index) => (
+              <div key={index}>{event.name}</div>
+            ))}
+          </div>
+        </div>
+
+        {/* Payment Gateway */}
+        <div className="section">
+          <h2>Payment Gateway</h2>
+          <button onClick={() => navigate("/payment-settings")}>
+            Configure Payment
+          </button>
+        </div>
       </div>
-    </Router>
+    </div>
   );
 };
 

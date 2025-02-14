@@ -3,6 +3,7 @@ import Navbar from "./navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 import ProfileCompletionMessage from "./HomePage/ProfileCompletion";
 import Footer from "./footer/Footer";
+import ImageSlider from "./HomePage/ImageSlider";
 
 export default function Homepage() {
   const navigate = useNavigate();
@@ -46,6 +47,7 @@ export default function Homepage() {
             <div id="homepage">
                 <Navbar />
                 <ProfileCompletionMessage />
+                <ImageSlider url={"https://picsum.photos/v2/list"} page={'1'} limit={"10"}/>
                 <Footer />
             </div>
         </>
