@@ -26,7 +26,7 @@ const VerifyIdProof = () => {
       const formData = new FormData();
       formData.append("image", image);
 
-      const URL = `${Constant.BASE_URL}/auth/upload-id-proof`; 
+      const URL = `${Constant.BASE_URL}/api/adminauth/upload-id-proof`; 
       const res = await fetch(URL, {
         method: "POST",
         body: formData,

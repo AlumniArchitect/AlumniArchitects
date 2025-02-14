@@ -1,4 +1,4 @@
-package com.alumniarchitect.controller;
+package com.alumniarchitect.controller.user;
 
 import com.alumniarchitect.entity.Admin;
 import com.alumniarchitect.entity.UnverifiedUser;
@@ -26,28 +26,14 @@ public class AdminController {
 
     @Autowired
     private CloudinaryService cloudinaryService;
+
     @Autowired
     private UserService userService;
+
     @Autowired
     private UnverifiedUserService unverifiedUserService;
 
-    @PostMapping
-    public ResponseEntity<Boolean> addAdmin(@RequestBody Admin admin) {
-        if (admin == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        if (EmailService.isValidCollegeEmail(admin.getEmail()) && Character.isDigit(admin.getEmail().charAt(0))) {
-            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
-        }
-
-        admin.setCollegeName(EmailService.extractCollegeName(admin.getEmail()));
-        adminService.addAdmin(admin);
-
-        return new ResponseEntity<>(true, HttpStatus.CREATED);
-    }
-
-    @PostMapping("/{email}/post-portal-img")
+    @PostMapping("/post-portal-img/{email}")
     public ResponseEntity<Boolean> postImg(@PathVariable String email, @RequestParam("file") MultipartFile file) throws IOException {
         Admin admin = adminService.findAdminByEmail(email);
 

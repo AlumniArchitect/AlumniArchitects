@@ -12,7 +12,11 @@ import SplashScreen from './component/SplashScreen.jsx';
 import EventsPage from './component/navbar/EventPage.jsx';
 import Resource from './component/navbar/Resources.jsx';
 import VerifyIdProof from './component/auth/VerifyAlumni.jsx';
+<<<<<<< HEAD
 import AdminPanel from './component/Admin/AdminPanel.jsx';
+=======
+import AdminPanel from "./component/Admin/AdminPanel.jsx";
+>>>>>>> 022c889bb1a76bd919e68e9f03a1853f379cf90f
 
 const App = () => {
   return (
@@ -32,7 +36,11 @@ const App = () => {
       <Route path="/event" element={<EventsPage />} />
       <Route path="/resource" element={<Resource />} />
       <Route path='/verifyalumni' element={<VerifyIdProof/>} />
+<<<<<<< HEAD
       <Route path='/adminpanel' element={<AdminPanel />} />
+=======
+      <Route path="/admin" element={<AdminPanel />} />
+>>>>>>> 022c889bb1a76bd919e68e9f03a1853f379cf90f
     </Routes>
      </>
   );

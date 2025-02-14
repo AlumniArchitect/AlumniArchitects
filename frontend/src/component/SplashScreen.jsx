@@ -3,12 +3,13 @@ import Footer from "./footer/Footer";
 import img1 from "../assets/img1.jpg";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
+import Constant from "../utils/Constant";
 
 const SplashScreen = () => {
   const navigate = useNavigate();
-  const [collegeName, setCollegeName] = useState("");
   const [collegeEmail, setCollegeEmail] = useState("");
-  const formRef = useRef(null); // Ref for the form container
+  const [password, setPassword] = useState("");
+  const formRef = useRef(null); 
 
   const handleNavigate = (signin) => {
     if (signin) {
@@ -19,21 +20,44 @@ const SplashScreen = () => {
   };
 
   const handleRegisterCollege = () => {
-    // Scroll to the form when the button is clicked
     if (formRef.current) {
       formRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("College Name:", collegeName);
-    console.log("College Email:", collegeEmail);
+    const URL = Constant.BASE_URL;
 
-    // Redirect to OTP verification page
-    navigate("/verify-otp", { state: { type: "admin" } });
+    try {
+      const res = await fetch(`${URL}/auth/admin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: collegeEmail,
+          password: password
+        })
+      });
 
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText);
+      }
+
+      const data = await res.json();
+      
+      if (data) {
+        localStorage.setItem("email", collegeEmail);
+        navigate("/verify-otp", { state: { type: "admin" } });
+      } else {
+        console.error("Something went wrong");
+      }
+
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -96,27 +120,12 @@ const SplashScreen = () => {
             </div>
             <div className="features-list">
               <ul>
-                <li>
-                  Resource Library: Centralized access to learning materials.
-                </li>
-                <li>
-                  Group Study Rooms: Virtual collaboration spaces for
-                  assignments and resource sharing.
-                </li>
-                <li>
-                  Real-World Projects: Collaboration with alumni or industry
-                  partners for practical experience.
-                </li>
-                <li>
-                  Skill Progress Tracker: Monitors skill development and
-                  provides continuous feedback.
-                </li>
-                <li>
-                  Alumni Meetups: Events for direct engagement and networking.
-                </li>
-                <li>
-                  Discussion Forums: Platform for peer and mentor interactions.
-                </li>
+                <li>Resource Library: Centralized access to learning materials.</li>
+                <li>Group Study Rooms: Virtual collaboration spaces for assignments and resource sharing.</li>
+                <li>Real-World Projects: Collaboration with alumni or industry partners for practical experience.</li>
+                <li>Skill Progress Tracker: Monitors skill development and provides continuous feedback.</li>
+                <li>Alumni Meetups: Events for direct engagement and networking.</li>
+                <li>Discussion Forums: Platform for peer and mentor interactions.</li>
               </ul>
             </div>
           </div>
@@ -165,21 +174,15 @@ const SplashScreen = () => {
                 onChange={(e) => setCollegeEmail(e.target.value)}
                 required
               />
-            </div>
-
-            {/* Optional: Add a field for college name if needed */}
-            {/* 
-            <div className="form-group">
-              <label htmlFor="collegeName">College Name</label>
+              <label htmlFor="collegePassword">Password</label>
               <input
-                type="text"
-                id="collegeName"
-                value={collegeName}
-                onChange={(e) => setCollegeName(e.target.value)}
+                type="password"
+                id="collegePassword"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
-            </div> 
-            */}
+            </div>
 
             <button type="submit" className="submit-btn">
               Submit
