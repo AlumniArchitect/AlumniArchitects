@@ -29,11 +29,6 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfile saveUserProfile(UserProfile userProfile) {
-        return userProfileRepository.save(userProfile);
-    }
-
-    @Override
     public UserProfile createOrUpdateUserProfile(UserProfile userProfile) {
         String email = userProfile.getEmail();
         UserProfile existingProfile = userProfileRepository.findByEmail(email);

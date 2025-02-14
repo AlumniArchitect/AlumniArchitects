@@ -19,7 +19,7 @@ const SplashScreen = () => {
             <div id="splash-screen" className="main-wrapper">
                 <div className="splash-header">
                     <div className="title">
-                        <h1><i>Alumini Architect</i></h1>
+                        <h1><i>Alumni Architect</i></h1>
                     </div>
                     <div>
                         <button className="loginBtn" onClick={() => handleNavigate(true)}>
