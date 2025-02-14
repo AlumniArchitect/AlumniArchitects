@@ -25,7 +25,7 @@ public class Admin {
     private String fullName;
     private String collegeName;
     private List<String> moderators = new ArrayList<>();
-    private HashMap<User, String> unverifiedAlumni = new HashMap<>();
+    private HashMap<String, String> unverifiedAlumni = new HashMap<>();
     private List<User> users = new ArrayList<>();
     private List<String> portalImages = new ArrayList<>();
 }
