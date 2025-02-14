@@ -65,6 +65,7 @@ public class AuthController {
 
     @Autowired
     private UnverifiedUserService unverifiedUserService;
+
     @Autowired
     private AdminService adminService;
 
@@ -85,8 +86,16 @@ public class AuthController {
 
         emailService.sendVerificationOtpMail(user.getEmail(), otp);
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userService.saveUser(user);
+        if(user.getType().equals(USER_TYPE.STUDENT)) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userService.saveUser(user);
+        }else {
+            UnverifiedUser unverifiedUser = new UnverifiedUser();
+            unverifiedUser.setEmail(user.getEmail());
+            unverifiedUser.setUser(user);
+
+            unverifiedUserService.addUnverifiedUser(unverifiedUser);
+        }
 
         return ResponseEntity.ok(new AuthResponse(null, true, "OTP sent to email. Verify to complete registration."));
     }
@@ -94,6 +103,9 @@ public class AuthController {
     @PostMapping("admin")
     public ResponseEntity<Boolean> addAdmin(@RequestBody Admin admin) throws MessagingException {
         if (admin == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if(EmailService.isValidCollegeEmail(admin.getEmail()) && Character.isDigit(admin.getEmail().charAt(0))) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
