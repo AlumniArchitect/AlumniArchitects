@@ -1,6 +1,7 @@
 package com.alumniarchitect.service.user;
 
 import com.alumniarchitect.entity.User;
+import com.alumniarchitect.enums.USER_TYPE;
 import com.alumniarchitect.repository.UserRepository;
 import com.alumniarchitect.service.blog.BlogService;
 import com.alumniarchitect.service.collageGroup.CollegeGroupService;
@@ -9,6 +10,7 @@ import com.alumniarchitect.utils.jwt.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +57,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteAccount(User user) {
         userRepository.delete(user);
+    }
+
+    @Override
+    public List<User> findUserByType(USER_TYPE type) {
+        List<User> list = userRepository.findUsersByType(type);
+
+        if(list == null) {
+            return new ArrayList<>();
+        }
+
+        return list;
     }
 
     @Override

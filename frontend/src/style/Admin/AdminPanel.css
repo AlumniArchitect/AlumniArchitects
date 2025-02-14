@@ -1,0 +1,159 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+  }
+  
+  .admin-panel {
+    display: flex; /* Flexbox for sidebar and main content */
+    height: 100vh; /* Full height of the viewport */
+  }
+  
+  /* Sidebar Styles */
+  .sidebar {
+    width: 250px; /* Fixed width for sidebar */
+    background-color: #007bff; /* Sidebar background color */
+    color: white; /* Text color inside sidebar */
+    padding: 20px; /* Padding around the sidebar content */
+  }
+  
+  .sidebar h2 {
+    margin-bottom: 20px; /* Spacing below the heading */
+  }
+  
+  .sidebar nav ul {
+    list-style-type: none; /* Remove bullet points from list */
+    padding: 0; /* Remove padding */
+  }
+  
+  .sidebar nav ul li {
+    margin-bottom: 15px; /* Spacing between menu items */
+  }
+  
+  .sidebar nav ul li a {
+    text-decoration: none; /* Remove underline from links */
+    color: white; /* Link color */
+    font-weight: bold; /* Bold links */
+  }
+  
+  .sidebar nav ul li a:hover {
+    text-decoration: underline; /* Underline on hover for links */
+  }
+  
+  /* Main Content Styles */
+  .main-content {
+    flex-grow: 1; /* Allow main content to take remaining space */
+    padding: 20px; /* Padding around main content */
+  }
+  
+  /* Dashboard Styles */
+  .dashboard .stats {
+    display: flex; /* Flexbox for stats layout */
+    justify-content: space-around; /* Space items evenly */
+    margin-top: 20px; /* Spacing above stats section */
+  }
+  
+  .dashboard .stats div {
+    background-color: #fff; /* Background for stats boxes */
+    border-radius: 8px; /* Rounded corners for boxes */
+    padding: 15px; /* Padding inside boxes */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Shadow effect for boxes */
+  }
+  
+  /* User Management Styles */
+  .user-management h1,
+  .user-management h2 {
+      margin-bottom: 20px;
+  }
+  
+  .add-moderator {
+      margin-bottom: 30px;
+  }
+  
+  .add-moderator input {
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      width: calc(100% - 120px); /* Full width minus button width */
+      margin-right:10px;
+  }
+  
+  .add-moderator button {
+      padding:10px;
+      border-radius:5px;
+      border:none;
+      background-color:#28a745;
+      color:white;
+      cursor:pointer;
+  }
+  
+  /* List Styles for Moderators, Unverified Alumni, and Users */
+  .moderators-list,
+  .unverified-alumni-list,
+  .users-list {
+      margin-bottom: 30px; /* Spacing below each list section */
+  }
+  
+  .moderators-list ul,
+  .unverified-alumni-list ul,
+  .users-list ul {
+      list-style-type: none; /* Remove bullet points from lists */
+      padding-left:0; /* Remove padding from lists */
+  }
+  
+  .moderators-list li,
+  .unverified-alumni-list li,
+  .users-list li {
+      padding:10px;
+      background-color:#fff; 
+      border-radius:5px;
+      margin-bottom:10px;
+      box-shadow:0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  /* Homepage Management Styles */
+  .homepage-management input[type="file"] {
+      margin-top:20px;
+  }
+  
+  /* Event Organization Styles (Placeholder)*/
+  .event-organization h1 {
+      margin-bottom:20px;
+  }
+  
+  /* Payment Gateway Details Styles (Placeholder)*/
+  .payment-gateway-details h1 {
+      margin-bottom:20px;
+  }
+  
+  /* Responsive Design for Smaller Screens */
+  @media (max-width:768px) {
+      .admin-panel {
+          flex-direction: column; /* Stack sidebar and main content vertically on small screens */
+          height:auto; /* Allow height to adjust automatically on small screens */
+      }
+  
+      .sidebar {
+          width:auto; /* Allow sidebar to take full width on small screens */
+          height:auto; 
+          padding-bottom :15px ;
+          position : relative ; 
+          z-index :100 ; 
+          box-shadow :0 -2px -4px rgba(0,0,0,0.1); 
+          border-radius :5px ;
+          margin-bottom :15px ; 
+      }
+  
+      .main-content {
+          padding-top :15px ; 
+          padding-left :10px ; 
+          padding-right :10px ; 
+          overflow-y:auto ; 
+          height:auto ; 
+          max-height :calc(100vh -200px); 
+       }
+  }
+  
