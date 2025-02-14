@@ -1,6 +1,6 @@
 .user-suggestion-container {
   width: 100%;
-  max-width: 800px;
+  max-width: 800px; /* Or a percentage like 95% */
   margin: auto;
 }
 
@@ -27,8 +27,8 @@
 
 .profile-list {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start; /* Changed to flex-start */
+  align-items: stretch; /* Changed to stretch */
   overflow-x: auto;
   gap: 30px;
   padding-bottom: 10px;
@@ -36,13 +36,14 @@
 }
 
 .profile-card {
-  flex: 0 0 auto;
-  width: 180px;
+  flex: 0 0 auto; /* changed from min-content */
+  width: 220px; /* fixed width  */
   text-align: center;
-  padding: 10px;
+  padding: 15px;
   border-radius: 10px;
   background: #fff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  word-break: break-word; /* Allow words to break to prevent overflow */
 }
 
 .profile-card:hover {
@@ -50,20 +51,21 @@
 }
 
 .profile-img {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .profile-name {
-  font-size: 14px;
+  font-size: 22px;
   font-weight: bold;
+  margin-bottom: 5px;
 }
 
 .profile-email {
-  font-size: 12px;
+  font-size: 14px;
   color: rgb(63, 63, 63);
 }
 
