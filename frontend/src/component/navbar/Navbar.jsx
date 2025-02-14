@@ -36,7 +36,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/signin");
+    navigate("/splash-screen");
   };
 
   const handleProfileClick = () => {

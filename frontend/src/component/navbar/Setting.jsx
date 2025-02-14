@@ -50,7 +50,7 @@ export default function Setting() {
         if (data.status) {
           localStorage.clear();
           showError("Account deleted successfully");
-          navigate("/signin");
+          navigate("/splash-screen");
         } else {
           showError(data.message);
         }
