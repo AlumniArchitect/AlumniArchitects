@@ -173,6 +173,10 @@ export default function Navbar() {
     navigate("/profile", { state: { email } });
   };
 
+  const handleReferralClick = () => {
+    navigate("/referral");
+  }
+
   return (
     <nav>
       {error && (
@@ -235,12 +239,17 @@ export default function Navbar() {
               <li onClick={handleResourceClick}>
               <IoLibrary /> &nbsp; Resource Library</li>
               <hr />
+              <li onClick={handleReferralClick}>
+                <FaCog /> &nbsp; Referrals
+              </li>
               <li onClick={handleSettingClick}>
                 <FaCog /> &nbsp; Settings
               </li>
               <li onClick={handleLogout} className="logout">
                 <FaSignOutAlt /> &nbsp; Logout
               </li>
+             
+
             </ul>
           </div>
         )}

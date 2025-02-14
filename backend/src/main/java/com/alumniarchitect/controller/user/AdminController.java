@@ -33,6 +33,17 @@ public class AdminController {
     @Autowired
     private UnverifiedUserService unverifiedUserService;
 
+    @GetMapping("/{email}")
+    public ResponseEntity<Admin> getAdmin(@PathVariable String email) {
+        Admin admin = adminService.findAdminByEmail(email);
+
+        if (admin == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else {
+            return new ResponseEntity<>(admin, HttpStatus.OK);
+        }
+    }
+
     @PostMapping("/post-portal-img/{email}")
     public ResponseEntity<Boolean> postImg(@PathVariable String email, @RequestParam("file") MultipartFile file) throws IOException {
         Admin admin = adminService.findAdminByEmail(email);
@@ -48,7 +59,7 @@ public class AdminController {
         return new ResponseEntity<>(true, HttpStatus.CREATED);
     }
 
-    @GetMapping("{email}/get-portal-img")
+    @GetMapping("/get-portal-img/{email}")
     public ResponseEntity<List<String>> getImg(@PathVariable String email) {
         String collegeName = EmailService.extractCollegeName(email);
         Admin admin = adminService.findAdminByCollegeName(collegeName);
@@ -60,17 +71,17 @@ public class AdminController {
         return new ResponseEntity<>(admin.getPortalImages(), HttpStatus.OK);
     }
 
-    @GetMapping("/{adminEmail}/unverified-alumni")
+    @GetMapping("/unverified-alumni/{adminEmail}")
     public List<String> getUnverifiedAlumni(@PathVariable String adminEmail) {
         return adminService.getUnverifiedAlumni(adminEmail);
     }
 
-    @GetMapping("/{adminEmail}/moderators")
+    @GetMapping("/admin/{adminEmail}")
     public List<String> getModerators(@PathVariable String adminEmail) {
         return adminService.getModerators(adminEmail);
     }
 
-    @PutMapping("/{adminEmail}/moderators")
+    @PutMapping("/admin/{adminEmail}")
     public void updateModerators(@PathVariable String adminEmail, @RequestBody List<String> moderators) {
         adminService.updateModerators(adminEmail, moderators);
     }
@@ -96,5 +107,20 @@ public class AdminController {
     @DeleteMapping("/{adminEmail}/unverified-alumni/{userEmail}")
     public void removeFromUnverifiedList(@PathVariable String adminEmail, @PathVariable String userEmail) throws Exception {
         adminService.removeFromUnverifiedList(adminEmail, userEmail);
+    }
+
+    @PostMapping("/upload-verification-img/{email}")
+    public ResponseEntity<Boolean> uploadVerificationImg(@PathVariable String email, @RequestParam("file") MultipartFile file) throws IOException {
+        Admin admin = adminService.findAdminByCollegeName(EmailService.extractCollegeName(email));
+
+        if (admin == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        String imgUrl = cloudinaryService.uploadImg(file);
+        admin.getUnverifiedAlumni().put(email, imgUrl);
+        adminService.addAdmin(admin);
+
+        return new ResponseEntity<>(true, HttpStatus.CREATED);
     }
 }

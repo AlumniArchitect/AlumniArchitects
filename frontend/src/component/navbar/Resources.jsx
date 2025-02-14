@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { UploadCloud, Download, Plus, Edit, Trash, X } from "lucide-react";
+import { UploadCloud, Download, Plus, Edit, Trash, X, ImageOff } from "lucide-react";
 import defaultProfileImage from "../../assets/userLogo.png";
 import Constant from "../../utils/Constant";
 import "../../style/navbar/Resources.css";
+import { useNavigate } from "react-router-dom";
 
 const semesterOptions = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const branchOptions = [
@@ -28,8 +29,12 @@ export default function Resource() {
   const [branchFilter, setBranchFilter] = useState("");
   const email = localStorage.getItem("email");
   const jwt = localStorage.getItem("jwt");
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (localStorage.getItem("jwt") == null) {
+      navigate("/signin");
+    }
     fetchResources();
   }, []);
 

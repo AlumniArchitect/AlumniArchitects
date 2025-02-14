@@ -4,6 +4,7 @@ import defaultProfileImage from "../../assets/userLogo.png";
 import "../../style/navbar/Profile.css";
 import { useLocation } from "react-router-dom";
 import UserSuggestion from "./UserSuggestion";
+import { useNavigate } from "react-router-dom";
 
 const EducationCard = ({ education }) => {
   return (
@@ -29,7 +30,7 @@ const ProfilePage = () => {
     fullName: localStorage.getItem("fullName") || "N/A",
     mobileNumber: "+91",
     location: "",
-    education: [], // Initialize as an empty array
+    education: [],
     skills: [],
     resumeUrl: null,
     profileImageUrl: defaultProfileImage,
@@ -39,26 +40,29 @@ const ProfilePage = () => {
   const [error, setError] = useState("");
   const userEmail = localStorage.getItem("email");
   const jwt = localStorage.getItem("jwt");
+  const navigate = useNavigate();
 
   const calculateProfileProgress = () => {
     let completedFields = 0;
-    const totalFields = 6; 
- 
+    const totalFields = 6;
+
     if (user.fullName && user.fullName !== "N/A") completedFields++;
     if (user.mobileNumber && user.mobileNumber !== "+91") completedFields++;
     if (user.education && user.education.length > 0) completedFields++;
     if (user.skills && user.skills.length > 0) completedFields++;
     if (user.resumeUrl) completedFields++;
     if (user.socialLinks && user.socialLinks.length > 0) completedFields++;
- 
-    return Math.round((completedFields / totalFields) * 100); 
+
+    return Math.round((completedFields / totalFields) * 100);
   };
- 
+
   const profileProgress = calculateProfileProgress();
- 
+
   useEffect(() => {
-    localStorage.setItem("profileProgress", profileProgress);
-  }, [profileProgress]);
+    if (localStorage.getItem("jwt") == null) {
+      navigate("/signin");
+    }
+  }, [navigate, error]);
 
   const handleEducationChange = (index, field, value) => {
     const updatedEducation = [...user.education];
