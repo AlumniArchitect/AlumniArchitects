@@ -1,0 +1,56 @@
+/* Dashboard Styles */
+.dashboard {
+    padding: 20px; /* Padding around the dashboard content */
+    background-color: #ffffff; /* White background for the dashboard */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+  }
+  
+  .dashboard h1 {
+    font-size: 2rem; /* Font size for the main heading */
+    margin-bottom: 20px; /* Spacing below the heading */
+    color: #333; /* Dark color for text */
+  }
+  
+  /* Stats Section Styles */
+  .stats {
+    display: flex; /* Flexbox layout for stats */
+    justify-content: space-around; /* Space items evenly */
+    margin-top: 20px; /* Spacing above stats section */
+  }
+  
+  /* Individual Stat Box Styles */
+  .stats div {
+    background-color: #f4f4f9; /* Light gray background for each stat box */
+    border-radius: 8px; /* Rounded corners for boxes */
+    padding: 15px; /* Padding inside boxes */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Shadow effect for boxes */
+    flex: 1; /* Allow boxes to grow equally within the stats section */
+    margin: 0 10px; /* Spacing between boxes */
+  }
+  
+  /* Stat Box Title Styles */
+  .stats div h3 {
+      font-size: 1.5rem; /* Font size for titles within stat boxes */
+      margin-bottom: 5px; /* Spacing below titles */
+  }
+  
+  /* Stat Box Value Styles */
+  .stats div p {
+      font-size: 2rem; /* Larger font size for values in stat boxes */
+      font-weight: bold; /* Bold font for emphasis */
+  }
+  
+  /* Responsive Design for Smaller Screens */
+  @media (max-width:768px) {
+      .stats {
+          flex-direction: column; /* Stack stats vertically on smaller screens */
+          align-items: center; /* Center align items vertically stacked */
+      }
+  
+      .stats div {
+          margin-bottom: 15px; /* Add spacing between stacked boxes */
+          width: calc(100% - 20px); /* Full width minus margins for small screens */
+      }
+  }
+  
