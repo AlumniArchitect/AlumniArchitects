@@ -1,159 +1,162 @@
-/* General Styles */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+/* General Reset */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: "Poppins", sans-serif;
+    background-color: #f9fafb;
     color: #333;
+    line-height: 1.6;
   }
   
   .admin-panel {
-    display: flex; /* Flexbox for sidebar and main content */
-    height: 100vh; /* Full height of the viewport */
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
   }
   
-  /* Sidebar Styles */
-  .sidebar {
-    width: 250px; /* Fixed width for sidebar */
-    background-color: #007bff; /* Sidebar background color */
-    color: white; /* Text color inside sidebar */
-    padding: 20px; /* Padding around the sidebar content */
+  .admin-panel h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: #1e3a8a;
+    position: relative;
   }
   
-  .sidebar h2 {
-    margin-bottom: 20px; /* Spacing below the heading */
+  .admin-panel h1::after {
+    content: "";
+    display: block;
+    width: 50px;
+    height: 3px;
+    background-color: #1e3a8a;
+    margin: 10px auto;
+    border-radius: 5px;
   }
   
-  .sidebar nav ul {
-    list-style-type: none; /* Remove bullet points from list */
-    padding: 0; /* Remove padding */
+  .sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
   }
   
-  .sidebar nav ul li {
-    margin-bottom: 15px; /* Spacing between menu items */
+  .section {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   
-  .sidebar nav ul li a {
-    text-decoration: none; /* Remove underline from links */
-    color: white; /* Link color */
-    font-weight: bold; /* Bold links */
+  .section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
   }
   
-  .sidebar nav ul li a:hover {
-    text-decoration: underline; /* Underline on hover for links */
+  .section h2 {
+    font-size: 1.5rem;
+    color: #1e3a8a;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
   
-  /* Main Content Styles */
-  .main-content {
-    flex-grow: 1; /* Allow main content to take remaining space */
-    padding: 20px; /* Padding around main content */
+  .section h2::before {
+    content: "⚙️"; /* Replace with relevant icons */
+    font-size: 1.2rem;
   }
   
-  /* Dashboard Styles */
-  .dashboard .stats {
-    display: flex; /* Flexbox for stats layout */
-    justify-content: space-around; /* Space items evenly */
-    margin-top: 20px; /* Spacing above stats section */
+  .section button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1e3a8a;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    gap: 5px;
   }
   
-  .dashboard .stats div {
-    background-color: #fff; /* Background for stats boxes */
-    border-radius: 8px; /* Rounded corners for boxes */
-    padding: 15px; /* Padding inside boxes */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Shadow effect for boxes */
+  .section button:hover {
+    background-color: #1d4ed8;
   }
   
-  /* User Management Styles */
-  .user-management h1,
-  .user-management h2 {
-      margin-bottom: 20px;
+  .section button svg {
+    width: 16px;
+    height: 16px;
   }
   
-  .add-moderator {
-      margin-bottom: 30px;
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
   }
   
-  .add-moderator input {
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-      width: calc(100% - 120px); /* Full width minus button width */
-      margin-right:10px;
+  .image-grid img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #e5e7eb;
+    transition: transform 0.3s ease;
   }
   
-  .add-moderator button {
-      padding:10px;
-      border-radius:5px;
-      border:none;
-      background-color:#28a745;
-      color:white;
-      cursor:pointer;
+  .image-grid img:hover {
+    transform: scale(1.1);
   }
   
-  /* List Styles for Moderators, Unverified Alumni, and Users */
-  .moderators-list,
-  .unverified-alumni-list,
-  .users-list {
-      margin-bottom: 30px; /* Spacing below each list section */
+  .moderator-list,
+  .user-list,
+  .event-list {
+    margin-top: 15px;
   }
   
-  .moderators-list ul,
-  .unverified-alumni-list ul,
-  .users-list ul {
-      list-style-type: none; /* Remove bullet points from lists */
-      padding-left:0; /* Remove padding from lists */
+  .moderator-list div,
+  .user-list div,
+  .event-list div {
+    padding: 10px;
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: background-color 0.3s ease;
   }
   
-  .moderators-list li,
-  .unverified-alumni-list li,
-  .users-list li {
-      padding:10px;
-      background-color:#fff; 
-      border-radius:5px;
-      margin-bottom:10px;
-      box-shadow:0 1px 3px rgba(0,0,0,0.1);
+  .moderator-list div:hover,
+  .user-list div:hover,
+  .event-list div:hover {
+    background-color: #e5e7eb;
   }
   
-  /* Homepage Management Styles */
-  .homepage-management input[type="file"] {
-      margin-top:20px;
+  input[type="file"] {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 1rem;
+    cursor: pointer;
   }
   
-  /* Event Organization Styles (Placeholder)*/
-  .event-organization h1 {
-      margin-bottom:20px;
+  input[type="file"]::file-selector-button {
+    background-color: #1e3a8a;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
   }
   
-  /* Payment Gateway Details Styles (Placeholder)*/
-  .payment-gateway-details h1 {
-      margin-bottom:20px;
+  input[type="file"]::file-selector-button:hover {
+    background-color: #1d4ed8;
   }
-  
-  /* Responsive Design for Smaller Screens */
-  @media (max-width:768px) {
-      .admin-panel {
-          flex-direction: column; /* Stack sidebar and main content vertically on small screens */
-          height:auto; /* Allow height to adjust automatically on small screens */
-      }
-  
-      .sidebar {
-          width:auto; /* Allow sidebar to take full width on small screens */
-          height:auto; 
-          padding-bottom :15px ;
-          position : relative ; 
-          z-index :100 ; 
-          box-shadow :0 -2px -4px rgba(0,0,0,0.1); 
-          border-radius :5px ;
-          margin-bottom :15px ; 
-      }
-  
-      .main-content {
-          padding-top :15px ; 
-          padding-left :10px ; 
-          padding-right :10px ; 
-          overflow-y:auto ; 
-          height:auto ; 
-          max-height :calc(100vh -200px); 
-       }
-  }
-  
