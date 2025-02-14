@@ -43,7 +43,7 @@ const ForgotPassword = () => {
 
       if (result.status) {
         localStorage.setItem("email", email);
-        navigate("/verify-otp", { state: { isForgotPassword: true } });
+        navigate("/verify-otp", { state: { isForgotPassword: true  } });
       } else {
         alert(result.message);
       }

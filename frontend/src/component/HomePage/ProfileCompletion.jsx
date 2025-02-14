@@ -53,8 +53,8 @@ const ProfileCompletionMessage = () => {
   return (
     <>
       {isProfileComplete === false && (
-        <div className="incomplete-profile-message">
-          <span onClick={handleMessageClick} style={{ cursor: "pointer" }}>
+        <div onClick={handleMessageClick} className="incomplete-profile-message">
+          <span style={{ cursor: "pointer" }}>
             You have not completed your profile.
           </span>
           <FaTimes className="cancel-icon" onClick={handleCancelClick} />

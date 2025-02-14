@@ -6,7 +6,9 @@ import "../../style/auth/OtpVerification.css";
 export default function OtpVerification() {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const isForgotPassword = state?.isForgotPassword || false;
+
+  // Determine the type of verification
+  const verificationType = state?.type || ""; // Expecting 'forgotPassword', 'signup', 'signin', or 'admin'
 
   const email = localStorage.getItem("email");
   const [otp, setOtp] = useState("");
@@ -19,8 +21,9 @@ export default function OtpVerification() {
     setTimeout(() => setError(""), 5000);
   };
 
-  const handleOnClick = async () => {
-    if (!otp || (isForgotPassword && !newPassword)) {
+  const handleOnClick = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+    if (!otp || (verificationType === "forgotPassword" && !newPassword)) {
       showError("Please fill in all fields.");
       return;
     }
@@ -31,7 +34,8 @@ export default function OtpVerification() {
       const URL = `${Constant.BASE_URL}/auth/verify-otp`;
 
       const payload = { email, otp };
-      if (isForgotPassword) payload.newPassword = newPassword;
+      if (verificationType === "forgotPassword")
+        payload.newPassword = newPassword;
 
       const res = await fetch(URL, {
         method: "POST",
@@ -43,7 +47,13 @@ export default function OtpVerification() {
 
       if (result.status) {
         localStorage.setItem("jwt", result.jwt);
-        setTimeout(() => navigate("/signin"), 500);
+
+        // Redirect based on verification type
+        if (verificationType === "admin") {
+          navigate("/admin"); // Redirect to admin page
+        } else {
+          navigate("/"); // Redirect to home page for other types
+        }
       } else {
         showError(result.message || "Error occurred");
       }
@@ -71,7 +81,7 @@ export default function OtpVerification() {
               required
             />
           </div>
-          {isForgotPassword && (
+          {verificationType === "forgotPassword" && (
             <div className="form-group">
               <input
                 type="password"

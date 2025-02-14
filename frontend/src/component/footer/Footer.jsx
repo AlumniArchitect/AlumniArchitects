@@ -16,7 +16,9 @@ const Footer = () => {
     const handeleResources = () => {
         navigate("/resource");
     };
-
+    const handeleBlogs = ()=>{
+        navigate("/blog")
+    }
 
 
     return (
@@ -35,6 +37,7 @@ const Footer = () => {
                         <li onClick={handeleAboutUs}>About Us</li>
                         <li onClick={handeleEvents}>Events</li>
                         <li onClick={handeleResources}>Resources</li>
+                        <li onClick={handeleBlogs}>Blogs</li>
                         <li>Contact:  <u>alumniarchitect@gmail.com</u></li>
                     </ul>
                 </div>
