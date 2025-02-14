@@ -122,13 +122,11 @@ body {
 ol{
     list-style: none;
 }
-
-.features-list {
-    list-style: circle;
+ul{
+    list-style: none;
     font-size: 18px;
     text-align: center;
 }
-
 .impacts {
     padding-top: 15px;
     width: 100%;
@@ -186,4 +184,7 @@ ol{
         flex-direction: column;
         align-items: center;
     }
+}
+.footer{
+    margin-top: 15px;
 }

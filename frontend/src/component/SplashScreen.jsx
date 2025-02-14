@@ -1,4 +1,5 @@
 import "../style/SplashScreen.css";
+import Footer from "./footer/Footer";
 import img1 from '../assets/img1.jpg';
 import { useNavigate } from "react-router-dom";
 
@@ -91,6 +92,9 @@ const SplashScreen = () => {
                             </ol>
                         </div>
                     </div>
+                </div>
+                <div className="footer">
+                    <Footer />
                 </div>
             </div>
         </>
