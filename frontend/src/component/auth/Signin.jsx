@@ -20,7 +20,7 @@ export default function Signin() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const jwt = localStorage.getItem("jwt");
+      const jwt = localStorage.getItem("jwt") || null;
 
       if (jwt) {
         try {
@@ -35,7 +35,8 @@ export default function Signin() {
           const result = await res.json();
 
           if (result.status && result.jwt) {
-            navigate("/homepage");
+            if(result.message === "admin") navigate("/admin");
+            if(result.message === "user") navigate("/homepage");
           } else {
             showError("Invalid JWT token. Please log in again.");
             localStorage.removeItem("jwt");
@@ -74,8 +75,10 @@ export default function Signin() {
 
         localStorage.setItem("email", signinInfo.email);
         localStorage.setItem("jwt", result.jwt);
+        
+        if(result.message === "admin") navigate("/admin");
+        if(result.message === "user") navigate("/homepage");
 
-        navigate("/homepage");
       } else {
         showError("Error : " + result.message);
       }

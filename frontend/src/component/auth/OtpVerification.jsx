@@ -6,9 +6,7 @@ import "../../style/auth/OtpVerification.css";
 export default function OtpVerification() {
   const navigate = useNavigate();
   const { state } = useLocation();
-
-  // Determine the type of verification
-  const verificationType = state?.type || ""; // Expecting 'forgotPassword', 'signup', 'signin', or 'admin'
+  const verificationType = state?.type || "";
 
   const email = localStorage.getItem("email");
   const fullName = localStorage.getItem("fullName");
@@ -41,7 +39,7 @@ export default function OtpVerification() {
       formData.append("email", email);
       formData.append("fullName", fullName);
 
-      const URL = `${Constant.BASE_URL}/auth/upload-image`; // Replace with your actual API endpoint for image upload
+      const URL = `${Constant.BASE_URL}/auth/upload-image`;
 
       const res = await fetch(URL, {
         method: "POST",
@@ -67,8 +65,43 @@ export default function OtpVerification() {
     }
   };
 
+  const handleAdminVerification = async () => {
+    try {
+      const URL = `${Constant.BASE_URL}/auth/admin/verify-otp`;
+
+      const payload = { email, otp };
+
+      const res = await fetch(URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await res.json();
+
+      if (result) {
+        navigate("/admin");
+      } else {
+        showError(result.message || "Error occurred");
+      }
+
+    } catch (e) {
+      console.error(e);
+      showError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const handleOnClick = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
+
+    if (verificationType === "admin") {
+      handleAdminVerification();
+
+      return;
+    }
+
     if (!otp || (verificationType === "forgotPassword" && !newPassword)) {
       showError("Please fill in all fields.");
       return;
@@ -92,19 +125,16 @@ export default function OtpVerification() {
       const result = await res.json();
 
       if (result.status) {
-        localStorage.setItem("jwt", result.jwt);
+        if (verificationType !== "admin") {
+          localStorage.setItem("jwt", result.jwt);
+        }
 
-        // Redirect based on verification type
-        if (verificationType === "admin") {
-          navigate("/admin"); // Redirect to admin page
-        } else if (verificationType === "forgotPassword") {
-          navigate("/homepage"); // Redirect to home page for forgot password
+        if (verificationType === "forgotPassword") {
+          navigate("/homepage");
         } else if (verificationType === "STUDENT") {
           navigate("/homepage");
         } else if (verificationType === "ALUMNI") {
-          // Handle alumni case: Ask for image upload
-          // setAlumniVerification(true);
-         navigate("/verifyalumni");
+          navigate("/verifyalumni");
         }
       } else {
         showError(result.message || "Error occurred");
@@ -146,7 +176,7 @@ export default function OtpVerification() {
               />
             </div>
           )}
-                 <div className="form-group">
+          <div className="form-group">
             <button onClick={handleOnClick} disabled={loading}>
               {loading ? "Verifying..." : "Verify OTP"}
             </button>

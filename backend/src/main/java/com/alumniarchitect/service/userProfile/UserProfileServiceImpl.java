@@ -89,6 +89,9 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public void delete(String email) {
+        if(userProfileRepository.findByEmail(email) == null){
+            return;
+        }
         userProfileRepository.delete(userProfileRepository.findByEmail(email));
     }
 }
