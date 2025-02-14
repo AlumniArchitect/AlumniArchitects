@@ -42,7 +42,7 @@ const SplashScreen = () => {
         <div className="splash-header">
           <div className="title">
             <h1>
-              <i>Alumini Architect</i>
+              <i>Alumni Architect</i>
             </h1>
           </div>
           <div className="header-buttons">

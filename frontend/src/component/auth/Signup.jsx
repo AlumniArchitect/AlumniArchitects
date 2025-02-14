@@ -49,12 +49,11 @@ const Signup = () => {
 
       const result = await res.json();
       console.log(result);
-      
 
       if (result.status) {
         localStorage.setItem("email", signupInfo.email);
-        localStorage.setItem("fullName",signupInfo.fullName);
-        navigate("/verify-otp", { state: { isForgotPassword: false } });
+        localStorage.setItem("fullName", signupInfo.fullName);
+        navigate("/verify-otp", { state: { type : signupInfo.type } });
       } else {
         showError("Error occurred: " + result.message);
       }
@@ -114,7 +113,7 @@ const Signup = () => {
             </select>
           </div>
           <div className="form-group">
-            <button type="submit" disabled={loading} >
+            <button type="submit" disabled={loading}>
               {loading ? "Signing Up..." : "Sign Up"}
             </button>
           </div>
