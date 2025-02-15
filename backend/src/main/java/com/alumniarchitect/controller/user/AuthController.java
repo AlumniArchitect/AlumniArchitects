@@ -142,6 +142,10 @@ public class AuthController {
                     .body(new AuthResponse(null, false, "Invalid OTP"));
         }
 
+        if(!EmailService.isValidCollegeEmail(verifyOtpRequest.getEmail())) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
         User user = userService.findByEmail(verifyOtpRequest.getEmail());
         if (user == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -177,17 +181,13 @@ public class AuthController {
     }
 
     private ResponseEntity<AuthResponse> handleUserVerification(User user, String email) {
-        if(user.getType().equals(USER_TYPE.STUDENT)) {
-            user.setVerified(true);
-            userService.saveUser(user);
 
-            Authentication auth = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
-            SecurityContextHolder.getContext().setAuthentication(auth);
+        user.setVerified(true);
+        userService.saveUser(user);
+        Authentication auth = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        String jwt = JwtProvider.generateToken(auth);
 
-            String jwt = JwtProvider.generateToken(auth);
-
-            return ResponseEntity.ok(new AuthResponse(jwt, true, "Registration successful"));
-        }
         otpStorage.remove(email);
 
         try {
@@ -196,16 +196,7 @@ public class AuthController {
             return ResponseEntity.internalServerError().body(new AuthResponse(null, false, e.getMessage()));
         }
 
-        try{
-            if(unverifiedUserService.findByEmail(email) != null) {
-                return new ResponseEntity<>(new AuthResponse(null, false, "Verification is in process"), HttpStatus.BAD_REQUEST);
-            }
-            unverifiedUserService.addUnverifiedUser(new UnverifiedUser(email, user));
-        } catch (Exception e){
-            return ResponseEntity.internalServerError().body(new AuthResponse(null, false, e.getMessage()));
-        }
-
-        return new ResponseEntity<>(new AuthResponse(null, true, "User verification sent."), HttpStatus.OK);
+        return ResponseEntity.ok(new AuthResponse(jwt, true, "Registration successful"));
     }
 
     @PostMapping("/admin/signin")

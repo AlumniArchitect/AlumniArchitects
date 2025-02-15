@@ -1,6 +1,6 @@
 // AdminPanel.jsx
 import "../../style/Admin/AdminPanel.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ImageSlider from "../HomePage/ImageSlider";
 import Chart from "react-apexcharts";
@@ -10,16 +10,112 @@ const AdminPanel = () => {
   const [admin, setAdmin] = useState(null);
   const [homepageImages, setHomepageImages] = useState([]);
   const [moderators, setModerators] = useState([]);
-  const [alumni, setAlumni] = useState([]);
-  const [students, setStudents] = useState([]);
+  const [users, setUsers] = useState([]); // Combined list of students and alumni
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [alumniRequests, setAlumniRequests] = useState([]); // New state for alumni requests
-  const [showAlumniRequests, setShowAlumniRequests] = useState(false); // State to toggle visibility
+  const [viewStudents, setViewStudents] = useState(false);
+  const [viewRequests, setViewRequests] = useState(false);
+  const [showAddModeratorPopup, setShowAddModeratorPopup] = useState(false);
+  const [moderatorEmail, setModeratorEmail] = useState("");
+  const [alumni, setAlumni] = useState([]); // Initialize alumni state
   const navigate = useNavigate();
   const email = localStorage.getItem("email");
 
-  // Dummy data for charts
+  // useRef hook to get a reference to the sections
+  const studentsSectionRef = useRef(null);
+  const alumniRequestsSectionRef = useRef(null);
+  const addModeratorSectionRef = useRef(null);
+
+  // Fetch admin details
+  useEffect(() => {
+    const fetchAdmin = async () => {
+      try {
+        const response = await fetch(`${Constant.BASE_URL}/auth/admin/${email}`);
+        if (!response.ok) throw new Error("Failed to fetch admin");
+        const data = await response.json();
+        if (!data) {
+          navigate("/splash-screen");
+        } else {
+          setAdmin(data);
+        }
+      } catch (error) {
+        console.error("Error fetching admin:", error);
+        navigate("/splash-screen");
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (email) {
+      fetchAdmin();
+    } else {
+      navigate("/splash-screen");
+    }
+  }, [email, navigate]);
+
+  // Fetch user data (students and alumni)
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`${Constant.BASE_URL}/admin/get-user-data/${email}`);
+        if (!response.ok) throw new Error("Failed to fetch user data");
+        const data = await response.json();
+        setUsers(data);
+
+        // Separate alumni data
+        const alumniData = data.filter((user) => user?.type === "ALUMNI");
+        setAlumni(alumniData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    if (email) {
+      fetchUserData();
+    }
+  }, [email]);
+
+  // Fetch homepage images
+  useEffect(() => {
+    const fetchHomepageImages = async () => {
+      try {
+        const response = await fetch(`${Constant.BASE_URL}/admin/get-portal-img/${email}`);
+        if (!response.ok) throw new Error("Failed to fetch homepage images");
+        const data = await response.json();
+        setHomepageImages(data);
+      } catch (error) {
+        console.error("Error fetching homepage images:", error);
+      }
+    };
+    if (email) {
+      fetchHomepageImages();
+    }
+  }, [email]);
+
+  // Fetch moderators
+  useEffect(() => {
+    const fetchModerators = async () => {
+      try {
+        const response = await fetch(`${Constant.BASE_URL}/admin/${email}`);
+        if (!response.ok) throw new Error("Failed to fetch moderators");
+        const data = await response.json();
+        setModerators(data);
+      } catch (error) {
+        console.error("Error fetching moderators:", error);
+      }
+    };
+    if (email) {
+      fetchModerators();
+    }
+  }, [email]);
+
+  // Filter users into students and alumni
+  const students = users.filter((user) => user?.type === "STUDENT");
+  // const alumni = users.filter((user) => user?.type === "ALUMNI"); //Alumni is already set in fetchUserData
+
+  // Count total students and alumni
+  const totalStudents = students.length;
+  const totalAlumni = alumni.length;
+
+  // Dummy data for chart (replace with dynamic data if needed)
   const studentData = [
     { year: 2018, count: 50 },
     { year: 2019, count: 70 },
@@ -34,8 +130,6 @@ const AdminPanel = () => {
     { year: 2021, count: 80 },
     { year: 2022, count: 100 },
   ];
-  const totalStudents = 100;
-  const totalAlumni = 50;
 
   // Chart options for Histogram
   const histogramOptions = {
@@ -94,117 +188,164 @@ const AdminPanel = () => {
     },
   };
 
-  // Fetch admin details
-  useEffect(() => {
-    const fetchAdmin = async () => {
-      try {
-        const response = await fetch(
-          `${Constant.BASE_URL}/auth/admin/${email}`
-        );
-        if (!response.ok) throw new Error("Failed to fetch admin");
-        const data = await response.json();
-        if (!data) {
-          navigate("/splash-screen");
-        } else {
-          setAdmin(data);
+  // Handle accepting a request
+  const handleAccept = async (requestId) => {
+    try {
+      const response = await fetch(
+        `${Constant.BASE_URL}/admin/${email}/verified/${requestId}`,
+        {
+          method: "POST",
         }
-      } catch (error) {
-        console.error("Error fetching admin:", error);
-        navigate("/splash-screen");
-      } finally {
-        setLoading(false);
+      );
+      if (response.ok) {
+        setAlumni((prevAlumni) =>
+          prevAlumni.filter((request) => request._id !== requestId)
+        );
+      } else {
+        alert("Failed to accept request.");
       }
-    };
-    if (email) {
-      fetchAdmin();
-    } else {
-      navigate("/splash-screen");
-    }
-  }, [email, navigate]);
-
-  // Generic function to fetch data
-  const fetchData = async (url, setter) => {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`Failed to fetch data from ${url}`);
-      const data = await response.json();
-      setter(data);
     } catch (error) {
-      console.error(`Error fetching data:`, error);
+      console.error("Error accepting request:", error);
     }
   };
 
-  // Fetch all required data on component mount
-  useEffect(() => {
-    fetchData("/api/homepage-images", setHomepageImages);
-    fetchData("/api/moderators", setModerators);
-    fetchData("/api/alumni", setAlumni);
-    fetchData("/api/students", setStudents);
-    fetchData("/api/events", setEvents);
-  }, []);
-
-  // Function to fetch alumni requests
-  const fetchAlumniRequests = async () => {
+  // Handle rejecting a request
+  const handleReject = async (requestId) => {
     try {
-      const response = await fetch("/api/alumni-requests"); // Replace with your actual API endpoint
-      if (!response.ok) throw new Error("Failed to fetch alumni requests");
-      const data = await response.json();
-      setAlumniRequests(data);
+      const response = await fetch(
+        `${Constant.BASE_URL}/admin/${email}/unverified-alumni/${requestId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (response.ok) {
+        setAlumni((prevAlumni) =>
+          prevAlumni.filter((request) => request._id !== requestId)
+        );
+      } else {
+        alert("Failed to reject request.");
+      }
     } catch (error) {
-      console.error("Error fetching alumni requests:", error);
+      console.error("Error rejecting request:", error);
     }
   };
 
-  // Handle view alumni requests button click
-  const handleViewAlumniRequests = () => {
-    fetchAlumniRequests();
-    setShowAlumniRequests(true);
-  };
+  // Handle adding a moderator
+  const handleAddModerator = async (e) => {
+    e.preventDefault();
 
-  // Handle verify alumni request
-  const handleVerifyAlumni = async (alumniId) => {
+    // Validate email
+    if (!moderatorEmail) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    // Check if the email is already a moderator
+    const isAlreadyModerator = moderators.some(
+      (mod) => mod.email.toLowerCase() === moderatorEmail.toLowerCase()
+    );
+
+    if (isAlreadyModerator) {
+      alert("This email is already added as a moderator.");
+      setModeratorEmail(""); // Clear the input field
+      return;
+    }
+
     try {
-      // Make an API call to verify the alumni
-      const response = await fetch(`/api/alumni/${alumniId}/verify`, {
-        method: "PUT", // or PATCH, depending on your API
+      const response = await fetch(`${Constant.BASE_URL}/admin/${email}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ moderators: [...moderators, moderatorEmail] }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to verify alumni");
+      if (response.ok) {
+        const updatedModerators = [...moderators, moderatorEmail];
+        setModerators(updatedModerators);
+        setModeratorEmail(""); // Clear the input field
+        alert("Moderator added successfully!");
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to add moderator.");
       }
-
-      // Update the state to remove the verified alumni from the requests list
-      setAlumniRequests((prevRequests) =>
-        prevRequests.filter((request) => request.id !== alumniId)
-      );
     } catch (error) {
-      console.error("Error verifying alumni:", error);
+      console.error("Error adding moderator:", error.message);
+      alert(`Error: ${error.message}`);
     }
   };
 
-  // Handle reject alumni request
-  const handleRejectAlumni = async (alumniId) => {
+  // Handle removing a moderator
+  const handleRemoveModerator = async (moderatorId) => {
     try {
-      // Make an API call to reject the alumni
-      const response = await fetch(`/api/alumni/${alumniId}/reject`, {
-        method: "DELETE", // or PATCH, depending on your API
+      const response = await fetch(`${Constant.BASE_URL}/admin/${email}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          moderators: moderators.filter((mod) => mod !== moderatorId),
+        }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to reject alumni");
+      if (response.ok) {
+        setModerators((prevModerators) =>
+          prevModerators.filter((mod) => mod !== moderatorId)
+        );
+        alert("Moderator removed successfully!");
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to remove moderator.");
       }
-
-      // Update the state to remove the rejected alumni from the requests list
-      setAlumniRequests((prevRequests) =>
-        prevRequests.filter((request) => request.id !== alumniId)
-      );
     } catch (error) {
-      console.error("Error rejecting alumni:", error);
+      console.error("Error removing moderator:", error.message);
+      alert(`Error: ${error.message}`);
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (!admin) return null;
+  // Upload portal image
+  const handleUploadPortalImage = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch(
+        `${Constant.BASE_URL}/admin/post-portal-img/${email}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (response.ok) {
+        alert("Portal image uploaded successfully!");
+        // Refresh images
+        const refreshResponse = await fetch(
+          `${Constant.BASE_URL}/admin/get-portal-img/${email}`
+        );
+        if (refreshResponse.ok) {
+          const data = await refreshResponse.json();
+          setHomepageImages(data);
+        }
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to upload portal image.");
+      }
+    } catch (error) {
+      console.error("Error uploading portal image:", error.message);
+      alert(`Error: ${error.message}`);
+    }
+  };
+
+  // Function to handle scrolling to the section
+  const scrollToSection = (sectionRef) => {
+    if (sectionRef.current) {
+      sectionRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
 
   return (
     <div className="admin-panel">
@@ -213,11 +354,35 @@ const AdminPanel = () => {
         <div className="navbar-title">Admin Panel</div>
         <div className="navbar-links">
           <button onClick={() => navigate("/event")}>Add Event</button>
-          <button onClick={() => navigate("/view-students")}>
-            View All Student Details
+          <button
+            onClick={() => {
+              setViewStudents(!viewStudents);
+              if (!viewStudents && studentsSectionRef.current) {
+                scrollToSection(studentsSectionRef);
+              }
+            }}
+          >
+            {viewStudents ? "Hide Student Details" : "View All Student Details"}
           </button>
-          <button onClick={handleViewAlumniRequests}>
-            View Alumni Requests
+          <button
+            onClick={() => {
+              setViewRequests(!viewRequests);
+              if (!viewRequests && alumniRequestsSectionRef.current) {
+                scrollToSection(alumniRequestsSectionRef);
+              }
+            }}
+          >
+            {viewRequests ? "Hide Alumni Requests" : "View Alumni Requests"}
+          </button>
+          <button
+            onClick={() => {
+              setShowAddModeratorPopup(true);
+              if (addModeratorSectionRef.current) {
+                scrollToSection(addModeratorSectionRef);
+              }
+            }}
+          >
+            Add Moderator
           </button>
         </div>
       </nav>
@@ -225,11 +390,18 @@ const AdminPanel = () => {
       {/* Carousel Section */}
       <section className="carousel-section">
         <h2>Featured Content</h2>
-        <ImageSlider
-          url={"https://picsum.photos/v2/list"}
-          page={"1"}
-          limit={"10"}
+        <ImageSlider images={homepageImages} />
+        <input
+          type="file"
+          onChange={(e) => handleUploadPortalImage(e.target.files[0])}
+          style={{ display: "none" }}
+          id="upload-portal-image"
         />
+        <button
+          onClick={() => document.getElementById("upload-portal-image").click()}
+        >
+          Upload Portal Image
+        </button>
       </section>
 
       {/* Statistics Section */}
@@ -243,7 +415,6 @@ const AdminPanel = () => {
             height={400}
           />
         </div>
-
         <div className="pie-chart-container">
           <h3>Total Students vs Alumni</h3>
           <Chart
@@ -255,41 +426,143 @@ const AdminPanel = () => {
         </div>
       </section>
 
-      {/* Alumni Requests Section */}
-      {showAlumniRequests && (
-        <section className="alumni-requests-section">
+      {/* View Students Section */}
+      {viewStudents && (
+        <section
+          className="students-section"
+          ref={studentsSectionRef}
+          style={{ minHeight: "300px" }}
+        >
+          <h2>Student and Alumni Details</h2>
+
+          {/* Students Table */}
+          <div className="table-container">
+            <h3>Students</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {students.length > 0 ? (
+                  students.map((student) => (
+                    <tr key={student._id}>
+                      <td>{student.name}</td>
+                      <td>{student.email}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="2">No students available.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Alumni Table */}
+          <div className="table-container">
+            <h3>Alumni</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {alumni.length > 0 ? (
+                  alumni.map((alumnus) => (
+                    <tr key={alumnus._id}>
+                      <td>{alumnus.name}</td>
+                      <td>{alumnus.email}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="2">No alumni available.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
+      {/* View Alumni Requests Section */}
+      {viewRequests && (
+        <section
+          className="alumni-requests-section"
+          ref={alumniRequestsSectionRef}
+          style={{ minHeight: "300px" }}
+        >
           <h2>Alumni Requests</h2>
-          <ul className="alumni-requests-list">
-            {alumniRequests.map((request) => (
-              <li key={request.id} className="alumni-request-item">
-                <div className="alumni-details">
-                  <p>
-                    <strong>Name:</strong> {request.name}
-                  </p>
-                  <p>
-                    <strong>Email:</strong> {request.email}
-                  </p>
-                  {/* Add more details as needed */}
-                </div>
-                <div className="alumni-actions">
-                  <button className="view-photo-button">View Photo</button>
-                  <button
-                    className="verify-button"
-                    onClick={() => handleVerifyAlumni(request.id)}
-                  >
-                    Verify
+          <div className="requests-container">
+            {alumni.length > 0 ? (
+              alumni.map((request) => (
+                <div key={request._id} className="request-card">
+                  <h3>{request.name}</h3>
+                  <p>Email: {request.email}</p>
+                  <p>Graduation Year: {request.graduationYear}</p>
+                  <button onClick={() => navigate(`/profile/${request._id}`)}>
+                    View Profile
                   </button>
-                  <button
-                    className="reject-button"
-                    onClick={() => handleRejectAlumni(request.id)}
-                  >
+                  <button onClick={() => handleAccept(request._id)}>
+                    Accept
+                  </button>
+                  <button onClick={() => handleReject(request._id)}>
                     Reject
                   </button>
                 </div>
-              </li>
-            ))}
-          </ul>
+              ))
+            ) : (
+              <p>No requests are pending.</p>
+            )}
+          </div>
         </section>
+      )}
+
+      {/* Add Moderator Popup */}
+      {showAddModeratorPopup && (
+        <div
+          className="popup-overlay"
+          ref={addModeratorSectionRef}
+          style={{ minHeight: "300px" }}
+        >
+          <div className="popup-content request-card">
+            <h2>Add Moderator</h2>
+            <form onSubmit={handleAddModerator}>
+              <input
+                type="email"
+                placeholder="Enter moderator's email"
+                value={moderatorEmail}
+                onChange={(e) => setModeratorEmail(e.target.value)}
+                required
+              />
+              <button type="submit">Add Moderator</button>
+              <button onClick={() => setShowAddModeratorPopup(false)}>
+                Cancel
+              </button>
+            </form>
+            {moderators.length > 0 && (
+              <div className="moderator-list">
+                <h3>Current Moderators</h3>
+                <ul>
+                  {moderators.map((moderator, index) => (
+                    <li key={index}>
+                      {moderator}
+                      <button onClick={() => handleRemoveModerator(moderator)}>
+                        Remove
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
