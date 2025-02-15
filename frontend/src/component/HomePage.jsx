@@ -15,7 +15,7 @@ const Homepage = () => {
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const email = localStorage.getItem("email")
+  const email = localStorage.getItem("email");
 
   useEffect(() => {
     if (localStorage.getItem("jwt") == null) {
@@ -109,68 +109,68 @@ const Homepage = () => {
 
   return (
     <>
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className="homepage--error-message">{error}</div>}
       <div id="homepage">
         <Navbar />
         <ProfileCompletionMessage />
         <ImageSlider url={`${Constant.BASE_URL}/admin/get-portal-img/${email}`} />
 
         {/* Events Carousel Section */}
-        <section className="events-carousel-section">
-          <div className="events-header">
+        <section className="homepage--events-carousel-section">
+          <div className="homepage--events-header">
             <h2>Upcoming Events</h2>
-            
-              <button
-                className="view-all-events"
-                onClick={() => navigate("/event")}
-              >
-                View More
-              </button>
-          
+            <button
+              className="homepage--view-all-events"
+              onClick={() => navigate("/event")}
+            >
+              View More
+            </button>
           </div>
           {loading ? (
             <div>Loading events...</div>
           ) : events.length > 0 ? (
             <div
-              className="events-carousel"
+              className="homepage--events-carousel"
               onMouseEnter={() => setIsPaused(true)} // 🛑 Pause on hover
               onMouseLeave={() => setIsPaused(false)} // ▶ Resume on mouse leave
             >
               {/* Left Arrow */}
-              
+              <button className="homepage--carousel-arrow" onClick={handlePrevious}>
+                &lt;
+              </button>
 
               {displayedEvents.map((event, index) => (
                 <div
                   key={event.id}
-                  className={`event-card ${
-                    currentSlide === index ? "current-event" : "hide-event"
+                  className={`homepage--event-card ${
+                    currentSlide === index ? "homepage--current-event" : "homepage--hide-event"
                   }`}
                 >
                   {event.imgUrl && (
-                    <div className="event-image-container">
+                    <div className="homepage--event-image-container">
                       <img
                         src={event.imgUrl}
                         alt={event.name}
-                        className="event-image"
+                        className="homepage--event-image"
                       />
                     </div>
                   )}
-                  <div className="event-details">
+                  <div className="homepage--event-details">
                     <h3>{event.name}</h3>
-                    <p className="event-date">
+                    <p className="homepage--event-date">
                       {new Date(event.date).toLocaleDateString()} (
                       {formatDistanceToNow(new Date(event.date), {
                         addSuffix: true,
                       })}
                       )
                     </p>
-                    <p className="event-location">Location: {event.location}</p>
-                    <p className="event-description">
+                    <p className="homepage--event-location">Location: {event.location}</p>
+                    <p className="homepage--event-description">
                       {event.description.substring(0, 100)}...
                     </p>{" "}
                     {/* Display a snippet */}
                     <button
-                      className="event-view-more"
+                      className="homepage--event-view-more"
                       onClick={() => navigate("/event")} // Navigate to full event details page
                     >
                       View More
@@ -179,7 +179,9 @@ const Homepage = () => {
                 </div>
               ))}
               {/* Right Arrow */}
-              
+              <button className="homepage--carousel-arrow" onClick={handleNext}>
+                &gt;
+              </button>
             </div>
           ) : (
             <div>No upcoming events.</div>
