@@ -75,8 +75,30 @@ const ReferralPage = () => {
       });
 
       if (response.ok) {
-        fetchAllReferrals(); // Refresh all referrals
-        fetchMyReferrals(); // Refresh my referrals
+        const newReferral = await response.json();
+
+        // Dynamically update the state
+        if (editReferralId) {
+          // Update existing referral
+          setAllReferrals((prevReferrals) =>
+            prevReferrals.map((referral) =>
+              referral._id === editReferralId ? newReferral : referral
+            )
+          );
+          setMyReferrals((prevReferrals) =>
+            prevReferrals.map((referral) =>
+              referral._id === editReferralId ? newReferral : referral
+            )
+          );
+        } else {
+          // Add new referral
+          setAllReferrals((prevReferrals) => [...prevReferrals, newReferral]);
+          if (newReferral.postedBy === userEmail) {
+            setMyReferrals((prevReferrals) => [...prevReferrals, newReferral]);
+          }
+        }
+
+        // Reset form fields
         setShowPostForm(false); // Hide the form after submission
         setJobRole("");
         setSkillsRequired("");
@@ -97,6 +119,11 @@ const ReferralPage = () => {
 
   // Handle editing a referral
   const handleEdit = (referral) => {
+    if (referral.postedBy !== userEmail) {
+      alert("You are not authorized to edit this referral.");
+      return;
+    }
+
     setJobRole(referral.jobRole);
     setSkillsRequired(referral.skillsRequired.join(", "));
     setPackageAmount(referral.packageAmount);
@@ -114,8 +141,13 @@ const ReferralPage = () => {
         method: "DELETE",
       });
       if (response.ok) {
-        fetchAllReferrals();
-        fetchMyReferrals();
+        // Remove the deleted referral from both states
+        setAllReferrals((prevReferrals) =>
+          prevReferrals.filter((referral) => referral._id !== referralId)
+        );
+        setMyReferrals((prevReferrals) =>
+          prevReferrals.filter((referral) => referral._id !== referralId)
+        );
       } else {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to delete referral");
@@ -283,4 +315,4 @@ const ReferralPage = () => {
   );
 };
 
-export default ReferralPage;     
+export default ReferralPage;
