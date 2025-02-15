@@ -1,37 +1,22 @@
-/* General Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f6f8;
-  color: #333;
-}
-
-/* Admin Panel Container */
 .admin-panel {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-/* Navbar */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #1e3a8a;
   color: white;
-  padding: 15px 20px; /* Increased padding for better touch targets */
+  padding: 15px 20px;
   border-radius: 8px;
   margin-bottom: 20px;
 }
 
 .navbar-title {
-  font-size: 1.8rem; /* Increased font size for better visibility */
+  font-size: 1.8rem;
   font-weight: bold;
 }
 
@@ -39,72 +24,124 @@ body {
   background-color: transparent;
   color: white;
   border: none;
-  padding: 8px 15px; /* Increased padding for better touch targets */
+  padding: 8px 15px;
   cursor: pointer;
   font-size: 1rem;
-  transition: color 0.3s ease, background-color 0.3s ease; /* Added transition for background */
+  transition: color 0.3s ease, background-color 0.3s ease;
+  border-radius: 4px;
 }
 
 .navbar-links button:hover {
-  color: #ffcc00; /* Change color on hover */
+  color: #ffcc00;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Carousel Section */
 .carousel-section {
   margin-bottom: 20px;
 }
 
-.carousel-section h2 {
-  text-align: center;
-  margin-bottom: 15px; /* Increased margin for better spacing */
-  color: #1e3a8a;
-}
-
-/* Statistics Section */
 .statistics-section {
   display: flex;
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  flex-wrap: wrap;
   gap: 20px;
 }
 
-/* Histogram Container */
-.histogram-container {
-  background-color: white; /* Optional background color */
+.histogram-container,
+.pie-chart-container {
+  background-color: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  flex-grow: 1; /* Allow it to grow */
-  min-width: 600px; /* Minimum width for better visibility */
+  flex-grow: 1;
+  min-width: 300px;
 }
 
-/* Pie Chart Container */
-.piechart-container {
-  background-color: white; /* Optional background color */
-  padding: 20px;
+.table-container {
+  margin-bottom: 30px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+table th {
+  background-color: #f4f6f8;
+}
+
+.requests-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.request-card {
+  background-color: white;
+  padding: 15px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  flex-grow: 1; /* Allow it to grow */
+  flex-basis: calc(33% - 20px);
 }
 
-/* Chart Titles */
-.histogram-container h3,
-.piechart-container h3 {
+.request-card h3 {
+  margin: 0 0 10px;
+}
+
+.request-card p {
+  margin: 5px 0;
+}
+
+.request-card button {
+  margin-right: 10px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.request-card button:hover {
+  opacity: 0.8;
+}
+
+.add-moderator-section {
+  margin-top: 20px;
+}
+
+.add-moderator-section h2 {
   margin-bottom: 10px;
-  color: #1e3a8a;
 }
 
-/* Pie Chart Legend */
-.piechart-legend {
-  margin-top: 10px; /* Space above the legend */
-  font-size: 0.9rem; /* Slightly smaller font size for legend items */
+.add-moderator-section form {
+  display: flex;
+  gap: 10px;
 }
 
-.legend-dot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  margin-right: 5px;
+.add-moderator-section input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  flex-grow: 1;
+}
+
+.add-moderator-section button {
+  padding: 10px 20px;
+  background-color: #2962ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-moderator-section button:hover {
+  background-color: #1c4ab8;
 }
 
 .popup-overlay {
@@ -113,40 +150,69 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .popup-content {
-  background: white;
+  background-color: white;
   padding: 20px;
   border-radius: 8px;
-  width: 80%;
-  max-width: 600px;
-  position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  max-width: 90%;
 }
 
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: red;
-  color: white;
+.popup-content h2 {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.popup-content input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.popup-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.popup-actions button {
+  padding: 10px 20px;
   border: none;
-  padding: 5px 10px;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-  .statistics-section {
-    flex-direction: column; /* Stack charts vertically on smaller screens */
-  }
+.popup-actions button[type="submit"] {
+  background-color: #2962ff;
+  color: white;
+}
 
-  .histogram-container,
-  .piechart-container {
-    width: calc(100% - 40px); /* Ensure full width minus gaps */
-  }
+.popup-actions button[type="button"] {
+  background-color: #ccc;
+  color: black;
+}
+
+.popup-actions button:hover {
+  opacity: 0.8;
+}
+
+.popup-overlay ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.popup-overlay li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
