@@ -390,7 +390,7 @@ const AdminPanel = () => {
       {/* Carousel Section */}
       <section className="carousel-section">
         <h2>Featured Content</h2>
-        <ImageSlider images={homepageImages} />
+        <ImageSlider url={`${Constant.BASE_URL}/admin/get-portal-img/${email}`} />
         <input
           type="file"
           onChange={(e) => handleUploadPortalImage(e.target.files[0])}

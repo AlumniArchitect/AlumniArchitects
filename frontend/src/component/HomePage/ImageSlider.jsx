@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from "react-icons/bs";
 import "../../style/HomePage/ImageSlider.css";
 
-export default function ImageSlider({ url, limit = 5, page = 1 }) {
+export default function ImageSlider({ url }) {
   const [images, setImages] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -14,7 +14,7 @@ export default function ImageSlider({ url, limit = 5, page = 1 }) {
     try {
       setLoading(true);
 
-      const response = await fetch(`${getUrl}?page=${page}&limit=${limit}`);
+      const response = await fetch(`${getUrl}`);
       const data = await response.json();
 
       if (data) {
@@ -42,11 +42,11 @@ export default function ImageSlider({ url, limit = 5, page = 1 }) {
     if (images.length > 0 && !isPaused) {
       const interval = setInterval(() => {
         handleNext();
-      }, 2000); // Change slide every 2 seconds
+      }, 2000);
 
       return () => clearInterval(interval);
     }
-  }, [images, currentSlide, isPaused]); // Stop sliding when paused
+  }, [images, currentSlide, isPaused]);
 
   // Fetch images when the URL changes
   useEffect(() => {
@@ -64,8 +64,8 @@ export default function ImageSlider({ url, limit = 5, page = 1 }) {
   return (
     <div 
       className="container"
-      onMouseEnter={() => setIsPaused(true)}  // 🛑 Pause on hover
-      onMouseLeave={() => setIsPaused(false)} // ▶ Resume on mouse leave
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
     >
       {/* Left Arrow */}
       <BsArrowLeftCircleFill
@@ -77,9 +77,8 @@ export default function ImageSlider({ url, limit = 5, page = 1 }) {
       {images && images.length
         ? images.map((imageItem, index) => (
             <img
-              key={imageItem.id}
               alt={imageItem.download_url}
-              src={imageItem.download_url}
+              src={imageItem}
               className={
                 currentSlide === index
                   ? "current-image"

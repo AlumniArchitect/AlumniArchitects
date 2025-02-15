@@ -48,7 +48,13 @@ public class AdminController {
         }
 
         String imgUrl = cloudinaryService.uploadImg(file);
+
+        if (admin.getPortalImages() == null) {
+            admin.setPortalImages(new ArrayList<>());
+        }
+
         admin.getPortalImages().add(imgUrl);
+        adminService.updateAdmin(admin);
 
         return new ResponseEntity<>(true, HttpStatus.CREATED);
     }

@@ -6,8 +6,7 @@ import Footer from "./footer/Footer";
 import ImageSlider from "./HomePage/ImageSlider";
 import Constant from "../utils/Constant";
 import { formatDistanceToNow } from "date-fns";
-import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from "react-icons/bs"; // Import arrow icons
-import "../style/HomePage.css"; // Import CSS for styling
+import "../style/HomePage.css";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -15,7 +14,8 @@ const Homepage = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false); // Carousel pause state
+  const [isPaused, setIsPaused] = useState(false);
+  const email = localStorage.getItem("email")
 
   useEffect(() => {
     if (localStorage.getItem("jwt") == null) {
@@ -113,7 +113,7 @@ const Homepage = () => {
       <div id="homepage">
         <Navbar />
         <ProfileCompletionMessage />
-        <ImageSlider url={""} />
+        <ImageSlider url={`${Constant.BASE_URL}/admin/get-portal-img/${email}`} />
 
         {/* Events Carousel Section */}
         <section className="events-carousel-section">
