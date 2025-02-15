@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AlertTriangle, HelpCircle, Mail, Trash2, Shield } from "lucide-react";
 import "../../style/navbar/Setting.css";
 import Constant from "../../utils/Constant.js";
@@ -14,6 +14,12 @@ export default function Setting() {
     description: "",
     image: null,
   });
+
+  useEffect(() => {
+    if (localStorage.getItem("jwt") == null) {
+      navigate("/signin");
+    }
+  }, [navigate, error]);
 
   // FAQ Data
   const faqs = [
@@ -136,7 +142,7 @@ export default function Setting() {
             rel="noopener noreferrer"
             className="mail-link"
           >
-            <Mail size={18}/> &nbsp;Click here to report a bug via email.
+            <Mail size={18} /> &nbsp;Click here to report a bug via email.
           </a>
         </div>
       </>
@@ -225,9 +231,9 @@ export default function Setting() {
         <h4>Contact Us</h4>
         <p>
           If you have any questions about this Privacy Policy, please contact us
-          at 
+          at
           <a href="https://mail.google.com/mail/?view=cm&fs=1&to=alumniarchitect@gmail.com" target="blank"
-          rel="noopener noreferrer">
+            rel="noopener noreferrer">
             alumniarchitect@gmail.com
           </a>
           .

@@ -65,6 +65,10 @@ export default function Navbar() {
     navigate("/resource");
   };
 
+  const handleReferralClick = () =>{
+    navigate("/referral");
+  }
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -180,7 +184,7 @@ export default function Navbar() {
           <FaExclamationCircle className="icon" /> {error}
         </div>
       )}
-      <div className="navbar">
+      <div className="nav-navbar">
         <div className="navbar-section" onClick={toggleMenu}>
           <div className="p-img">
             <img
@@ -234,6 +238,8 @@ export default function Navbar() {
               <FaBloggerB /> &nbsp; Blog</li>
               <li onClick={handleResourceClick}>
               <IoLibrary /> &nbsp; Resource Library</li>
+              <hr />
+              <li onClick={handleReferralClick}>Referral </li>
               <hr />
               <li onClick={handleSettingClick}>
                 <FaCog /> &nbsp; Settings

@@ -1,11 +1,13 @@
 package com.alumniarchitect.controller.user;
 
+import com.alumniarchitect.entity.Admin;
 import com.alumniarchitect.entity.UnverifiedUser;
 import com.alumniarchitect.entity.User;
 import com.alumniarchitect.enums.USER_TYPE;
 import com.alumniarchitect.request.auth.AuthRequest;
 import com.alumniarchitect.request.verificaton.VerifyOtpRequest;
 import com.alumniarchitect.response.auth.AuthResponse;
+import com.alumniarchitect.service.admin.AdminService;
 import com.alumniarchitect.service.blog.BlogService;
 import com.alumniarchitect.service.collageGroup.CollegeGroupService;
 import com.alumniarchitect.service.skills.SkillsService;
@@ -45,10 +47,10 @@ public class AuthController {
     private CustomUserDetailService customUserDetailService;
 
     @Autowired
-    private EmailService emailService;
+    private CollegeGroupService collegeGroupService;
 
     @Autowired
-    private CollegeGroupService collegeGroupService;
+    private EmailService emailService;
 
     private final Map<String, String> otpStorage = new HashMap<>();
 
@@ -60,8 +62,12 @@ public class AuthController {
 
     @Autowired
     private SkillsService skillsService;
+
     @Autowired
     private UnverifiedUserService unverifiedUserService;
+
+    @Autowired
+    private AdminService adminService;
 
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> signup(@RequestBody User user) throws Exception {
@@ -80,10 +86,53 @@ public class AuthController {
 
         emailService.sendVerificationOtpMail(user.getEmail(), otp);
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userService.saveUser(user);
+        if(user.getType().equals(USER_TYPE.STUDENT)) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userService.saveUser(user);
+        }else {
+            UnverifiedUser unverifiedUser = new UnverifiedUser();
+            unverifiedUser.setEmail(user.getEmail());
+            unverifiedUser.setUser(user);
+
+            unverifiedUserService.addUnverifiedUser(unverifiedUser);
+        }
 
         return ResponseEntity.ok(new AuthResponse(null, true, "OTP sent to email. Verify to complete registration."));
+    }
+
+    @PostMapping("admin")
+    public ResponseEntity<Boolean> addAdmin(@RequestBody Admin admin) throws MessagingException {
+        if (admin == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if(EmailService.isValidCollegeEmail(admin.getEmail()) && Character.isDigit(admin.getEmail().charAt(0))) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if(adminService.findAdminByEmail(admin.getEmail()) != null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        String otp = OTPUtils.generateOTP();
+        otpStorage.put(admin.getEmail(), otp);
+
+        emailService.sendVerificationOtpMail(admin.getEmail(), otp);
+
+        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+
+        admin.setCollegeName(EmailService.extractCollegeName(admin.getEmail()));
+        adminService.addAdmin(admin);
+
+        return new ResponseEntity<>(true, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/admin/verify-otp")
+    public ResponseEntity<Boolean> verifyOtpForAdmin(@RequestBody VerifyOtpRequest verifyOtpRequest) {
+        if (!validateOtp(verifyOtpRequest.getEmail(), verifyOtpRequest.getOtp())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(true, HttpStatus.CREATED);
     }
 
     @PostMapping("/verify-otp")
@@ -159,7 +208,31 @@ public class AuthController {
         return new ResponseEntity<>(new AuthResponse(null, true, "User verification sent."), HttpStatus.OK);
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/admin/signin")
+    public ResponseEntity<AuthResponse> adminSignin(@RequestBody(required = false) AuthRequest authRequest, HttpServletRequest request) {
+        Admin admin = adminService.findAdminByEmail(authRequest.getEmail());
+
+        if(admin == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AuthResponse(null, false, "Admin not found"));
+        }
+
+        boolean val = passwordEncoder.matches(authRequest.getPassword(), admin.getPassword());
+
+        if(!val) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AuthResponse(null, false, "Invalid credentials"));
+        }
+
+        Authentication auth = authenticate(admin.getEmail(), authRequest.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        String jwt = JwtProvider.generateToken(auth);
+        System.out.println(jwt);
+        return ResponseEntity.ok(new AuthResponse(jwt, true, "Admin authenticated successfully"));
+    }
+
+    @PostMapping("/user/signin")
     public ResponseEntity<AuthResponse> signin(@RequestBody(required = false) AuthRequest authRequest, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
 
@@ -168,23 +241,34 @@ public class AuthController {
         }
 
         User user = userService.findByEmail(authRequest.getEmail());
-
-        if (user == null || !passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
-            return new ResponseEntity<>(new AuthResponse(null, false, "Invalid email or password"),
-                    HttpStatus.UNAUTHORIZED);
+        if(user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AuthResponse(null, false, "User not found"));
         }
 
-        if(!user.isVerified()) {
-            return new ResponseEntity<>(new AuthResponse(null, false, "Please verify first."),
-                    HttpStatus.UNAUTHORIZED);
+        boolean val = passwordEncoder.matches(authRequest.getPassword(), user.getPassword());
+
+        if(!val) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AuthResponse(null, false, "Invalid credentials"));
         }
 
         Authentication auth = authenticate(user.getEmail(), authRequest.getPassword());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         String jwt = JwtProvider.generateToken(auth);
+        return ResponseEntity.ok(new AuthResponse(jwt, true, "User authenticated successfully"));
+    }
 
-        return ResponseEntity.ok(new AuthResponse(jwt, true, "Login Success"));
+    @GetMapping("/admin/{email}")
+    public ResponseEntity<Admin> getAdmin(@PathVariable String email) {
+        Admin admin = adminService.findAdminByEmail(email);
+
+        if (admin == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else {
+            return new ResponseEntity<>(admin, HttpStatus.OK);
+        }
     }
 
     private Authentication authenticate(String email, String password) {

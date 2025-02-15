@@ -1,17 +1,123 @@
 import "../../style/Admin/AdminPanel.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import ImageSlider from "../HomePage/ImageSlider";
+import Chart from "react-apexcharts";
+import Constant from "../../utils/Constant.js";
 
 const AdminPanel = () => {
+  const [admin, setAdmin] = useState(null);
   const [homepageImages, setHomepageImages] = useState([]);
   const [moderators, setModerators] = useState([]);
   const [alumni, setAlumni] = useState([]);
   const [students, setStudents] = useState([]);
   const [events, setEvents] = useState([]);
-
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const email = localStorage.getItem("email");
 
-  // Generic fetch function to avoid code duplication
+  // Dummy data for charts
+  const studentData = [
+    { year: 2018, count: 50 },
+    { year: 2019, count: 70 },
+    { year: 2020, count: 100 },
+    { year: 2021, count: 120 },
+    { year: 2022, count: 150 },
+  ];
+  const alumniData = [
+    { year: 2018, count: 30 },
+    { year: 2019, count: 40 },
+    { year: 2020, count: 60 },
+    { year: 2021, count: 80 },
+    { year: 2022, count: 100 },
+  ];
+  const totalStudents = 100;
+  const totalAlumni = 50;
+
+  // Chart options for Histogram
+  const histogramOptions = {
+    chart: {
+      type: "bar",
+      height: "400",
+    },
+    xaxis: {
+      categories: studentData.map((data) => data.year),
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        endingShape: "rounded",
+        columnWidth: "70%",
+      },
+    },
+    dataLabels: {
+      enabled: true,
+    },
+  };
+
+  // Series data for Histogram
+  const histogramSeries = [
+    {
+      name: "Students",
+      data: studentData.map((data) => data.count),
+    },
+    {
+      name: "Alumni",
+      data: alumniData.map((data) => data.count),
+    },
+  ];
+
+  // Series data for Pie Chart
+  const pieChartSeries = [totalStudents, totalAlumni];
+
+  // Chart options for Pie Chart
+  const pieChartOptions = {
+    chart: {
+      type: "donut",
+    },
+    labels: ["Students", "Alumni"],
+    dataLabels: {
+      enabled: true,
+      formatter: (val, opts) => {
+        return opts.w.globals.series[opts.seriesIndex]; // Show absolute numbers
+      },
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: "60%", // Adjust size as needed
+        },
+      },
+    },
+  };
+
+  // Fetch admin details
+  useEffect(() => {
+    const fetchAdmin = async () => {
+      try {
+        const response = await fetch(`${Constant.BASE_URL}/auth/admin/${email}`);
+        if (!response.ok) throw new Error("Failed to fetch admin");
+        const data = await response.json();
+        if (!data) {
+          navigate("/splash-screen");
+        } else {
+          setAdmin(data);
+        }
+      } catch (error) {
+        console.error("Error fetching admin:", error);
+        navigate("/splash-screen");
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (email) {
+      fetchAdmin();
+    } else {
+      navigate("/splash-screen");
+    }
+  }, [email, navigate]);
+
+  // Generic function to fetch data
   const fetchData = async (url, setter) => {
     try {
       const response = await fetch(url);
@@ -23,6 +129,7 @@ const AdminPanel = () => {
     }
   };
 
+  // Fetch all required data on component mount
   useEffect(() => {
     fetchData("/api/homepage-images", setHomepageImages);
     fetchData("/api/moderators", setModerators);
@@ -31,93 +138,43 @@ const AdminPanel = () => {
     fetchData("/api/events", setEvents);
   }, []);
 
-  const handleImageUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("image", file);
-
-    try {
-      const response = await fetch("/api/upload-image", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error("Failed to upload image");
-
-      const newImage = await response.json();
-      setHomepageImages((prevImages) => [...prevImages, newImage]);
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    }
-  };
+  if (loading) return <div>Loading...</div>;
+  if (!admin) return null;
 
   return (
     <div className="admin-panel">
-      <h1>Admin Panel</h1>
-      <div className="sections">
-        {/* Homepage Customization */}
-        <div className="section">
-          <h2>Homepage Images</h2>
-          <input type="file" onChange={handleImageUpload} />
-          <div className="image-grid">
-            {homepageImages.map((image, index) => (
-              <img key={index} src={image.url} alt={`Homepage Image ${index}`} />
-            ))}
-          </div>
-        </div>
-
-        {/* Moderator Management */}
-        <div className="section">
-          <h2>Moderators</h2>
-          <button onClick={() => navigate("/add-moderator")}>
-            Add Moderator
+      {/* Navbar */}
+      <nav className="navbar">
+        <div className="navbar-title">Admin Panel</div>
+        <div className="navbar-links">
+          <button onClick={() => navigate("/event")}>Add Event</button>
+          <button onClick={() => navigate("/view-students")}>
+            View All Student Details
           </button>
-          <div className="moderator-list">
-            {moderators.map((moderator, index) => (
-              <div key={index}>{moderator.name}</div>
-            ))}
-          </div>
-        </div>
-
-        {/* User Management */}
-        <div className="section">
-          <h2>Alumni</h2>
-          <div className="user-list">
-            {alumni.map((alumnus, index) => (
-              <div key={index}>{alumnus.name}</div>
-            ))}
-          </div>
-        </div>
-        <div className="section">
-          <h2>Students</h2>
-          <div className="user-list">
-            {students.map((student, index) => (
-              <div key={index}>{student.name}</div>
-            ))}
-          </div>
-        </div>
-
-        {/* Event Management */}
-        <div className="section">
-          <h2>Events</h2>
-          <button onClick={() => navigate("/create-event")}>Create Event</button>
-          <div className="event-list">
-            {events.map((event, index) => (
-              <div key={index}>{event.name}</div>
-            ))}
-          </div>
-        </div>
-
-        {/* Payment Gateway */}
-        <div className="section">
-          <h2>Payment Gateway</h2>
-          <button onClick={() => navigate("/payment-settings")}>
-            Configure Payment
+          <button onClick={() => navigate("/view-alumni-requests")}>
+            View Alumni Requests
           </button>
         </div>
-      </div>
+      </nav>
+
+      {/* Carousel Section */}
+      <section className="carousel-section">
+        <h2>Featured Content</h2>
+        <ImageSlider url={"https://picsum.photos/v2/list"} page={"1"} limit={"10"} />
+      </section>
+
+      {/* Statistics Section */}
+      <section className="statistics-section">
+        <div className="histogram-container">
+          <h3>Yearly Growth</h3>
+          <Chart options={histogramOptions} series={histogramSeries} type="bar" height={400} />
+        </div>
+
+        <div className="pie-chart-container">
+          <h3>Total Students vs Alumni</h3>
+          <Chart options={pieChartOptions} series={pieChartSeries} type="donut" height={400} />
+        </div>
+      </section>
     </div>
   );
 };

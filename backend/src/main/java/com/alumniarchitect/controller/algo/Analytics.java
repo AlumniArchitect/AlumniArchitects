@@ -1,18 +1,14 @@
 package com.alumniarchitect.controller.algo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+<<<<<<< HEAD
+=======
+@RequestMapping("api/analytics")
+>>>>>>> aee2404f1b876ea2356f988588593a6bf117cb40
 public class Analytics {
 
-    @Id
-    private String id;
-    private String title;
+
 }

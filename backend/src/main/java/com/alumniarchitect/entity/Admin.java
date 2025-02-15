@@ -22,7 +22,7 @@ public class Admin {
     private String email;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-    private String fullName;
+    private String fullName = "";
     private String collegeName;
     private List<String> moderators = new ArrayList<>();
     private HashMap<String, String> unverifiedAlumni = new HashMap<>();

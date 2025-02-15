@@ -7,7 +7,9 @@ export default function ImageSlider({ url, limit = 5, page = 1 }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [errorMsg, setErrorMsg] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isPaused, setIsPaused] = useState(false); // New state for pause functionality
 
+  // Fetch images from the API
   async function fetchImages(getUrl) {
     try {
       setLoading(true);
@@ -25,34 +27,53 @@ export default function ImageSlider({ url, limit = 5, page = 1 }) {
     }
   }
 
+  // Handle previous slide
   function handlePrevious() {
     setCurrentSlide(currentSlide === 0 ? images.length - 1 : currentSlide - 1);
   }
 
+  // Handle next slide
   function handleNext() {
     setCurrentSlide(currentSlide === images.length - 1 ? 0 : currentSlide + 1);
   }
 
+  // Auto-play functionality
+  useEffect(() => {
+    if (images.length > 0 && !isPaused) {
+      const interval = setInterval(() => {
+        handleNext();
+      }, 2000); // Change slide every 2 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [images, currentSlide, isPaused]); // Stop sliding when paused
+
+  // Fetch images when the URL changes
   useEffect(() => {
     if (url !== "") fetchImages(url);
   }, [url]);
 
-  console.log(images);
-
   if (loading) {
-    return <div>Loading data ! Please wait</div>;
+    return <div>Loading data! Please wait</div>;
   }
 
   if (errorMsg !== null) {
-    return <div>Error occured ! {errorMsg}</div>;
+    return <div>Error occurred! {errorMsg}</div>;
   }
 
   return (
-    <div className="container">
+    <div 
+      className="container"
+      onMouseEnter={() => setIsPaused(true)}  // 🛑 Pause on hover
+      onMouseLeave={() => setIsPaused(false)} // ▶ Resume on mouse leave
+    >
+      {/* Left Arrow */}
       <BsArrowLeftCircleFill
         onClick={handlePrevious}
         className="arrow arrow-left"
       />
+
+      {/* Images */}
       {images && images.length
         ? images.map((imageItem, index) => (
             <img
@@ -67,10 +88,14 @@ export default function ImageSlider({ url, limit = 5, page = 1 }) {
             />
           ))
         : null}
+
+      {/* Right Arrow */}
       <BsArrowRightCircleFill
         onClick={handleNext}
         className="arrow arrow-right"
       />
+
+      {/* Circle Indicators */}
       <span className="circle-indicators">
         {images && images.length
           ? images.map((_, index) => (

@@ -67,6 +67,9 @@ export default function EventPage() {
   };
 
   useEffect(() => {
+    if (localStorage.getItem("jwt") == null) {
+      navigate("/signin");
+    }
     fetchEvents();
   }, []);
 
@@ -83,9 +86,9 @@ export default function EventPage() {
       filtered = filtered.filter((event) => event.email !== userEmail);
     }
 
-    if(filters.search) {
+    if (filters.search) {
       console.log("In search");
-      
+
       filtered = filtered.filter((event) => event.description.toLowerCase().includes(search.toLowerCase()));
       filtered = filtered.filter((event) => event.name.toLowerCase().includes(search.toLowerCase()));
     }
@@ -537,7 +540,7 @@ export default function EventPage() {
               ) : (
                 <ul className="event-registered-list">
                   {eventParticipants.map((email, index) => (
-                    <li key={index} onClick={() => navigate('/profile', { state: { email } })} style={{cursor: 'pointer'}}>
+                    <li key={index} onClick={() => navigate('/profile', { state: { email } })} style={{ cursor: 'pointer' }}>
                       {email}
                     </li>
                   ))}

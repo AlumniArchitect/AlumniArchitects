@@ -47,9 +47,13 @@ export default function Homepage() {
             <div id="homepage">
                 <Navbar />
                 <ProfileCompletionMessage />
+<<<<<<< HEAD
                 <div className="event-show">
                   <ImageSlider url={"https://picsum.photos/v2/list"} page={'1'} limit={"10"}/>
                 </div>
+=======
+                <ImageSlider url={""} />
+>>>>>>> b85757628195a9d525e48027fd586ca75b94671b
                 <Footer />
             </div>
         </>
