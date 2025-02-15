@@ -71,4 +71,18 @@ public class AdminServiceImpl implements AdminService {
     public Admin findAdminByCollegeName(String collegeName) {
         return adminRepository.findByCollegeName(collegeName);
     }
+
+    @Override
+    public void updateAdmin(Admin admin) {
+        if (admin != null && admin.getEmail() != null) {
+            Admin existingAdmin = adminRepository.findByEmail(admin.getEmail());
+            if (existingAdmin != null) {
+                existingAdmin.setPortalImages(admin.getPortalImages());
+                existingAdmin.setModerators(admin.getModerators());
+                existingAdmin.setUnverifiedAlumni(admin.getUnverifiedAlumni());
+                adminRepository.save(existingAdmin);
+            }
+        }
+    }
+
 }

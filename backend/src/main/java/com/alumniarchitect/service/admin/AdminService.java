@@ -14,4 +14,5 @@ public interface AdminService {
     void updateModerators(String adminId, List<String> moderators);
     void removeFromUnverifiedList(String adminId, String userId) throws Exception;
     Admin findAdminByCollegeName(String collegeName);
+    void updateAdmin(Admin admin);
 }

@@ -98,6 +98,7 @@ public class AuthController {
         }else {
             UnverifiedUser unverifiedUser = new UnverifiedUser();
             unverifiedUser.setEmail(user.getEmail());
+
             unverifiedUser.setUser(user);
 
             unverifiedUserService.addUnverifiedUser(unverifiedUser);
