@@ -1,124 +1,218 @@
-/* General Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f6f8;
-    color: #333;
-    line-height: 1.6;
-  }
-  
-  /* Admin Panel Container */
-  .admin-panel {
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  /* Navbar */
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #1e3a8a;
-    color: white;
-    padding: 15px 20px; /* Increased padding for better touch targets */
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow for depth */
-  }
-  
-  .navbar-title {
-    font-size: 1.8rem; /* Increased font size for better visibility */
-    font-weight: bold;
-  }
-  
-  .navbar-links button {
-    background-color: transparent;
-    color: white;
-    border: none;
-    padding: 8px 15px; /* Increased padding for better touch targets */
-    cursor: pointer;
-    font-size: 1rem;
-    transition: color 0.3s ease, background-color 0.3s ease; /* Smooth hover effect */
-    border-radius: 4px; /* Rounded corners for buttons */
-  }
-  
-  .navbar-links button:hover {
-    color: #ffcc00; /* Change color on hover */
-    background-color: rgba(255, 255, 255, 0.1); /* Subtle background highlight */
-  }
-  
-  .navbar-links button:not(:last-child) {
-    margin-right: 10px; /* Space between buttons */
-  }
-  
-  /* Carousel Section */
-  .carousel-section {
-    margin-bottom: 20px;
-  }
-  
-  .carousel-section h2 {
-    text-align: center;
-    margin-bottom: 15px; /* Increased margin for better spacing */
-    color: #1e3a8a;
-    font-size: 1.5rem;
-  }
-  
-  /* Statistics Section */
-  .statistics-section {
-    display: flex;
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    gap: 20px; /* Space between chart containers */
-  }
-  
-  /* Histogram Container */
-  .histogram-container,
-  .pie-chart-container {
-    background-color: white; /* Optional background color */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    flex-grow: 1; /* Allow it to grow */
-    min-width: 300px; /* Minimum width for better visibility */
-  }
-  
-  /* Chart Titles */
-  .histogram-container h3,
-  .pie-chart-container h3 {
-    margin-bottom: 10px;
-    color: #1e3a8a;
-    font-size: 1.2rem;
-    text-align: center;
-  }
-  
-  /* Pie Chart Legend */
-  .piechart-legend {
-    margin-top: 10px; /* Space above the legend */
-    font-size: 0.9rem; /* Slightly smaller font size for legend items */
-    text-align: center;
-  }
-  
-  .legend-dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-right: 5px;
-  }
-  
-  /* Responsive Styles */
-  @media (max-width: 768px) {
-    .statistics-section {
-      flex-direction: column; /* Stack charts vertically on smaller screens */
-    }
-  
-    .histogram-container,
-    .pie-chart-container {
-      width: calc(100% - 40px); /* Ensure full width minus gaps */
-    }
-  }
+.admin-panel {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1e3a8a;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.navbar-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.navbar-links button {
+  background-color: transparent;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: color 0.3s ease, background-color 0.3s ease;
+  border-radius: 4px;
+}
+
+.navbar-links button:hover {
+  color: #ffcc00;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.carousel-section {
+  margin-bottom: 20px;
+}
+
+.statistics-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.histogram-container,
+.pie-chart-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-grow: 1;
+  min-width: 300px;
+}
+
+.table-container {
+  margin-bottom: 30px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+table th {
+  background-color: #f4f6f8;
+}
+
+.requests-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.request-card {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-basis: calc(33% - 20px);
+}
+
+.request-card h3 {
+  margin: 0 0 10px;
+}
+
+.request-card p {
+  margin: 5px 0;
+}
+
+.request-card button {
+  margin-right: 10px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.request-card button:hover {
+  opacity: 0.8;
+}
+
+.add-moderator-section {
+  margin-top: 20px;
+}
+
+.add-moderator-section h2 {
+  margin-bottom: 10px;
+}
+
+.add-moderator-section form {
+  display: flex;
+  gap: 10px;
+}
+
+.add-moderator-section input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  flex-grow: 1;
+}
+
+.add-moderator-section button {
+  padding: 10px 20px;
+  background-color: #2962ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-moderator-section button:hover {
+  background-color: #1c4ab8;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  max-width: 90%;
+}
+
+.popup-content h2 {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.popup-content input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.popup-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.popup-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.popup-actions button[type="submit"] {
+  background-color: #2962ff;
+  color: white;
+}
+
+.popup-actions button[type="button"] {
+  background-color: #ccc;
+  color: black;
+}
+
+.popup-actions button:hover {
+  opacity: 0.8;
+}
+
+.popup-overlay ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.popup-overlay li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}

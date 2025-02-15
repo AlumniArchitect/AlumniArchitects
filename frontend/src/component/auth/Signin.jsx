@@ -33,11 +33,10 @@ export default function Signin() {
           if (result.status) {
             navigate("/homepage");
           } else {
-            showError("Invalid JWT token. Please log in again.");
             localStorage.removeItem("jwt");
           }
         } catch (error) {
-          showError("Error validating JWT: " + error);
+          console.log("Error");
         }
       }
     };
