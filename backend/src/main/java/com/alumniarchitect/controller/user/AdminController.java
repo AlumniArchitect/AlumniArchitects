@@ -33,17 +33,6 @@ public class AdminController {
     @Autowired
     private UnverifiedUserService unverifiedUserService;
 
-    @GetMapping("/{email}")
-    public ResponseEntity<Admin> getAdmin(@PathVariable String email) {
-        Admin admin = adminService.findAdminByEmail(email);
-
-        if (admin == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }else {
-            return new ResponseEntity<>(admin, HttpStatus.OK);
-        }
-    }
-
     @PostMapping("/post-portal-img/{email}")
     public ResponseEntity<Boolean> postImg(@PathVariable String email, @RequestParam("file") MultipartFile file) throws IOException {
         Admin admin = adminService.findAdminByEmail(email);
