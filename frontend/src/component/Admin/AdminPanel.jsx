@@ -12,6 +12,7 @@ const AdminPanel = () => {
   const [alumni, setAlumni] = useState([]);
   const [students, setStudents] = useState([]);
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const email = localStorage.getItem("email");
 
@@ -94,7 +95,7 @@ const AdminPanel = () => {
   useEffect(() => {
     const fetchAdmin = async () => {
       try {
-        const response = await fetch(`${Constant.BASE_URL}/admin/${email}`);
+        const response = await fetch(`${Constant.BASE_URL}/auth/admin/${email}`);
         if (!response.ok) throw new Error("Failed to fetch admin");
         const data = await response.json();
         if (!data) {
@@ -105,6 +106,8 @@ const AdminPanel = () => {
       } catch (error) {
         console.error("Error fetching admin:", error);
         navigate("/splash-screen");
+      } finally {
+        setLoading(false);
       }
     };
     if (email) {
@@ -135,7 +138,7 @@ const AdminPanel = () => {
     fetchData("/api/events", setEvents);
   }, []);
 
-  // Render nothing until admin data is loaded
+  if (loading) return <div>Loading...</div>;
   if (!admin) return null;
 
   return (

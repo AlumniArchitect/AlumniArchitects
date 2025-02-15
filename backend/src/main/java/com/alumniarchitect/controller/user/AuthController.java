@@ -209,7 +209,7 @@ public class AuthController {
     }
 
     @PostMapping("/admin/signin")
-    public ResponseEntity<AuthResponse> adminSignin(@RequestBody() AuthRequest authRequest) {
+    public ResponseEntity<AuthResponse> adminSignin(@RequestBody(required = false) AuthRequest authRequest, HttpServletRequest request) {
         Admin admin = adminService.findAdminByEmail(authRequest.getEmail());
 
         if(admin == null) {
@@ -228,6 +228,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         String jwt = JwtProvider.generateToken(auth);
+        System.out.println(jwt);
         return ResponseEntity.ok(new AuthResponse(jwt, true, "Admin authenticated successfully"));
     }
 
@@ -257,6 +258,17 @@ public class AuthController {
 
         String jwt = JwtProvider.generateToken(auth);
         return ResponseEntity.ok(new AuthResponse(jwt, true, "User authenticated successfully"));
+    }
+
+    @GetMapping("/admin/{email}")
+    public ResponseEntity<Admin> getAdmin(@PathVariable String email) {
+        Admin admin = adminService.findAdminByEmail(email);
+
+        if (admin == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else {
+            return new ResponseEntity<>(admin, HttpStatus.OK);
+        }
     }
 
     private Authentication authenticate(String email, String password) {

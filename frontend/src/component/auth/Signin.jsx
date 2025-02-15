@@ -18,10 +18,9 @@ export default function Signin() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (jwt) {
+      if (jwt && role === "user") {
         try {
-          const endpoint = role === "user" ? "/auth/user/signin" : "/auth/admin/signin";
-          const res = await fetch(`${Constant.BASE_URL}${endpoint}`, {
+          const res = await fetch(`${Constant.BASE_URL}/auth/user/signin`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -32,7 +31,7 @@ export default function Signin() {
           const result = await res.json();
 
           if (result.status) {
-            navigate(role === "user" ? "/homepage" : "/adminpanel");
+            navigate("/homepage");
           } else {
             showError("Invalid JWT token. Please log in again.");
             localStorage.removeItem("jwt");
@@ -44,7 +43,7 @@ export default function Signin() {
     };
 
     fetchData();
-  }, [role, jwt, navigate]);
+  }, [role]);
 
   const handleSignin = async (e) => {
     e.preventDefault();
@@ -56,20 +55,31 @@ export default function Signin() {
 
     setLoading(true);
     try {
-      const res = await fetch(`${Constant.BASE_URL}/auth/${role}/signin`, {
+      const URL = role === "admin" ? "/auth/admin/signin" : "/auth/user/signin";
+      const res = await fetch(`${Constant.BASE_URL}${URL}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(signinInfo),
       });
 
-      const result = await res.json();
-
-      if (result.status) {
-        localStorage.setItem("email", signinInfo.email);
-        localStorage.setItem("jwt", result.jwt);
-        navigate(role === "user" ? "/homepage" : "/adminpanel");
+      if (role === "admin") {
+        const result = await res.json();
+        if (result) {
+          localStorage.setItem("jwt", jwt);
+          localStorage.setItem("email", signinInfo.email);
+          navigate("/adminpanel");
+        } else {
+          showError("Invalid admin credentials.");
+        }
       } else {
-        showError("Error : " + result.message);
+        const result = await res.json();
+        if (result.status) {
+          localStorage.setItem("email", signinInfo.email);
+          localStorage.setItem("jwt", result.jwt);
+          navigate("/homepage");
+        } else {
+          showError("Error : " + result.message);
+        }
       }
     } catch (error) {
       showError(`Error: ${error.message || "Some error occurred."}`);
