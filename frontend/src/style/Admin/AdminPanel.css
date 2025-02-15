@@ -1,124 +1,221 @@
 /* General Reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f6f8;
-    color: #333;
-    line-height: 1.6;
-  }
-  
-  /* Admin Panel Container */
-  .admin-panel {
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  /* Navbar */
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #1e3a8a;
-    color: white;
-    padding: 15px 20px; /* Increased padding for better touch targets */
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow for depth */
-  }
-  
-  .navbar-title {
-    font-size: 1.8rem; /* Increased font size for better visibility */
-    font-weight: bold;
-  }
-  
-  .navbar-links button {
-    background-color: transparent;
-    color: white;
-    border: none;
-    padding: 8px 15px; /* Increased padding for better touch targets */
-    cursor: pointer;
-    font-size: 1rem;
-    transition: color 0.3s ease, background-color 0.3s ease; /* Smooth hover effect */
-    border-radius: 4px; /* Rounded corners for buttons */
-  }
-  
-  .navbar-links button:hover {
-    color: #ffcc00; /* Change color on hover */
-    background-color: rgba(255, 255, 255, 0.1); /* Subtle background highlight */
-  }
-  
-  .navbar-links button:not(:last-child) {
-    margin-right: 10px; /* Space between buttons */
-  }
-  
-  /* Carousel Section */
-  .carousel-section {
-    margin-bottom: 20px;
-  }
-  
-  .carousel-section h2 {
-    text-align: center;
-    margin-bottom: 15px; /* Increased margin for better spacing */
-    color: #1e3a8a;
-    font-size: 1.5rem;
-  }
-  
-  /* Statistics Section */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f8;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Admin Panel Container */
+.admin-panel {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1e3a8a;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.navbar-links button {
+  background-color: transparent;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: color 0.3s ease, background-color 0.3s ease;
+  border-radius: 4px;
+}
+
+.navbar-links button:hover {
+  color: #ffcc00;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-links button:not(:last-child) {
+  margin-right: 10px;
+}
+
+/* Carousel Section */
+.carousel-section {
+  margin-bottom: 20px;
+}
+
+.carousel-section h2 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #1e3a8a;
+  font-size: 1.5rem;
+}
+
+/* Statistics Section */
+.statistics-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Histogram Container */
+.histogram-container,
+.pie-chart-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-grow: 1;
+  min-width: 300px;
+}
+
+/* Chart Titles */
+.histogram-container h3,
+.pie-chart-container h3 {
+  margin-bottom: 10px;
+  color: #1e3a8a;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+/* Pie Chart Legend */
+.piechart-legend {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+/* Alumni Requests Section */
+.alumni-requests-section {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.alumni-requests-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #1e3a8a;
+  text-align: center;
+}
+
+.alumni-requests-list {
+  list-style: none;
+  padding: 0;
+}
+
+.alumni-request-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.alumni-request-item:last-child {
+  border-bottom: none;
+}
+
+.alumni-details {
+  flex-grow: 1;
+}
+
+.alumni-details p {
+  margin: 5px 0;
+}
+
+.alumni-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.alumni-actions button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.view-photo-button {
+  background-color: #5cb85c;
+  color: white;
+}
+
+.verify-button {
+  background-color: #5bc0de;
+  color: white;
+}
+
+.reject-button {
+  background-color: #d9534f;
+  color: white;
+}
+
+.view-photo-button:hover {
+  background-color: #449d44;
+}
+
+.verify-button:hover {
+  background-color: #31b0d5;
+}
+
+.reject-button:hover {
+  background-color: #c9302c;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
   .statistics-section {
-    display: flex;
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    gap: 20px; /* Space between chart containers */
+    flex-direction: column;
   }
-  
-  /* Histogram Container */
+
   .histogram-container,
   .pie-chart-container {
-    background-color: white; /* Optional background color */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    flex-grow: 1; /* Allow it to grow */
-    min-width: 300px; /* Minimum width for better visibility */
+    width: calc(100% - 40px);
   }
-  
-  /* Chart Titles */
-  .histogram-container h3,
-  .pie-chart-container h3 {
+
+  .alumni-request-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .alumni-details {
     margin-bottom: 10px;
-    color: #1e3a8a;
-    font-size: 1.2rem;
-    text-align: center;
   }
-  
-  /* Pie Chart Legend */
-  .piechart-legend {
-    margin-top: 10px; /* Space above the legend */
-    font-size: 0.9rem; /* Slightly smaller font size for legend items */
-    text-align: center;
+
+  .alumni-actions {
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
   }
-  
-  .legend-dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-right: 5px;
-  }
-  
-  /* Responsive Styles */
-  @media (max-width: 768px) {
-    .statistics-section {
-      flex-direction: column; /* Stack charts vertically on smaller screens */
-    }
-  
-    .histogram-container,
-    .pie-chart-container {
-      width: calc(100% - 40px); /* Ensure full width minus gaps */
-    }
-  }
+}
