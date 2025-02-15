@@ -3,6 +3,7 @@ import { AlertTriangle, HelpCircle, Mail, Trash2, Shield } from "lucide-react";
 import "../../style/navbar/Setting.css";
 import Constant from "../../utils/Constant.js";
 import { useNavigate } from "react-router-dom";
+import Navbar2 from "./Navbar2.jsx";
 
 export default function Setting() {
   const [selectedOption, setSelectedOption] = useState("Select an option");
@@ -283,6 +284,7 @@ export default function Setting() {
   };
 
   return (
+    <><Navbar2 />
     <div className="settings-container">
       {error && <div className="setting-message">{error}</div>}
       <div className="setting-sidebar">
@@ -347,5 +349,6 @@ export default function Setting() {
         </div>
       </div>
     </div>
+    </>
   );
 }

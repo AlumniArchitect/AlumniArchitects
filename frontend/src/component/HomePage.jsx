@@ -113,7 +113,7 @@ const Homepage = () => {
       <div id="homepage">
         <Navbar />
         <ProfileCompletionMessage />
-        <ImageSlider url={""} />
+        <ImageSlider url={"https://picsum.photos/v2/list"} page={'1'} limit={"10"}/>
 
         {/* Events Carousel Section */}
         <section className="events-carousel-section">
