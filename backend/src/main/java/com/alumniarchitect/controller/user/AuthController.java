@@ -209,6 +209,10 @@ public class AuthController {
     public ResponseEntity<AuthResponse> adminSignin(@RequestBody(required = false) AuthRequest authRequest, HttpServletRequest request) {
         Admin admin = adminService.findAdminByEmail(authRequest.getEmail());
 
+        if(admin != null) {
+            return ResponseEntity.ok(new AuthResponse(null, true, "success"));
+        }
+
         if(admin == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new AuthResponse(null, false, "Admin not found"));
@@ -221,12 +225,7 @@ public class AuthController {
                     .body(new AuthResponse(null, false, "Invalid credentials"));
         }
 
-        Authentication auth = authenticate(admin.getEmail(), authRequest.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        String jwt = JwtProvider.generateToken(auth);
-        System.out.println(jwt);
-        return ResponseEntity.ok(new AuthResponse(jwt, true, "Admin authenticated successfully"));
+        return ResponseEntity.ok(new AuthResponse(null, true, "Admin authenticated successfully"));
     }
 
     @PostMapping("/user/signin")
