@@ -1,9 +1,12 @@
 package com.alumniarchitect.controller.user;
 
 import com.alumniarchitect.entity.Admin;
+import com.alumniarchitect.entity.CollegeGroup;
 import com.alumniarchitect.entity.UnverifiedUser;
+import com.alumniarchitect.entity.User;
 import com.alumniarchitect.service.admin.AdminService;
 import com.alumniarchitect.service.cloudinary.CloudinaryService;
+import com.alumniarchitect.service.collageGroup.CollegeGroupService;
 import com.alumniarchitect.service.email.EmailService;
 import com.alumniarchitect.service.unverifiedUser.UnverifiedUserService;
 import com.alumniarchitect.service.user.UserService;
@@ -32,6 +35,8 @@ public class AdminController {
 
     @Autowired
     private UnverifiedUserService unverifiedUserService;
+    @Autowired
+    private CollegeGroupService collegeGroupService;
 
     @PostMapping("/post-portal-img/{email}")
     public ResponseEntity<Boolean> postImg(@PathVariable String email, @RequestParam("file") MultipartFile file) throws IOException {
@@ -68,6 +73,24 @@ public class AdminController {
     @GetMapping("/{adminEmail}")
     public List<String> getModerators(@PathVariable String adminEmail) {
         return adminService.getModerators(adminEmail);
+    }
+
+    @GetMapping("/get-user-data/{email}")
+    public ResponseEntity<List<User>> getUserData(@PathVariable String email) {
+        if(adminService.findAdminByEmail(email) == null) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+        }
+
+        String clgname = EmailService.extractCollegeName(email);
+        CollegeGroup collegeGroups = collegeGroupService.findByCollegeName(clgname);
+        List<User> users = new ArrayList<>();
+
+        while (!collegeGroups.getEmails().isEmpty()) {
+            users.add(userService.findByEmail(collegeGroups.getEmails().get(0)));
+            collegeGroups.getEmails().remove(0);
+        }
+
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @PutMapping("/{adminEmail}")

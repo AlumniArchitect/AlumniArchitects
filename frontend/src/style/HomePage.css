@@ -6,31 +6,28 @@
 }
 
 .error-message {
-  color: red; /* Style for error messages */
+  color: red;
 }
 
 .incomplete-profile-message {
-  display: flex; /* Flexbox for alignment */
-  justify-content: space-between; /* Space between text and icon */
-  align-items: center; /* Center vertically */
-  background-color: #f8d7da; /* Light red background */
-  color: #721c24; /* Dark red text */
-  padding: 10px; /* Padding around the message */
-  border-radius: 5px; /* Rounded corners */
-  margin-top: 15px; /* Space above the message */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 15px;
 }
 
 .cancel-icon {
-  cursor: pointer; /* Pointer cursor for cancel icon */
+  cursor: pointer;
 }
 
 .completion-message {
   margin-top: 10px;
   color: green;
   font-weight: bold;
-}
-.event-title{
-  background-color: #eaf1f2;
 }
 
 .event-title{

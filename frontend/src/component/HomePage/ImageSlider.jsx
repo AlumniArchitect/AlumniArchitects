@@ -7,7 +7,7 @@ export default function ImageSlider({ url, limit = 5, page = 1 }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [errorMsg, setErrorMsg] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [isPaused, setIsPaused] = useState(false); // New state for pause functionality
+  const [isPaused, setIsPaused] = useState(false);
 
   // Fetch images from the API
   async function fetchImages(getUrl) {
