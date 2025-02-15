@@ -3,23 +3,24 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-body {
+  }
+  
+  body {
     font-family: Arial, sans-serif;
     background-color: #f4f6f8;
     color: #333;
-}
-
-/* Admin Panel Container */
-.admin-panel {
+    line-height: 1.6;
+  }
+  
+  /* Admin Panel Container */
+  .admin-panel {
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
-}
-
-/* Navbar */
-.navbar {
+  }
+  
+  /* Navbar */
+  .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -28,93 +29,96 @@ body {
     padding: 15px 20px; /* Increased padding for better touch targets */
     border-radius: 8px;
     margin-bottom: 20px;
-}
-
-.navbar-title {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow for depth */
+  }
+  
+  .navbar-title {
     font-size: 1.8rem; /* Increased font size for better visibility */
     font-weight: bold;
-}
-
-.navbar-links button {
+  }
+  
+  .navbar-links button {
     background-color: transparent;
     color: white;
     border: none;
     padding: 8px 15px; /* Increased padding for better touch targets */
     cursor: pointer;
     font-size: 1rem;
-    transition: color 0.3s ease, background-color 0.3s ease; /* Added transition for background */
-}
-
-.navbar-links button:hover {
+    transition: color 0.3s ease, background-color 0.3s ease; /* Smooth hover effect */
+    border-radius: 4px; /* Rounded corners for buttons */
+  }
+  
+  .navbar-links button:hover {
     color: #ffcc00; /* Change color on hover */
-}
-
-/* Carousel Section */
-.carousel-section {
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle background highlight */
+  }
+  
+  .navbar-links button:not(:last-child) {
+    margin-right: 10px; /* Space between buttons */
+  }
+  
+  /* Carousel Section */
+  .carousel-section {
     margin-bottom: 20px;
-}
-
-.carousel-section h2 {
+  }
+  
+  .carousel-section h2 {
     text-align: center;
     margin-bottom: 15px; /* Increased margin for better spacing */
     color: #1e3a8a;
-}
-
-/* Statistics Section */
-.statistics-section {
-    display: flex; 
+    font-size: 1.5rem;
+  }
+  
+  /* Statistics Section */
+  .statistics-section {
+    display: flex;
     flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    gap: 20px; 
-}
-
-/* Histogram Container */
-.histogram-container {
+    gap: 20px; /* Space between chart containers */
+  }
+  
+  /* Histogram Container */
+  .histogram-container,
+  .pie-chart-container {
     background-color: white; /* Optional background color */
-    padding: 20px; 
-    border-radius: 8px; 
+    padding: 20px;
+    border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     flex-grow: 1; /* Allow it to grow */
-    min-width: 600px; /* Minimum width for better visibility */
-}
-
-/* Pie Chart Container */
-.piechart-container {
-    background-color: white; /* Optional background color */
-    padding: 20px; 
-    border-radius: 8px; 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    flex-grow: 1; /* Allow it to grow */
-}
-
-/* Chart Titles */
-.histogram-container h3,
-.piechart-container h3 {
-   margin-bottom: 10px; 
-   color: #1e3a8a; 
-}
-
-/* Pie Chart Legend */
-.piechart-legend {
-   margin-top: 10px; /* Space above the legend */
-   font-size: 0.9rem; /* Slightly smaller font size for legend items */
-}
-
-.legend-dot {
-   display:inline-block; 
-   width:10px; 
-   height:10px; 
-   border-radius:50%; 
-   margin-right:5px; 
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-   .statistics-section {
-       flex-direction: column; /* Stack charts vertically on smaller screens */
-   }
-
-   .histogram-container,
-   .piechart-container {
-       width: calc(100% - 40px); /* Ensure full width minus gaps */
-   }
-}
+    min-width: 300px; /* Minimum width for better visibility */
+  }
+  
+  /* Chart Titles */
+  .histogram-container h3,
+  .pie-chart-container h3 {
+    margin-bottom: 10px;
+    color: #1e3a8a;
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  
+  /* Pie Chart Legend */
+  .piechart-legend {
+    margin-top: 10px; /* Space above the legend */
+    font-size: 0.9rem; /* Slightly smaller font size for legend items */
+    text-align: center;
+  }
+  
+  .legend-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .statistics-section {
+      flex-direction: column; /* Stack charts vertically on smaller screens */
+    }
+  
+    .histogram-container,
+    .pie-chart-container {
+      width: calc(100% - 40px); /* Ensure full width minus gaps */
+    }
+  }
