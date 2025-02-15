@@ -12,6 +12,7 @@ const ReferralPage = () => {
   const [hrContact, setHrContact] = useState("");
   const [location, setLocation] = useState("");
   const [editReferralId, setEditReferralId] = useState(null);
+  const [activeTab, setActiveTab] = useState("all"); // Tracks the active tab
   const navigate = useNavigate();
   const userEmail = localStorage.getItem("email"); // Get logged-in user's email
   const userSkills = ["React", "Node.js", "Java"]; // Replace with actual user skills from backend
@@ -46,6 +47,13 @@ const ReferralPage = () => {
   // Handle posting or updating a referral
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate required fields
+    if (!jobRole || !skillsRequired || !packageAmount || !hrContact || !location) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
     const referralData = {
       jobRole,
       skillsRequired: skillsRequired.split(",").map((skill) => skill.trim()),
@@ -54,6 +62,7 @@ const ReferralPage = () => {
       location,
       postedBy: userEmail,
     };
+
     try {
       const url = editReferralId ? `/api/referrals/${editReferralId}` : "/api/referrals";
       const method = editReferralId ? "PUT" : "POST";
@@ -64,9 +73,10 @@ const ReferralPage = () => {
         },
         body: JSON.stringify(referralData),
       });
+
       if (response.ok) {
-        fetchAllReferrals();
-        fetchMyReferrals();
+        fetchAllReferrals(); // Refresh all referrals
+        fetchMyReferrals(); // Refresh my referrals
         setShowPostForm(false); // Hide the form after submission
         setJobRole("");
         setSkillsRequired("");
@@ -74,9 +84,14 @@ const ReferralPage = () => {
         setHrContact("");
         setLocation("");
         setEditReferralId(null);
+        setActiveTab("all"); // Switch to "All Referrals" tab after posting
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to submit referral");
       }
     } catch (error) {
-      console.error("Error submitting referral:", error);
+      console.error("Error submitting referral:", error.message);
+      alert(`Error: ${error.message}`);
     }
   };
 
@@ -89,6 +104,7 @@ const ReferralPage = () => {
     setLocation(referral.location);
     setEditReferralId(referral._id);
     setShowPostForm(true);
+    setActiveTab("post"); // Open the form in "Post a Referral" tab
   };
 
   // Handle deleting a referral
@@ -100,9 +116,13 @@ const ReferralPage = () => {
       if (response.ok) {
         fetchAllReferrals();
         fetchMyReferrals();
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to delete referral");
       }
     } catch (error) {
-      console.error("Error deleting referral:", error);
+      console.error("Error deleting referral:", error.message);
+      alert(`Error: ${error.message}`);
     }
   };
 
@@ -118,27 +138,30 @@ const ReferralPage = () => {
       {/* Tabs */}
       <div className="tabs">
         <button
-          onClick={() => setShowPostForm(false)}
-          className={!showPostForm ? "active-tab" : ""}
+          onClick={() => setActiveTab("all")}
+          className={activeTab === "all" ? "active-tab" : ""}
         >
           All Referrals
         </button>
         <button
-          onClick={() => setShowPostForm(false)}
-          className={!showPostForm ? "active-tab" : ""}
+          onClick={() => setActiveTab("my")}
+          className={activeTab === "my" ? "active-tab" : ""}
         >
           My Referrals
         </button>
         <button
-          onClick={() => setShowPostForm(true)}
-          className={showPostForm ? "active-tab" : ""}
+          onClick={() => {
+            setShowPostForm(true);
+            setActiveTab("post");
+          }}
+          className={activeTab === "post" ? "active-tab" : ""}
         >
           Post a Referral
         </button>
       </div>
 
       {/* Post Referral Form */}
-      {showPostForm && (
+      {activeTab === "post" && (
         <div className="post-referral-form">
           <h2>{editReferralId ? "Edit Referral" : "Post a Referral"}</h2>
           <form onSubmit={handleSubmit}>
@@ -178,7 +201,7 @@ const ReferralPage = () => {
               required
             />
             <button type="submit">{editReferralId ? "Update Referral" : "Post Referral"}</button>
-            <button type="button" onClick={() => setShowPostForm(false)}>
+            <button type="button" onClick={() => setActiveTab("all")}>
               Cancel
             </button>
           </form>
@@ -186,7 +209,7 @@ const ReferralPage = () => {
       )}
 
       {/* All Referrals */}
-      {!showPostForm && (
+      {activeTab === "all" && (
         <div className="referral-list">
           <h2>All Referrals</h2>
           {filteredReferrals.length > 0 ? (
@@ -225,7 +248,7 @@ const ReferralPage = () => {
       )}
 
       {/* My Referrals */}
-      {!showPostForm && (
+      {activeTab === "my" && (
         <div className="referral-list">
           <h2>My Referrals</h2>
           {myReferrals.length > 0 ? (
@@ -260,4 +283,4 @@ const ReferralPage = () => {
   );
 };
 
-export default ReferralPage;
+export default ReferralPage;     

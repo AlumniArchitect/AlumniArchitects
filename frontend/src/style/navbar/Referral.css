@@ -1,0 +1,301 @@
+/* ReferralPage.css */
+
+.referral-page {
+    font-family: 'Open Sans', sans-serif;
+    margin: 30px auto;
+    max-width: 900px;
+    padding: 40px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .referral-page:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .referral-page h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 35px;
+    font-weight: 700;
+    font-size: 2.2rem;
+    letter-spacing: 0.8px;
+  }
+  
+  /* Tabs */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+    border-bottom: 2px solid #eee;
+  }
+  
+  .tabs button {
+    background-color: transparent;
+    border: none;
+    padding: 15px 30px;
+    margin: 0 10px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: #777;
+    font-weight: 600;
+    border-bottom: 3px solid transparent;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+  }
+  
+  .tabs button:hover {
+    color: #333;
+    border-bottom: 3px solid #bbb;
+  }
+  
+  .tabs button.active-tab {
+    color: #2962ff;
+    border-bottom: 3px solid #2962ff;
+  }
+  
+  /* Post Referral Form */
+  .post-referral-form {
+    padding: 40px;
+    background: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  }
+  
+  .post-referral-form h2 {
+    color: #444;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 600;
+    font-size: 1.7rem;
+  }
+  
+  .post-referral-form form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .post-referral-form input {
+    padding: 16px;
+    margin-bottom: 25px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    color: #555;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .post-referral-form input:focus {
+    border-color: #2962ff;
+    outline: none;
+    box-shadow: 0 0 8px rgba(41, 98, 255, 0.2);
+  }
+  
+  .post-referral-form .form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+  }
+  
+  .post-referral-form button {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    background-color: #2962ff;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .post-referral-form button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+  }
+  
+  .post-referral-form button:hover:not(:disabled) {
+    background-color: #1945ad;
+    transform: translateY(-2px);
+  }
+  
+  .post-referral-form button[type="button"] {
+    background-color: #777;
+  }
+  
+  .post-referral-form button[type="button"]:hover {
+    background-color: #555;
+  }
+  
+  /* Referral List */
+  .referral-list {
+    padding: 40px;
+    background: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  }
+  
+  .referral-list h2 {
+    color: #444;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.7rem;
+  }
+  
+  .referral-card {
+    margin-bottom: 30px;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  
+  .referral-card:hover {
+    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.08);
+    transform: translateY(-3px);
+  }
+  
+  .referral-card h3 {
+    color: #2962ff;
+    margin-bottom: 12px;
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+  
+  .referral-card p {
+    color: #666;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+  
+  .referral-card strong {
+    font-weight: 700;
+    color: #444;
+  }
+  
+  /* Skill Badge */
+  .skill-badge {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 25px;
+    background: #eef2ff;
+    color: #555;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .skill-badge:hover {
+    background-color: #d8e2f9;
+    color: #333;
+  }
+  
+  .skill-badge.matched-skill {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  /* Actions */
+  .actions {
+    margin-top: 20px;
+    text-align: right;
+  }
+  
+  .actions button {
+    padding: 12px 20px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background-color: #d32f2f;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .actions button:hover {
+    background-color: #b71c1c;
+    transform: translateY(-1px);
+  }
+  
+  .actions button:first-child {
+    background-color: #2962ff;
+  }
+  
+  .actions button:first-child:hover {
+    background-color: #1945ad;
+  }
+  
+  /* No Referrals Message */
+  .no-referrals {
+    text-align: center;
+    color: #777;
+    font-size: 1.2rem;
+    padding: 20px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .referral-page {
+      margin: 20px;
+      padding: 30px;
+    }
+  
+    .referral-page h1 {
+      font-size: 2rem;
+    }
+  
+    .tabs button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      margin: 0 5px;
+    }
+  
+    .post-referral-form {
+      padding: 30px;
+    }
+  
+    .post-referral-form input {
+      padding: 14px;
+      margin-bottom: 20px;
+      font-size: 1rem;
+    }
+  
+    .post-referral-form .form-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .post-referral-form button {
+      margin-bottom: 15px;
+    }
+  
+    .referral-list {
+      padding: 30px;
+    }
+  
+    .referral-card {
+      padding: 25px;
+    }
+  
+    .referral-card h3 {
+      font-size: 1.3rem;
+    }
+  
+    .referral-card p {
+      font-size: 1rem;
+    }
+  
+    .actions button {
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      margin-left: 8px;
+    }
+  }

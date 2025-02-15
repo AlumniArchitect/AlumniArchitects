@@ -241,13 +241,7 @@ export default function Navbar() {
               <IoLibrary /> &nbsp; Resource Library</li>
               <hr />
               <li onClick={handleReferralClick}>Referral </li>
-              <hr />
-              <li onClick={handleReferralClick}>Referral </li>
-              <hr />
-              <li onClick={handleReferralClick}>
-                <FaCog /> &nbsp; Referrals
-              </li>
-              <li onClick={handleSettingClick}>
+               <li onClick={handleSettingClick}>
                 <FaCog /> &nbsp; Settings
               </li>
               <li onClick={handleLogout} className="logout">
