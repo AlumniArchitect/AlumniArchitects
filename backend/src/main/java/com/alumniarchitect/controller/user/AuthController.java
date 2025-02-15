@@ -82,7 +82,7 @@ public class AuthController {
         }
 
         if(user.getType().equals(USER_TYPE.ALUMNI)) {
-            if(unverifiedUserService.findByEmail(user.getEmail()) == null) {
+            if(unverifiedUserService.findByEmail(user.getEmail()) != null) {
                 return new ResponseEntity<>(new AuthResponse(null, false, "Already exist"), HttpStatus.BAD_REQUEST);
             }
         }

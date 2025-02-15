@@ -19,7 +19,12 @@ export default function ImageSlider({ url, limit = 5, page = 1 }) {
       const response = await fetch(`${Constant.BASE_URL}/admin/get-portal-img/${email}`);
       const data = await response.json();
 
+      console.log();
+      
+
       if (data) {
+        console.log(data);
+        
         setImages(data);
         setLoading(false);
       }
