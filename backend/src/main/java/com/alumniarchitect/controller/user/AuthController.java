@@ -209,10 +209,6 @@ public class AuthController {
     public ResponseEntity<AuthResponse> adminSignin(@RequestBody(required = false) AuthRequest authRequest, HttpServletRequest request) {
         Admin admin = adminService.findAdminByEmail(authRequest.getEmail());
 
-        if(admin != null) {
-            return ResponseEntity.ok(new AuthResponse(null, true, "success"));
-        }
-
         if(admin == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new AuthResponse(null, false, "Admin not found"));
