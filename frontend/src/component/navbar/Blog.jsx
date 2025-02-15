@@ -10,6 +10,7 @@ import {
 import { format } from "date-fns";
 import "../../style/navbar/Blog.css";
 import Constant from "../../utils/Constant.js";
+import Navbar2 from "./Navbar2.jsx";
 
 const BlogUI = () => {
   const [myBlogs, setMyBlogs] = useState([]);
@@ -383,12 +384,15 @@ const BlogUI = () => {
   };
 
   return (
+    <>
+    <Navbar2 />
     <div className="blog-ui">
       {renderSidebar()}
       <div className="content">
         {activeTab === "create" ? renderCreateBlog() : renderBlogs()}
       </div>
     </div>
+    </>
   );
 };
 

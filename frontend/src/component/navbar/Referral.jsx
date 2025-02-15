@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../style/navbar/Referral.css";
 import Constant from "../../utils/Constant";
+import Navbar2 from "./Navbar2";
 
 const ReferralPage = () => {
   const [allReferrals, setAllReferrals] = useState([]);
@@ -249,6 +250,7 @@ const ReferralPage = () => {
   };
 
   return (
+    <><Navbar2 />
     <div className="referral-page">
       <h1>Referral Page</h1>
 
@@ -396,6 +398,7 @@ const ReferralPage = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

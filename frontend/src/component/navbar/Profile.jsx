@@ -5,6 +5,7 @@ import "../../style/navbar/Profile.css";
 import { useLocation } from "react-router-dom";
 import UserSuggestion from "./UserSuggestion";
 import { useNavigate } from "react-router-dom";
+import Navbar2 from "./Navbar2";
 
 const EducationCard = ({ education }) => {
   return (
@@ -192,6 +193,7 @@ const ProfilePage = () => {
   };
 
   return (
+    <><Navbar2 />
     <div className={`profile-container ${isEditing ? "editing-mode" : ""}`}>
       {/* Error Message */}
       {error && <div className="error-message">{error}</div>}
@@ -382,6 +384,7 @@ const ProfilePage = () => {
         <UserSuggestion email={email} />
       </div>
     </div>
+    </>
   );
 };
 

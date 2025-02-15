@@ -1,0 +1,66 @@
+/* Navbar Container */
+.nav2-navbar {
+    /* Fix the navbar at the top */
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width of the viewport */
+    background-color: #ffffff; /* White background */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    z-index: 1000; /* Ensure it stays above other elements */
+    padding: 10px 20px; /* Add some padding for spacing */
+    display: flex;
+    justify-content: center; /* Center the nav items horizontally */
+    align-items: center; /* Align items vertically in the center */
+    border-bottom: 1px solid #e0e0e0; /* Add a subtle border at the bottom */
+  }
+  
+  /* Nav List */
+  .nav2-list {
+    list-style: none; /* Remove default bullet points */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px; /* Add spacing between nav items */
+  }
+  
+  /* Nav Item */
+  .nav2-item {
+    position: relative; /* For positioning pseudo-elements or animations */
+  }
+  
+  /* Nav Link */
+  .nav2-link {
+    text-decoration: none; /* Remove underline */
+    color: #333333; /* Dark gray text color */
+    font-size: 1rem; /* Adjust font size */
+    font-weight: 500; /* Slightly bold text */
+    padding: 8px 12px; /* Add padding for clickable area */
+    border-radius: 4px; /* Rounded corners for hover effect */
+    transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transitions */
+  }
+  
+  /* Hover Effect for Nav Link */
+  .nav2-link:hover {
+    color: #007bff; /* Blue color on hover */
+    background-color: #f0f8ff; /* Light blue background on hover */
+  }
+  
+  /* Active Link */
+  .nav2-active {
+    color: #ffffff; /* White text for active link */
+    background-color: #007bff; /* Blue background for active link */
+    font-weight: 600; /* Bold text for active link */
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .nav2-list {
+      flex-direction: column; /* Stack items vertically on smaller screens */
+      gap: 10px; /* Reduce spacing */
+    }
+  
+    .nav2-link {
+      font-size: 0.9rem; /* Reduce font size */
+      padding: 6px 10px; /* Reduce padding */
+    }
+  }

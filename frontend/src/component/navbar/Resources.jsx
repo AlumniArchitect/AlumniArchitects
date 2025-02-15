@@ -4,6 +4,7 @@ import defaultProfileImage from "../../assets/userLogo.png";
 import Constant from "../../utils/Constant";
 import "../../style/navbar/Resources.css";
 import { useNavigate } from "react-router-dom";
+import Navbar2 from "./Navbar2";
 
 const semesterOptions = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const branchOptions = [
@@ -182,6 +183,7 @@ export default function Resource() {
   );
 
   return (
+    <><Navbar2 />
     <div className="resource-page">
       <div className="resource-header">
         <h1>Resource Library</h1>
@@ -372,5 +374,6 @@ export default function Resource() {
         </div>
       </div>
     </div>
+    </>
   );
 }

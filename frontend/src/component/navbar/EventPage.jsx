@@ -3,6 +3,7 @@ import { formatDistanceToNow } from "date-fns";
 import "../../style/navbar/EventPage.css";
 import Constant from "../../utils/Constant.js";
 import { useNavigate } from 'react-router-dom';
+import Navbar2 from "./Navbar2.jsx";
 
 export default function EventPage() {
   const [search, setSearch] = useState("");
@@ -255,6 +256,7 @@ export default function EventPage() {
   }
 
   return (
+    <><Navbar2 />
     <div className="event-container">
       <div className="event-header">
         <h1>Alumni Events</h1>
@@ -551,5 +553,6 @@ export default function EventPage() {
         </div>
       )}
     </div>
+    </>
   );
 }
