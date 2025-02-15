@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from "react-icons/bs";
 import "../../style/HomePage/ImageSlider.css";
+import Constant from "../../utils/Constant";
 
 export default function ImageSlider({ url, limit = 5, page = 1 }) {
   const [images, setImages] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [errorMsg, setErrorMsg] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [isPaused, setIsPaused] = useState(false); // New state for pause functionality
+  const [isPaused, setIsPaused] = useState(false);
+  const email = localStorage.getItem("email");
 
   // Fetch images from the API
   async function fetchImages(getUrl) {
     try {
       setLoading(true);
 
-      const response = await fetch(`${getUrl}?page=${page}&limit=${limit}`);
+      const response = await fetch(`${Constant.BASE_URL}/admin/get-portal-img/${email}`);
       const data = await response.json();
 
       if (data) {
@@ -42,13 +44,11 @@ export default function ImageSlider({ url, limit = 5, page = 1 }) {
     if (images.length > 0 && !isPaused) {
       const interval = setInterval(() => {
         handleNext();
-      }, 2000); // Change slide every 2 seconds
+      }, 2000); 
 
       return () => clearInterval(interval);
     }
-  }, [images, currentSlide, isPaused]); // Stop sliding when paused
-
-  // Fetch images when the URL changes
+  }, [images, currentSlide, isPaused]);
   useEffect(() => {
     if (url !== "") fetchImages(url);
   }, [url]);
@@ -77,9 +77,9 @@ export default function ImageSlider({ url, limit = 5, page = 1 }) {
       {images && images.length
         ? images.map((imageItem, index) => (
             <img
-              key={imageItem.id}
+              key={imageItem}
               alt={imageItem.download_url}
-              src={imageItem.download_url}
+              src={imageItem}
               className={
                 currentSlide === index
                   ? "current-image"

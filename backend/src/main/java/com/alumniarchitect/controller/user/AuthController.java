@@ -81,6 +81,12 @@ public class AuthController {
                     .body(new AuthResponse(null, false, "Provided email is invalid"));
         }
 
+        if(user.getType().equals(USER_TYPE.ALUMNI)) {
+            if(unverifiedUserService.findByEmail(user.getEmail()) == null) {
+                return new ResponseEntity<>(new AuthResponse(null, false, "Already exist"), HttpStatus.BAD_REQUEST);
+            }
+        }
+
         String otp = OTPUtils.generateOTP();
         otpStorage.put(user.getEmail(), otp);
 
@@ -143,7 +149,7 @@ public class AuthController {
         }
 
         if(!EmailService.isValidCollegeEmail(verifyOtpRequest.getEmail())) {
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(new AuthResponse(null, true, "Verification done"), HttpStatus.OK);
         }
 
         User user = userService.findByEmail(verifyOtpRequest.getEmail());
