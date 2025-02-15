@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/admin")
 public class AdminController {
 
     @Autowired
@@ -65,12 +65,12 @@ public class AdminController {
         return adminService.getUnverifiedAlumni(adminEmail);
     }
 
-    @GetMapping("/admin/{adminEmail}")
+    @GetMapping("/{adminEmail}")
     public List<String> getModerators(@PathVariable String adminEmail) {
         return adminService.getModerators(adminEmail);
     }
 
-    @PutMapping("/admin/{adminEmail}")
+    @PutMapping("/{adminEmail}")
     public void updateModerators(@PathVariable String adminEmail, @RequestBody List<String> moderators) {
         adminService.updateModerators(adminEmail, moderators);
     }
