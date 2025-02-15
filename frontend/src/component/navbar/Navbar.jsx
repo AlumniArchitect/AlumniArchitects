@@ -238,9 +238,8 @@ export default function Navbar() {
               <FaBloggerB /> &nbsp; Blog</li>
               <li onClick={handleResourceClick}>
               <IoLibrary /> &nbsp; Resource Library</li>
-              <hr />
-              <li onClick={handleReferralClick}>Referral </li>
-              <hr />
+              <li onClick={handleReferralClick}>
+              <i class="fa fa-user-plus" aria-hidden="true"></i> &nbsp; Referral </li>
               <li onClick={handleSettingClick}>
                 <FaCog /> &nbsp; Settings
               </li>
