@@ -221,7 +221,12 @@ public class AuthController {
                     .body(new AuthResponse(null, false, "Invalid credentials"));
         }
 
-        return ResponseEntity.ok(new AuthResponse(null, true, "Admin authenticated successfully"));
+        Authentication auth = authenticate(admin.getEmail(), authRequest.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        String jwt = JwtProvider.generateToken(auth);
+        System.out.println(jwt);
+        return ResponseEntity.ok(new AuthResponse(jwt, true, "Admin authenticated successfully"));
     }
 
     @PostMapping("/user/signin")
