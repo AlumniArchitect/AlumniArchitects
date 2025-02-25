@@ -100,8 +100,14 @@ public class AdminController {
     }
 
     @PutMapping("/{adminEmail}")
-    public void updateModerators(@PathVariable String adminEmail, @RequestBody List<String> moderators) {
+    public ResponseEntity<Boolean> updateModerators(@PathVariable String adminEmail, @RequestBody List<String> moderators) {
+        if(adminService.findAdminByEmail(adminEmail) == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         adminService.updateModerators(adminEmail, moderators);
+
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @PostMapping("{adminEmail}/verified/{alumniEmail}")

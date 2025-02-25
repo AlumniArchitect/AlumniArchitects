@@ -131,13 +131,9 @@ const Homepage = () => {
           ) : events.length > 0 ? (
             <div
               className="homepage--events-carousel"
-              onMouseEnter={() => setIsPaused(true)} // 🛑 Pause on hover
-              onMouseLeave={() => setIsPaused(false)} // ▶ Resume on mouse leave
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
             >
-              {/* Left Arrow */}
-              <button className="homepage--carousel-arrow" onClick={handlePrevious}>
-                &lt;
-              </button>
 
               {displayedEvents.map((event, index) => (
                 <div
@@ -178,10 +174,6 @@ const Homepage = () => {
                   </div>
                 </div>
               ))}
-              {/* Right Arrow */}
-              <button className="homepage--carousel-arrow" onClick={handleNext}>
-                &gt;
-              </button>
             </div>
           ) : (
             <div>No upcoming events.</div>

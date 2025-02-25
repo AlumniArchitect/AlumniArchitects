@@ -38,12 +38,12 @@ const VerifyIdProof = () => {
         return;
       }
 
-      const URL = `${Constant.BASE_URL}/upload-verification-img/${email}`;
+      const URL = `${Constant.BASE_URL}/admin/upload-verification-img/${email}`;
 
       const res = await fetch(URL, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${jwt}`,
+          "Content-Type": "application/json"
         },
         body: formData,
       });

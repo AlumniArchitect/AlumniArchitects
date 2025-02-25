@@ -1,101 +1,96 @@
-/* Container for the carousel */
 .container {
-    position: relative;
-    width: 90%; /* Slightly wider for better responsiveness */
-    max-width: 1000px; /* Increased max-width for larger screens */
-    height: 450px; /* Slightly taller for better image visibility */
-    margin: 0 auto;
-    overflow: hidden;
-    border-radius: 15px; /* More rounded corners */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Deeper shadow for a modern look */
-    background: #f0f0f0; /* Light background for better contrast */
-  }
-  
-  /* Image wrapper */
-  .image-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex; /* Use flexbox for better alignment */
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* Current image styling */
-  .current-image {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Maintain aspect ratio and fit within the container */
-    border-radius: 15px; /* Consistent rounded corners */
-    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-    opacity: 1; /* Ensure the current image is fully visible */
-  }
-  
-  /* Hide the non-active images */
-  .hide-current-image {
-    transform: translateX(100%); /* Slide out to the right */
-    opacity: 0; /* Fully hide the image */
-    z-index: 0; /* Move behind the current image */
-  }
-  
-  /* Navigation arrows */
-  .arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 2.5rem; /* Slightly larger arrows */
-    color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.3s ease-in-out;
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    border-radius: 50%; /* Circular buttons */
-    padding: 10px; /* Padding for better click area */
-  }
-  
-  .arrow:hover {
-    color: #ffdd57; /* Brighter yellow on hover */
-    background: rgba(0, 0, 0, 0.8); /* Darker background on hover */
-    transform: scale(1.1) translateY(-50%); /* Slightly larger on hover */
-  }
-  
-  .arrow-left {
-    left: 20px; /* More spacing from the edge */
-  }
-  
-  .arrow-right {
-    right: 20px; /* More spacing from the edge */
-  }
-  
-  /* Circle indicators */
-  .circle-indicators {
-    position: absolute;
-    bottom: 20px; /* More spacing from the bottom */
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 10px; /* Slightly larger gap between indicators */
-    z-index: 10; /* Ensure indicators are above the images */
-  }
-  
-  .current-indicator {
-    width: 15px; /* Slightly larger indicators */
-    height: 15px;
-    border-radius: 50%;
-    background: #ffdd57; /* Bright yellow for active indicator */
-    border: none;
-    outline: none;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-  }
-  
-  .inactive-indicator {
-    background: rgba(255, 255, 255, 0.5); /* Semi-transparent white for inactive */
-    opacity: 0.7; /* Slightly more visible */
-  }
-  
-  .current-indicator:hover {
-    background: #ffa500; /* Orange on hover */
-    transform: scale(1.2); /* Slightly larger on hover */
-  }
+  position: relative;
+  width: 90%;
+  max-width: 1000px;
+  height: 450px;
+  margin: 0 auto;
+  margin-top: 20px;
+  overflow: hidden;
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  background: #f0f0f0;
+}
+
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.current-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  opacity: 1;
+}
+
+.hide-current-image {
+  transform: translateX(100%);
+  opacity: 0;
+  z-index: 0;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease-in-out;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  padding: 10px;
+}
+
+.arrow:hover {
+  color: #ffdd57;
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1) translateY(-50%);
+}
+
+.arrow-left {
+  left: 20px;
+}
+
+.arrow-right {
+  right: 20px;
+}
+
+.circle-indicators {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.current-indicator {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #ffdd57;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.inactive-indicator {
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0.7;
+}
+
+.current-indicator:hover {
+  background: #ffa500;
+  transform: scale(1.2);
+}

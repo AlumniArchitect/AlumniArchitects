@@ -247,7 +247,7 @@ const AdminPanel = () => {
 
     if (isAlreadyModerator) {
       alert("This email is already added as a moderator.");
-      setModeratorEmail(""); // Clear the input field
+      setModeratorEmail("");
       return;
     }
 
@@ -263,7 +263,7 @@ const AdminPanel = () => {
       if (response.ok) {
         const updatedModerators = [...moderators, moderatorEmail];
         setModerators(updatedModerators);
-        setModeratorEmail(""); // Clear the input field
+        setModeratorEmail("");
         alert("Moderator added successfully!");
       } else {
         const errorData = await response.json();
