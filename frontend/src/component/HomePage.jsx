@@ -113,6 +113,8 @@ const Homepage = () => {
       <div id="homepage">
         <Navbar />
         <ProfileCompletionMessage />
+
+
         <ImageSlider url={`${Constant.BASE_URL}/admin/get-portal-img/${email}`} />
 
         {/* Events Carousel Section */}
